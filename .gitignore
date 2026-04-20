@@ -1,0 +1,12 @@
+# 1. Folder Virtual Environment
+.venv/
+venv/
+
+# 2. Sampah Metadata Jupyter
+.ipynb_checkpoints/
+
+# 3. File Sampah Python
+__pycache__/
+
+# 4. File Sampah OS (Khusus Mac)
+.DS_Store
