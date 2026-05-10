@@ -1,0 +1,21 @@
+# Data
+data/
+data_raw_fix/
+*.csv
+*.xlsx
+
+# Environments
+venv/
+.env
+
+# Jupyter and Python
+**/.ipynb_checkpoints/
+__pycache__/
+
+# Models
+*.pkl
+*.joblib
+
+# Agents
+.agents/
+rules/
