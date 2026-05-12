@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 # Load the original fix file
-df = pd.read_csv('../data_raw_fix/Data_tabel_fix.csv')
+df = pd.read_csv('../data_raw_fix/Data_Merged_Fix.csv')
 
 # The original has English column names, let's map them to what the notebook rule expects
 rename_map = {
