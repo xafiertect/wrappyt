@@ -24,3 +24,4 @@ update_qiqi_nb.py
 # Agents
 .agents/
 rules/
+generate_notebook.py
