@@ -11,7 +11,8 @@ venv/
 # Jupyter and Python
 **/.ipynb_checkpoints/
 __pycache__/
-
+*.py
+*.sh
 # Models
 *.pkl
 *.joblib
