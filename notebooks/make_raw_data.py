@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 # Load dataset mentah
-df = pd.read_csv('../data_raw_fix/Data_Merged_Fix.csv')
+df = pd.read_csv('data_raw_fix/Data_Merged_Fix.csv')
 print(f'Loaded : {df.shape}')
 
 # Standarisasi nama kolom
@@ -56,8 +56,8 @@ df_out['impressions']        = pd.to_numeric(df_out['impressions'], errors='coer
 df_out['ctr_pct']            = pd.to_numeric(df_out['ctr_pct'], errors='coerce')
 
 # Simpan
-df_out.to_csv('../data/raw/hippo_academy_raw.csv', index=False)
+df_out.to_csv('data/raw/hippo_academy_raw.csv', index=False)
 
-print(f'Saved  : ../data/raw/hippo_academy_raw.csv')
+print(f'Saved  : data/raw/hippo_academy_raw.csv')
 print(f'Shape  : {df_out.shape}')
 print(f'Kolom  : {df_out.columns.tolist()}')
