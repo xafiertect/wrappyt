@@ -12,10 +12,20 @@ venv/
 **/.ipynb_checkpoints/
 __pycache__/
 
+# Temporary scripts
+check_data.py
+update_notebook.py
+update_qiqi_nb.py
+
 # Models
 *.pkl
 *.joblib
 
+# macOS
+.DS_Store
+**/.DS_Store
+
 # Agents
 .agents/
 rules/
+generate_notebook.py
