@@ -1,6 +1,8 @@
-# YouTube View Decline Diagnosis & Hippo Academy — Global Project
+# YouTube View Decline Diagnosis & Hippo Academy
 
-Sistem analitik berbasis Machine Learning (ML) dan Retrieval-Augmented Generation (RAG) untuk mendiagnosis penurunan views video YouTube serta memberikan rekomendasi aksi optimasi secara real-time.
+![Python](https://img.shields.io/badge/python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white) ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white) ![React](https://img.shields.io/badge/React-18+-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white) ![XGBoost](https://img.shields.io/badge/XGBoost-2C8EBB?style=for-the-badge&logo=xgboost&logoColor=white) ![Google Gemini](https://img.shields.io/badge/Google_Gemini-gemini--2.5--flash-8E75C2?style=for-the-badge&logo=google-gemini&logoColor=white)
+
+**YouTube View Decline Diagnosis & Hippo Academy** is an AI-powered views analysis and decline detection platform designed to help **YouTube creators** diagnose abnormal views drops and predict video performance. Using multi-horizon time-series forecasting (XGBoost), automated anomaly detection (Isolation Forest), secure YouTube OAuth 2.0 integration, and a personalized RAG-driven AI consultation chat, it delivers actionable optimization insights directly from creators' channel analytics.
 
 ---
 
