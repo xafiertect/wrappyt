@@ -7,6 +7,11 @@ Sistem analitik berbasis Machine Learning (ML) dan Retrieval-Augmented Generatio
 ## 🛠️ Bahasa & Framework yang Digunakan (Global Stack)
 
 ### Frontend
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white)
+
 - **React.js**: Framework utama antarmuka pengguna.
 - **Vite**: Build tool dan dev server ultra-cepat.
 - **Vanilla CSS**: Sistem gaya khusus untuk tampilan premium gelap (sleek dark mode & glassmorphism).
@@ -14,12 +19,22 @@ Sistem analitik berbasis Machine Learning (ML) dan Retrieval-Augmented Generatio
 - **Axios**: HTTP client untuk interaksi endpoint backend dengan deteksi status OAuth terpadu.
 
 ### Backend
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Scikit-Learn](https://img.shields.io/badge/scikit_learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
+![Google Gemini](https://img.shields.io/badge/Google_Gemini-8E75C2?style=for-the-badge&logo=google-gemini&logoColor=white)
+![YouTube API](https://img.shields.io/badge/YouTube_API-FF0000?style=for-the-badge&logo=youtube&logoColor=white)
+
 - **FastAPI & Uvicorn**: Framework web web-API Python performa tinggi.
 - **Scikit-Learn, XGBoost & Prophet**: Pemodelan regresi prediksi views masa depan, deteksi anomali (Isolation Forest), serta peramalan deret waktu.
 - **Google Generative AI (Gemini SDK)**: Layanan AI generatif untuk AI Consultant dan ide thumbnail kreatif.
 - **Google API Python Client & isodate**: Integrasi API YouTube Data v3 dan YouTube Analytics v2.
 
 ### Jupyter Notebooks
+![Jupyter](https://img.shields.io/badge/Jupyter-F37626?style=for-the-badge&logo=jupyter&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
+![Numpy](https://img.shields.io/badge/Numpy-777BB4?style=for-the-badge&logo=numpy&logoColor=white)
+
 - **Python 3.10+**: Bahasa pemrogaman utama.
 - **Pandas, Numpy, & Matplotlib**: Pemrosesan data matriks dan visualisasi riset awal.
 - **IPyKernel**: Pengelolaan kernel virtual environment lokal di Jupyter.
