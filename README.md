@@ -1,116 +1,184 @@
-# YouTube View Decline Diagnosis & Hippo Academy
+<p align="center">
+  <h1 align="center">🦛 YouTube View Decline Diagnosis & Hippo Academy</h1>
+</p>
 
-![Python](https://img.shields.io/badge/python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white) ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white) ![React](https://img.shields.io/badge/React-18+-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white) ![XGBoost](https://img.shields.io/badge/XGBoost-2C8EBB?style=for-the-badge&logo=xgboost&logoColor=white) ![Google Gemini](https://img.shields.io/badge/Google_Gemini-gemini--2.5--flash-8E75C2?style=for-the-badge&logo=google-gemini&logoColor=white)
+<p align="center">
+  <strong>AI-Powered YouTube Analytics · View Forecasting · Anomaly Detection · RAG Consultation</strong>
+</p>
 
-**YouTube View Decline Diagnosis & Hippo Academy** is an AI-powered views analysis and decline detection platform designed to help **YouTube creators** diagnose abnormal views drops and predict video performance. Using multi-horizon time-series forecasting (XGBoost), automated anomaly detection (Isolation Forest), secure YouTube OAuth 2.0 integration, and a personalized RAG-driven AI consultation chat, it delivers actionable optimization insights directly from creators' channel analytics.
-
----
-
-## 🛠️ Bahasa & Framework yang Digunakan (Global Stack)
-
-### Frontend
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white)
-
-- **React.js**: Framework utama antarmuka pengguna.
-- **Vite**: Build tool dan dev server ultra-cepat.
-- **Vanilla CSS**: Sistem gaya khusus untuk tampilan premium gelap (sleek dark mode & glassmorphism).
-- **Lucide React & Recharts**: Ikonografi modern dan pustaka visualisasi grafik performa interaktif.
-- **Axios**: HTTP client untuk interaksi endpoint backend dengan deteksi status OAuth terpadu.
-
-### Backend
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![Scikit-Learn](https://img.shields.io/badge/scikit_learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
-![Google Gemini](https://img.shields.io/badge/Google_Gemini-8E75C2?style=for-the-badge&logo=google-gemini&logoColor=white)
-![YouTube API](https://img.shields.io/badge/YouTube_API-FF0000?style=for-the-badge&logo=youtube&logoColor=white)
-
-- **FastAPI & Uvicorn**: Framework web web-API Python performa tinggi.
-- **Scikit-Learn, XGBoost & Prophet**: Pemodelan regresi prediksi views masa depan, deteksi anomali (Isolation Forest), serta peramalan deret waktu.
-- **Google Generative AI (Gemini SDK)**: Layanan AI generatif untuk AI Consultant dan ide thumbnail kreatif.
-- **Google API Python Client & isodate**: Integrasi API YouTube Data v3 dan YouTube Analytics v2.
-
-### Jupyter Notebooks
-![Jupyter](https://img.shields.io/badge/Jupyter-F37626?style=for-the-badge&logo=jupyter&logoColor=white)
-![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
-![Numpy](https://img.shields.io/badge/Numpy-777BB4?style=for-the-badge&logo=numpy&logoColor=white)
-
-- **Python 3.10+**: Bahasa pemrogaman utama.
-- **Pandas, Numpy, & Matplotlib**: Pemrosesan data matriks dan visualisasi riset awal.
-- **IPyKernel**: Pengelolaan kernel virtual environment lokal di Jupyter.
+<p align="center">
+  <img src="https://img.shields.io/badge/python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/React-18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
+  <img src="https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/XGBoost-2C8EBB?style=for-the-badge&logo=xgboost&logoColor=white" alt="XGBoost" />
+  <img src="https://img.shields.io/badge/Scikit--Learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white" alt="Scikit-Learn" />
+  <img src="https://img.shields.io/badge/Google_Gemini-8E75C2?style=for-the-badge&logo=google-gemini&logoColor=white" alt="Gemini" />
+  <img src="https://img.shields.io/badge/YouTube_API-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube API" />
+</p>
 
 ---
 
-## 🔄 Alur Kerja Proyek Global (Global Project Workflow)
+**YouTube View Decline Diagnosis & Hippo Academy** is a full-stack AI-powered platform that helps **YouTube creators** understand, predict, and recover from views drops. It combines **multi-horizon view forecasting** (XGBoost), **real-time anomaly detection** (Isolation Forest), **YouTube OAuth 2.0 channel integration**, and a **RAG-powered AI consultant** (Google Gemini) — all wrapped in a premium dark-mode dashboard.
 
-```mermaid
-graph TD
-    A[Data Mentah YouTube CSV] --> B[Data Preparation - Notebooks]
-    B --> C[Feature Engineering - Notebooks]
-    C --> D[Training Model ML - Notebooks]
-    D --> E[Export Model & Scaler .pkl]
-    E --> F[Inference Engine & API - Backend FastAPI]
-    G[YouTube Data & Analytics API] -- OAuth Consent --> F
-    H[Hippo Academy KB & Gemini API] -- RAG Chat --> F
-    F --> I[Interactive Dashboard & Chat - Frontend React]
+---
+
+## ✨ Key Features
+
+| Feature | Description |
+|---|---|
+| 📊 **Multi-Horizon Prediction** | Forecast views for 7, 14, and 30 days using trained XGBoost regression models |
+| 🔍 **Anomaly Detection** | Instantly flag abnormal views drops with Isolation Forest |
+| 🔗 **YouTube OAuth 2.0** | Connect your YouTube channel directly to pull real-time analytics |
+| 🤖 **AI Consultant (RAG)** | Chat with Gemini-powered assistant backed by Hippo Academy knowledge base |
+| 🎨 **Thumbnail Generator** | AI-driven thumbnail composition, color palette, and overlay suggestions |
+| 📅 **Posting Schedule** | Data-driven optimal upload time recommendations |
+| 📝 **Draft Management** | Full CRUD system for planning video ideas, scripts, and publication dates |
+
+---
+
+## 🏗️ Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        FRONTEND (React + Vite)                  │
+│  Dashboard · Analytics · AI Consultation · Content Management   │
+│                          :5173                                  │
+└───────────────────────────┬─────────────────────────────────────┘
+                            │ REST API (Axios)
+┌───────────────────────────▼─────────────────────────────────────┐
+│                        BACKEND (FastAPI)                         │
+│                          :8000                                   │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐           │
+│  │ /predict  │ │  /auth   │ │/consult  │ │ /manage  │           │
+│  │ XGBoost  │ │ YouTube  │ │ Gemini   │ │  Drafts  │           │
+│  │ IsoForest│ │ OAuth2.0 │ │  + RAG   │ │Thumbnail │           │
+│  └──────────┘ └──────────┘ └──────────┘ └──────────┘           │
+│         │            │            │                              │
+│    models/*.pkl  YouTube API  hippo_kb.md                        │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│                   NOTEBOOKS (Data Science Pipeline)              │
+│  Data Prep → Feature Engineering → Model Training → Export .pkl  │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-1. **Riset & Pemodelan (Data Science Pipeline)**:
-   - Membersihkan data mentah dari YouTube dan menggabungkannya ke dataset bersih (`Data_Merged_Fix.csv`).
-   - Melakukan rekayasa fitur (*feature engineering*) untuk metrik retensi dan CTR.
-   - Melatih model regresi XGBoost (proyeksi views) dan Isolation Forest (deteksi anomali), lalu mengekspor objek model (`.pkl`) ke backend.
-2. **Layanan REST API (Backend)**:
-   - Memuat model ML saat startup dan menyediakan fungsi prediksi dinamis *on-the-fly*.
-   - Menyediakan flow YouTube OAuth 2.0 untuk penarikan data performa channel pengguna secara langsung.
-   - Mengelola sistem asisten AI dengan Gemini API dan pencarian RAG dari pustaka materi Hippo Academy.
-3. **Antarmuka Pengguna (Frontend)**:
-   - Menyajikan dashboard interaktif bagi pengguna untuk menghubungkan akun YouTube mereka.
-   - Menampilkan visualisasi tren proyeksi views dan indikator deteksi anomali.
-   - Menyediakan ruang chat interaktif untuk konsultasi dengan AI Consultant.
-
 ---
 
-## 📁 Struktur Seluruh Folder (Global Directory Structure)
+## 🗂️ Project Structure
 
 ```text
 .
-├── backend/                  # Layanan REST API & Inference Engine (FastAPI)
-│   ├── data/                 # Knowledge base RAG & local JSON database
-│   ├── models/               # Model ML hasil latih (.pkl)
-│   ├── routers/              # API Endpoint routers (auth, predict, stats, dll.)
-│   ├── scalers/              # Scaler pkl pendukung data normalisasi
-│   ├── utils/                # Modul pembantu (OAuth, API wrapper, model loader)
-│   ├── .env.example          # Template file environment variables
-│   ├── dev_backend.log       # Log aktivitas server API
-│   ├── main.py               # Entry point FastAPI & setup server
-│   └── requirements.txt      # Dependensi Python backend
+├── backend/                      # FastAPI REST API & ML inference engine
+│   ├── routers/                  #   API endpoint modules
+│   │   ├── predict.py            #     XGBoost regression + Isolation Forest
+│   │   ├── auth.py               #     YouTube OAuth 2.0 flow
+│   │   ├── consultation.py       #     Gemini RAG chatbot
+│   │   ├── management.py         #     Draft CRUD + thumbnail + schedule
+│   │   ├── stats.py              #     Channel statistics aggregation
+│   │   └── history.py            #     Prediction history
+│   ├── utils/                    #   Core business logic
+│   │   ├── model_loader.py       #     ML model & scaler loader with fallback
+│   │   ├── feature_engineering.py#     On-the-fly feature computation
+│   │   ├── youtube_oauth.py      #     OAuth token lifecycle management
+│   │   ├── youtube_api.py        #     YouTube Data/Analytics API wrapper
+│   │   └── rag.py                #     RAG retrieval + topic guardrail
+│   ├── schemas/prediction.py     #   Pydantic v2 request/response schemas
+│   ├── models/                   #   Trained model files (*.pkl)
+│   ├── scalers/                  #   Scaler files (*.pkl)
+│   ├── data/                     #   Knowledge base & local data
+│   ├── main.py                   #   Application entry point
+│   └── requirements.txt          #   Python dependencies
 │
-├── frontend/                 # Aplikasi antarmuka pengguna (React + Vite)
-│   ├── public/               # File statis publik
-│   ├── src/                  # Kode sumber utama React
-│   │   ├── components/       # Komponen UI modular (cards, alerts, navbar)
-│   │   ├── pages/            # Halaman tampilan (Dashboard, Consult, Drafts)
-│   │   ├── services/         # Koneksi API Client Axios (api.js)
-│   │   ├── App.jsx           # Root React component & routes
-│   │   ├── index.css         # Desain sistem styling global
-│   │   └── main.jsx          # Entry point rendering DOM React
-│   ├── package.json          # File konfigurasi npm & dependensi
-│   └── vite.config.js        # Konfigurasi server Vite
+├── frontend/                     # React + Vite SPA
+│   ├── src/
+│   │   ├── pages/                #   View components
+│   │   │   ├── Dashboard.jsx     #     Main prediction & YouTube sync panel
+│   │   │   ├── Analytics.jsx     #     Channel-level analytics charts
+│   │   │   ├── Consultation.jsx  #     AI consultation chat interface
+│   │   │   └── Management.jsx    #     Draft & content planning manager
+│   │   ├── components/           #   Reusable UI components
+│   │   │   ├── Sidebar.jsx       #     Navigation sidebar
+│   │   │   ├── MetricCard.jsx    #     KPI metric display card
+│   │   │   └── AnomalyAlert.jsx  #     Anomaly detection banner
+│   │   ├── services/api.js       #   Axios API client
+│   │   ├── App.jsx               #   Root component & router config
+│   │   ├── index.css             #   Global design system
+│   │   └── main.jsx              #   React DOM entry point
+│   └── package.json              #   Node.js dependencies
 │
-├── notebooks/                # Workspace riset & pemodelan data scientist
-│   ├── preparation/          # Notebook pembersihan data mentah
-│   ├── feature_enginering/   # Notebook pengolahan rekayasa fitur data
-│   ├── modelling/            # Notebook pelatihan & evaluasi model machine learning
-│   └── README.md             # Panduan eksekusi notebook
+├── notebooks/                    # Jupyter research & training pipeline
+│   ├── preparation/              #   Data cleaning & merging
+│   ├── feature_enginering/       #   Feature extraction & transformation
+│   └── modelling/                #   Model training, evaluation & export
 │
-├── docs/                     # Dokumentasi teknis & workflow integrasi
-├── captonevenv/              # Python virtual environment (diabaikan oleh git)
-├── .gitignore                # Aturan file yang tidak di-commit ke Git
-└── README.md                 # Berkas panduan proyek global ini
+├── data/                         # Raw & processed datasets
+├── docs/                         # Technical documentation & workflow guides
+├── captonevenv/                  # Python virtual environment (git-ignored)
+└── README.md                     # ← You are here
 ```
 
 ---
 
-*Catatan: Panduan instalasi dan penggunaan secara spesifik dapat ditemukan langsung di berkas README masing-masing direktori: [Frontend](./frontend/README.md), [Backend](./backend/README.md), dan [Notebooks](./notebooks/README.md).*
+## 🚀 Quick Start
+
+### Prerequisites
+
+| Tool | Version |
+|---|---|
+| Python | ≥ 3.10 |
+| Node.js | ≥ 18 |
+| pip | latest |
+
+### 1. Clone & Setup
+
+```bash
+git clone https://github.com/xafiertect/Model-Prediksi-dan-Diagnosa-Penurunan-Views-YouTube-Berbasis-Machine-Learning.git
+cd Model-Prediksi-dan-Diagnosa-Penurunan-Views-YouTube-Berbasis-Machine-Learning
+```
+
+### 2. Backend
+
+```bash
+python -m venv captonevenv && source captonevenv/bin/activate
+cd backend && pip install -r requirements.txt
+cp .env.example .env     # ← fill in your API keys
+uvicorn main:app --reload --port 8000
+```
+
+### 3. Frontend
+
+```bash
+cd frontend && npm install && npm run dev
+```
+
+Open **http://localhost:5173** in your browser.
+
+---
+
+## 🔑 Environment Variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `GEMINI_API_KEY` | ✅ | Google AI Studio API key for AI Consultant |
+| `GEMINI_MODEL` | ❌ | Gemini model name (default: `gemini-2.5-flash`) |
+| `YOUTUBE_CLIENT_ID` | ❌ | Google OAuth 2.0 Client ID for YouTube integration |
+| `YOUTUBE_CLIENT_SECRET` | ❌ | Google OAuth 2.0 Client Secret |
+| `YOUTUBE_REDIRECT_URI` | ❌ | OAuth callback URL (default: `http://localhost:8000/auth/youtube/callback`) |
+
+---
+
+## 📖 Documentation
+
+| Module | Guide |
+|---|---|
+| **Frontend** | [frontend/README.md](./frontend/README.md) |
+| **Backend** | [backend/README.md](./backend/README.md) |
+| **Notebooks** | [notebooks/README.md](./notebooks/README.md) |
+
+---
+
+## 📄 License
+
+This project was built as a **Capstone Project** for academic purposes.

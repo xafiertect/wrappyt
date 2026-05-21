@@ -1,114 +1,249 @@
-# 🚀 Hippo Academy — YouTube Prediction & Management Backend API
+<p align="center">
+  <h1 align="center">🚀 Hippo Academy — Backend API</h1>
+</p>
 
-Layanan REST API backend berbasis **FastAPI** yang mengintegrasikan model Machine Learning prediksi performa YouTube dan deteksi anomali views, modul AI Consultation berbasis RAG Hippo Academy, serta fitur integrasi akun YouTube via OAuth 2.0.
+<p align="center">
+  <img src="https://img.shields.io/badge/python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/FastAPI-0.110-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/Pydantic-v2-E92063?style=for-the-badge&logo=pydantic&logoColor=white" alt="Pydantic" />
+  <img src="https://img.shields.io/badge/XGBoost-1.7-2C8EBB?style=for-the-badge&logo=xgboost&logoColor=white" alt="XGBoost" />
+  <img src="https://img.shields.io/badge/Scikit--Learn-1.3-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white" alt="Scikit-Learn" />
+  <img src="https://img.shields.io/badge/Google_Gemini-8E75C2?style=for-the-badge&logo=google-gemini&logoColor=white" alt="Gemini" />
+  <img src="https://img.shields.io/badge/YouTube_API-v3-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube" />
+</p>
+
+<p align="center">
+  FastAPI-based REST API serving ML inference, YouTube OAuth integration, RAG-powered AI consultation, and content management features.
+</p>
 
 ---
 
-## 📁 Struktur Direktori Backend
+## 📁 Directory Structure
 
 ```text
 backend/
-├── main.py                    # Titik masuk utama aplikasi & konfigurasi lifespan
-├── requirements.txt           # Dependensi Python lengkap
-├── .env                       # File konfigurasi environment (tidak di-commit)
-├── data/
-│   ├── hippo_kb.md            # Knowledge base metodologi Hippo Academy untuk RAG
-│   └── drafts.json            # Database lokal untuk draf video
+├── main.py                        # Application entry point & lifespan config
+├── requirements.txt               # Python dependencies
+├── .env                           # Environment variables (git-ignored)
+├── .env.example                   # Template for .env setup
+│
+├── routers/                       # API endpoint modules
+│   ├── predict.py                 #   POST /predict/ — XGBoost + Isolation Forest
+│   ├── auth.py                    #   GET  /auth/youtube/* — OAuth 2.0 flow
+│   ├── consultation.py            #   POST /consultation/chat — Gemini RAG chatbot
+│   ├── management.py              #   CRUD /management/* — Drafts, Thumbnails, Schedule
+│   ├── stats.py                   #   GET  /stats/* — Channel statistics
+│   └── history.py                 #   GET  /history/* — Prediction history
+│
 ├── schemas/
-│   └── prediction.py          # Definisi schema Pydantic v2 untuk input/output API
-├── routers/
-│   ├── predict.py             # Endpoint prediksi XGBoost & Isolation Forest
-│   ├── consultation.py        # Chatbot RAG Hippo Academy berbasis Gemini API
-│   ├── auth.py                # Endpoint YouTube OAuth 2.0 (Login, Callback, Status)
-│   ├── management.py          # CRUD Draf, generator thumbnail, dan optimal jam posting
-│   ├── stats.py               # Penyaji statistik data video lokal (fallback)
-│   └── history.py             # Riwayat pengujian prediksi
-├── utils/
-│   ├── model_loader.py        # Loader global model ML & Scaler dengan sistem fallback
-│   ├── feature_engineering.py  # Rekayasa fitur on-the-fly untuk input ML
-│   ├── youtube_oauth.py       # Helper integrasi OAuth token management
-│   ├── youtube_api.py         # Wrapper YouTube Data & Analytics API dengan caching
-│   └── rag.py                 # RAG Engine (retrieval & guardrail topik)
-├── models/                    # Folder penyimpanan file model (*.pkl)
-└── scalers/                   # Folder penyimpanan file scaler (*.pkl)
+│   └── prediction.py              # All Pydantic v2 request/response models
+│
+├── utils/                         # Core business logic
+│   ├── model_loader.py            #   Model & scaler loader with smart fallback
+│   ├── feature_engineering.py     #   On-the-fly feature computation (12 → 20+ features)
+│   ├── youtube_oauth.py           #   Token save/load/refresh/revoke lifecycle
+│   ├── youtube_api.py             #   YouTube Data API v3 & Analytics API v2 wrapper
+│   └── rag.py                     #   RAG retrieval engine + topic guardrail
+│
+├── models/                        # Trained model pickles (*.pkl)
+├── scalers/                       # Trained scaler pickles (*.pkl)
+├── encoders/                      # Label encoder pickles (*.pkl)
+└── data/
+    ├── hippo_kb.md                # Hippo Academy knowledge base for RAG
+    └── drafts.json                # Local draft storage (file-based persistence)
 ```
 
 ---
 
-## 🛠️ Persiapan & Instalasi (Setup)
+## 🛠️ Setup & Installation
 
-### 1. Aktifkan Virtual Environment
-Aktifkan virtual environment yang sudah dibuat sebelumnya di root folder proyek:
-* **Linux / macOS:**
-  ```bash
-  source ../captonevenv/bin/activate
-  ```
-* **Windows:**
-  ```bash
-  ..\captonevenv\Scripts\activate
-  ```
+### 1. Virtual Environment
 
-### 2. Install Dependensi
-Jalankan perintah ini di terminal dari dalam folder `backend`:
 ```bash
+# From project root
+python -m venv captonevenv
+source captonevenv/bin/activate          # Linux/macOS
+# captonevenv\Scripts\activate           # Windows
+```
+
+### 2. Install Dependencies
+
+```bash
+cd backend
 pip install -r requirements.txt
 ```
 
-### 3. Konfigurasi Environment (`.env`)
-Buat file bernama `.env` di dalam folder `backend` dan sesuaikan nilainya:
-```env
-APP_NAME="Hippo Academy — YouTube Analytics API"
-APP_VERSION="2.0.0"
-DEBUG=True
+### 3. Configure Environment
 
-# Security
-API_KEY="your-super-secret-api-key"
-CORS_ORIGINS="http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000"
-
-# Machine Learning Paths
-MODEL_PATH="./models"
-SCALER_PATH="./scalers"
-DATA_PROCESSED_PATH="../data/processed"
-
-# RAG & AI Consultation
-GEMINI_API_KEY="ISI_GEMINI_API_KEY_ANDA"
-GEMINI_MODEL="gemini-2.5-flash"
-HIPPO_KB_PATH="./data/hippo_kb.md"
-
-# YouTube OAuth 2.0
-YOUTUBE_CLIENT_ID="ISI_CLIENT_ID_DARI_GOOGLE_CONSOLE"
-YOUTUBE_CLIENT_SECRET="ISI_CLIENT_SECRET_DARI_GOOGLE_CONSOLE"
-YOUTUBE_REDIRECT_URI="http://localhost:8000/auth/youtube/callback"
+```bash
+cp .env.example .env
 ```
 
----
+Edit `.env` with your credentials:
 
-## 🚀 Menjalankan Server API
+```env
+# ─── Required ───────────────────────────────
+GEMINI_API_KEY="your-google-ai-studio-key"
 
-Jalankan perintah Uvicorn di terminal dari dalam folder `backend`:
+# ─── Optional: YouTube OAuth ────────────────
+YOUTUBE_CLIENT_ID="your-google-oauth-client-id"
+YOUTUBE_CLIENT_SECRET="your-google-oauth-client-secret"
+YOUTUBE_REDIRECT_URI="http://localhost:8000/auth/youtube/callback"
+
+# ─── Optional: Model Configuration ──────────
+GEMINI_MODEL="gemini-2.5-flash"
+MODEL_PATH="./models"
+SCALER_PATH="./scalers"
+```
+
+### 4. Run Server
+
 ```bash
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Server akan aktif dan dapat diakses di:
-* **Base URL:** `http://localhost:8000`
-* **Swagger UI Docs:** `http://localhost:8000/docs` (Gunakan dokumentasi ini untuk menguji endpoint secara interaktif)
+| URL | Description |
+|---|---|
+| `http://localhost:8000` | API Base URL |
+| `http://localhost:8000/docs` | Swagger UI (interactive API explorer) |
+| `http://localhost:8000/redoc` | ReDoc documentation |
 
 ---
 
-## 🔌 Endpoint API Utama
+## 🔌 API Reference
 
-### 1. Endpoint Prediksi (`/predict/`)
-* **Metode:** `POST`
-* **Deskripsi:** Menerima metrik performa mentah sebuah video, menghitung fitur *on-the-fly*, lalu memprediksi views 7, 14, 30 hari ke depan serta deteksi anomali views.
+### Prediction Engine
 
-### 2. YouTube OAuth (`/auth/`)
-* `GET /auth/youtube/login`: Mengarahkan user ke halaman consent Google untuk memberikan hak akses data YouTube.
-* `GET /auth/youtube/callback`: Dipanggil secara otomatis oleh Google untuk menukar kode otentikasi menjadi token akses yang disimpan secara aman di `token_store.json`.
-* `GET /auth/youtube/status`: Memeriksa apakah token YouTube yang valid sudah tersimpan.
-* `GET /auth/youtube/channel`: Mengambil informasi dasar channel YouTube serta daftar video terbaru.
-* `GET /auth/youtube/video/{video_id}/metrics`: Mengambil seluruh metrik internal real-time video tertentu dari YouTube Analytics API.
+#### `POST /predict/`
 
-### 3. AI Consultation (`/consultation/chat`)
-* **Metode:** `POST`
-* **Deskripsi:** Chatbot AI interaktif berbasis RAG yang membaca pedoman optimasi Hippo Academy dari `hippo_kb.md` dengan model Gemini.
+Accepts raw video metrics, computes derived features on-the-fly, and returns multi-horizon view forecasts with anomaly detection.
+
+<details>
+<summary>📥 Request Body</summary>
+
+```json
+{
+  "views": 15000,
+  "ctr": 4.5,
+  "impressions": 200000,
+  "avg_view_duration": "00:03:30",
+  "video_duration": "00:10:00",
+  "likes": 500,
+  "comments": 120,
+  "retention_rate": 35.0,
+  "subscriber_gained": 50,
+  "video_age_days": 5,
+  "lag_views_7d": 12000,
+  "rolling_mean_views_14d": 11000
+}
+```
+
+</details>
+
+<details>
+<summary>📤 Response</summary>
+
+```json
+{
+  "status": "Declining",
+  "confidence": 0.87,
+  "predicted_views": {
+    "days_7": 12500,
+    "days_14": 11800,
+    "days_30": 10200
+  },
+  "anomaly": {
+    "is_anomaly": false,
+    "anomaly_score": 0.125,
+    "label": "Normal"
+  },
+  "recommendation": "CTR di bawah 3% — redesign thumbnail..."
+}
+```
+
+</details>
+
+---
+
+### YouTube OAuth 2.0
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/auth/youtube/login` | Redirects to Google consent screen |
+| `GET` | `/auth/youtube/callback` | Handles OAuth code exchange → token storage |
+| `GET` | `/auth/youtube/status` | Check authentication state |
+| `GET` | `/auth/youtube/channel` | Fetch channel info + recent videos list |
+| `GET` | `/auth/youtube/video/{video_id}/metrics` | Pull real-time analytics for a specific video |
+| `POST` | `/auth/youtube/logout` | Revoke token and clear session |
+
+---
+
+### AI Consultation (RAG)
+
+#### `POST /consultation/chat`
+
+<details>
+<summary>📥 Request Body</summary>
+
+```json
+{
+  "message": "Bagaimana cara meningkatkan CTR thumbnail?",
+  "history": [],
+  "channel_stats": {
+    "avg_ctr": 2.8,
+    "avg_retention": 27.5,
+    "recent_views_drop": true,
+    "total_videos": 12
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>📤 Response</summary>
+
+```json
+{
+  "reply": "Berdasarkan data channel Anda dengan CTR 2.8%...",
+  "context_used": true,
+  "is_off_topic": false
+}
+```
+
+</details>
+
+---
+
+### Content Management
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/management/drafts` | List all video drafts |
+| `POST` | `/management/drafts` | Create new draft |
+| `PUT` | `/management/drafts/{id}` | Update existing draft |
+| `DELETE` | `/management/drafts/{id}` | Delete draft |
+| `POST` | `/management/thumbnail/suggest` | AI thumbnail composition suggestions |
+| `GET` | `/management/schedule/optimal-hours` | Best posting times with scores |
+
+---
+
+## ⚙️ ML Model Loading
+
+The backend uses a **smart fallback** system for model loading at startup:
+
+```
+Priority 1: Multi-horizon models
+  ├── model1_xgboost_7d.pkl
+  ├── model1_xgboost_14d.pkl
+  └── model1_xgboost_30d.pkl
+
+Priority 2: Single model fallback
+  └── model1_xgboost_regression.pkl  (used for all 3 horizons)
+
+Anomaly Detection:
+  ├── model3_isolation_forest.pkl
+  └── scaler_model3.pkl
+```
+
+> **Important:** Copy all `.pkl` files from the notebooks output into `backend/models/` and `backend/scalers/` before starting the server.
