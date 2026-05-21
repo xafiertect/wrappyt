@@ -35,3 +35,23 @@ generate_notebook.py
 notebooks/modelling/03_modelling_wildan.ipynb
 notebooks/modelling/testing_fitur_wildan.ipynb
 
+# Excluded by user request
+docs/
+captonevenv/
+
+# Dependencies & Build
+node_modules/
+dist/
+build/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+
+
+
