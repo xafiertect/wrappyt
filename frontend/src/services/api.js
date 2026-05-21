@@ -30,3 +30,9 @@ export const deleteDraft        = (id)      => api.delete(`/management/drafts/${
 export const getYoutubeVideos   = ()        => api.get('/stats/youtube-videos');
 export const syncYoutubeVideo   = (idOrUrl) => api.get(`/stats/youtube-sync?video_id_or_url=${encodeURIComponent(idOrUrl)}`);
 
+// ── YouTube OAuth (real-time channel integration) ─────────────────────────────
+export const getYouTubeStatus   = ()        => api.get('/auth/youtube/status');
+export const getYouTubeChannel  = (max = 20) => api.get(`/auth/youtube/channel?max_videos=${max}`);
+export const getVideoMetrics    = (videoId) => api.get(`/auth/youtube/video/${videoId}/metrics`);
+export const logoutYouTube      = ()        => api.get('/auth/youtube/logout');
+

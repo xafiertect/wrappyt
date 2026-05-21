@@ -39,6 +39,11 @@ notebooks/modelling/testing_fitur_wildan.ipynb
 docs/
 captonevenv/
 
+# OAuth Token — JANGAN di-commit!
+backend/token_store.json
+token_store.json
+
+
 # Dependencies & Build
 node_modules/
 dist/
