@@ -113,4 +113,4 @@ graph TD
 
 ---
 
-*Catatan: Panduan instalasi dan penggunaan secara spesifik dapat ditemukan langsung di file `README.md` pada masing-masing direktori (`/frontend`, `/backend`, dan `/notebooks`).*
+*Catatan: Panduan instalasi dan penggunaan secara spesifik dapat ditemukan langsung di berkas README masing-masing direktori: [Frontend](./frontend/README.md), [Backend](./backend/README.md), dan [Notebooks](./notebooks/README.md).*
