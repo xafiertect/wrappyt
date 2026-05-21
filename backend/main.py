@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from dotenv import load_dotenv
 
-from routers import predict, history, stats, consultation, management
+from routers import predict, history, stats, consultation, management, auth
 from schemas.prediction import ErrorResponse
 from utils.model_loader import load_all_models
 
@@ -64,6 +64,7 @@ app.include_router(history.router)
 app.include_router(stats.router)
 app.include_router(consultation.router)
 app.include_router(management.router)
+app.include_router(auth.router)
 
 # ─── Health Check ─────────────────────────────────────────────────────────────
 @app.get("/health", tags=["Health"])
