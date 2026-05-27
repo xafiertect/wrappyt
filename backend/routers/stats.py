@@ -175,3 +175,79 @@ async def get_forecast(limit: int = 30):
     return {"data": forecast_df.tail(limit).to_dict(orient="records")}
 
 
+@router.get("/videos")
+async def get_videos_analytics(limit: int = 50):
+    """
+    Daftar lengkap video dengan status, CTR, anomaly flag, dan tanggal publish.
+    Menggabungkan abis_cleaning.csv + model_output_anomaly.csv + model_output_regression.csv.
+    """
+    base_path = os.path.join(os.path.dirname(DATA_DIR), "cleaned", "abis_cleaning.csv")
+
+    if not os.path.exists(base_path):
+        return {"data": [], "message": "Data abis_cleaning.csv tidak tersedia."}
+
+    try:
+        base_df = pd.read_csv(base_path)
+        anomaly_df = _read_csv_safe("model_output_anomaly.csv")
+        regression_df = _read_csv_safe("model_output_regression.csv")
+
+        # Pilih kolom yang dibutuhkan dari dataset utama
+        cols_needed = [c for c in ["video_id", "judul_video", "waktu_publikasi_video",
+                                   "penayangan_tak_dilewati", "penayangan",
+                                   "rasio_klik_tayang_dari_tayangan"] if c in base_df.columns]
+        df = base_df[cols_needed].copy()
+
+        # Normalisasi kolom views (bisa pakai penayangan_tak_dilewati atau penayangan)
+        if "penayangan_tak_dilewati" in df.columns:
+            df["views"] = df["penayangan_tak_dilewati"].fillna(df.get("penayangan", 0)).fillna(0).astype(int)
+        elif "penayangan" in df.columns:
+            df["views"] = df["penayangan"].fillna(0).astype(int)
+        else:
+            df["views"] = 0
+
+        df["ctr"] = df["rasio_klik_tayang_dari_tayangan"].fillna(0.0).astype(float) if "rasio_klik_tayang_dari_tayangan" in df.columns else 0.0
+        df["date"] = df["waktu_publikasi_video"].fillna("").astype(str) if "waktu_publikasi_video" in df.columns else ""
+        df["title"] = df["judul_video"].fillna("Video").astype(str) if "judul_video" in df.columns else "Video"
+
+        # Gabung dengan anomaly data
+        if not anomaly_df.empty and "video_id" in anomaly_df.columns and "anomaly_label_model" in anomaly_df.columns:
+            df = df.merge(anomaly_df[["video_id", "anomaly_label_model", "anomaly_score"]],
+                          on="video_id", how="left")
+        else:
+            df["anomaly_label_model"] = 0
+            df["anomaly_score"] = 0.0
+
+        df["anomaly"] = df["anomaly_label_model"].fillna(0).astype(int) == 1
+
+        # Gabung dengan regression output untuk views_predicted
+        if not regression_df.empty and "video_id" in regression_df.columns and "views_predicted" in regression_df.columns:
+            df = df.merge(regression_df[["video_id", "views_predicted"]], on="video_id", how="left")
+            df["views_predicted"] = df["views_predicted"].fillna(df["views"])
+        else:
+            df["views_predicted"] = df["views"]
+
+        # Tentukan status berdasarkan CTR + anomaly + views
+        # Konsisten dengan Hippo Academy 2-jam rule di /predict:
+        #   Viral: CTR > 7% atau views > 50k
+        #   Normal: CTR 3-7% (borderline)
+        #   Tidak Viral: CTR < 3% atau terdeteksi anomali
+        def derive_status(row):
+            if row["anomaly"] or row["ctr"] < 3.0:
+                return "Tidak Viral"
+            if row["ctr"] > 7.0 or row["views"] > 50000:
+                return "Viral"
+            return "Normal"
+
+        df["status"] = df.apply(derive_status, axis=1)
+
+        # Format output
+        result = df[["video_id", "title", "views", "ctr", "date", "status", "anomaly", "anomaly_score"]]\
+            .head(limit)\
+            .to_dict(orient="records")
+
+        return {"data": result, "total": len(df)}
+
+    except Exception as e:
+        return {"data": [], "error": str(e), "message": "Gagal memuat data video analytics."}
+
+

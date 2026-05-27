@@ -5,7 +5,7 @@ Semua request/response schema API terdefinisi di sini.
 Validasi dilakukan secara ketat menggunakan Pydantic v2.
 """
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import Literal, List, Optional, Dict, Any
 from datetime import datetime
 
@@ -39,6 +39,10 @@ class PredictionInput(BaseModel):
     )
     subscriber_gained: int = Field(default=0, ge=0, description="Subscriber yang diperoleh")
     video_age_days: int = Field(default=1, ge=0, description="Usia video (hari sejak upload)")
+    video_age_hours: Optional[int] = Field(
+        default=None, ge=0,
+        description="Usia video dalam jam — lebih presisi dari hari; dipakai untuk Hippo Academy 2-jam viral rule. Jika None, dihitung dari video_age_days × 24."
+    )
     lag_views_7d: float = Field(default=0.0, ge=0, description="Views 7 hari sebelumnya")
     rolling_mean_views_14d: float = Field(
         default=0.0, ge=0, description="Rata-rata views 14 hari terakhir"
@@ -52,10 +56,16 @@ class PredictionInput(BaseModel):
         return v
 
 
+class ProjectionPoint(BaseModel):
+    label: str
+    views: int
+
+
 class ViewsForecast(BaseModel):
-    days_7: int = Field(description="Prediksi views 7 hari ke depan")
-    days_14: int = Field(description="Prediksi views 14 hari ke depan")
-    days_30: int = Field(description="Prediksi views 30 hari ke depan")
+    days_1: int = Field(description="Prediksi views 1 hari ke depan")
+    days_2: int = Field(description="Prediksi views 2 hari ke depan")
+    days_3: int = Field(description="Prediksi views 3 hari ke depan")
+    chart_data: List[ProjectionPoint] = Field(default=[], description="Data points untuk chart proyeksi (termasuk detail per jam)")
 
 
 class AnomalyResult(BaseModel):
@@ -65,8 +75,9 @@ class AnomalyResult(BaseModel):
 
 
 class PredictionOutput(BaseModel):
-    status: Literal["Viral", "Normal", "Declining"]
-    confidence: float = Field(ge=0, le=1, description="Confidence score prediksi status")
+    status: Literal["Viral", "Normal", "Tidak Viral"]
+    confidence: float = Field(ge=0, le=1, description="Confidence score prediksi status (0–1)")
+    is_viral: bool = Field(description="True jika video diprediksi berpotensi viral (Hippo Academy 2-jam rule: views/2h ≥ 2.000)")
     predicted_views: ViewsForecast
     anomaly: AnomalyResult
     recommendation: str = Field(description="Rekomendasi actionable berdasarkan hasil prediksi")
@@ -91,7 +102,32 @@ class ForecastOutput(BaseModel):
 
 class ChatMessage(BaseModel):
     role: Literal["user", "model"]
-    content: str
+    content: Optional[str] = Field(default="")
+    parts: Optional[Any] = Field(default=None)
+
+    @model_validator(mode="before")
+    @classmethod
+    def resolve_fields(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            parts_val = data.get("parts")
+            content_val = data.get("content")
+            
+            if content_val is None and parts_val is not None:
+                if isinstance(parts_val, list):
+                    text_parts = []
+                    for p in parts_val:
+                        if isinstance(p, dict) and "text" in p:
+                            text_parts.append(p["text"])
+                        elif isinstance(p, str):
+                            text_parts.append(p)
+                    content_val = " ".join(text_parts)
+                else:
+                    content_val = str(parts_val)
+                data["content"] = content_val
+                
+            if data.get("content") is None:
+                data["content"] = ""
+        return data
 
 
 class ChannelStats(BaseModel):
@@ -113,6 +149,7 @@ class ConsultationRequest(BaseModel):
 
 class ConsultationResponse(BaseModel):
     reply: str = Field(description="Jawaban AI Consultant")
+    response: str = Field(default="", description="Jawaban AI Consultant (alias untuk frontend)")
     context_used: bool = Field(description="True jika knowledge base Hippo Academy digunakan")
     is_off_topic: bool = Field(
         default=False, description="True jika pertanyaan di luar topik YouTube/Hippo Academy"
@@ -123,17 +160,33 @@ class ConsultationResponse(BaseModel):
 
 class ThumbnailRequest(BaseModel):
     video_title: str = Field(min_length=3, max_length=200, description="Judul video")
+    description: Optional[str] = Field(
+        default=None, max_length=500,
+        description="Deskripsi singkat konten video — digunakan untuk mempersonalisasi saran desain"
+    )
     content_type: str = Field(
         default="Edukasi",
         description="Tipe konten: Edukasi, Tutorial, Vlog, Review, dll."
     )
     target_audience: Optional[str] = Field(default=None, description="Target audiens")
+    current_ctr: Optional[float] = Field(
+        default=None, ge=0, le=100,
+        description="CTR video saat ini (%) — digunakan untuk konteks optimasi desain"
+    )
 
 
 class ThumbnailSuggestion(BaseModel):
     main_element: str = Field(description="Objek/elemen visual utama yang disarankan")
-    background_color: str = Field(description="Warna background yang direkomendasikan")
+    background_color: str = Field(description="Warna background utama (hex)")
+    background_description: str = Field(
+        default="",
+        description="Deskripsi detail latar belakang (gradien, tekstur, suasana, dll.)"
+    )
     text_overlay: str = Field(description="Teks overlay maksimal 3-5 kata")
+    text_color: str = Field(
+        default="#FFFFFF",
+        description="Warna teks overlay yang direkomendasikan (hex)"
+    )
     facial_expression: str = Field(description="Ekspresi wajah yang ideal (jika ada orang)")
     composition_tip: str = Field(description="Tips komposisi layout thumbnail")
     color_palette: List[str] = Field(description="Palet warna yang disarankan (hex)")
