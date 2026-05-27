@@ -34,7 +34,7 @@ def save_ml_models():
 
     # 4. Dummy LabelEncoder
     le = LabelEncoder()
-    le.fit(['Declining', 'Normal', 'Viral'])
+    le.fit(['Tidak Viral', 'Normal', 'Viral'])  # Hippo Academy 2-jam rule
     joblib.dump(le, os.path.join(MODELS_DIR, 'label_encoder.pkl'))
 
     # 5. Metadata JSON

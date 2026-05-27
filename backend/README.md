@@ -130,7 +130,7 @@ Accepts raw video metrics, computes derived features on-the-fly, and returns mul
   "video_duration": "00:10:00",
   "likes": 500,
   "comments": 120,
-  "retention_rate": 35.0,
+  "retention_rate": 35.0, uvicorn main:app --reload --port 8000
   "subscriber_gained": 50,
   "video_age_days": 5,
   "lag_views_7d": 12000,
@@ -145,12 +145,14 @@ Accepts raw video metrics, computes derived features on-the-fly, and returns mul
 
 ```json
 {
-  "status": "Declining",
-  "confidence": 0.87,
+  "status": "Tidak Viral",
+  "confidence": 0.62,
+  "is_viral": false,
   "predicted_views": {
-    "days_7": 12500,
-    "days_14": 11800,
-    "days_30": 10200
+    "days_1": 12500,
+    "days_2": 13200,
+    "days_3": 13800,
+    "chart_data": []
   },
   "anomaly": {
     "is_anomaly": false,
@@ -160,6 +162,7 @@ Accepts raw video metrics, computes derived features on-the-fly, and returns mul
   "recommendation": "CTR di bawah 3% — redesign thumbnail..."
 }
 ```
+> **Hippo Academy 2-jam rule**: `status` ditentukan dari kecepatan views per 2 jam pertama — `Viral` (≥2.000), `Normal` (1.000–1.999), `Tidak Viral` (<1.000). Field `is_viral` adalah boolean shorthand dari status = "Viral".
 
 </details>
 
