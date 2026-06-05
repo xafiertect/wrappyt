@@ -86,7 +86,7 @@ function CTRThumbnailPanel({ currentCtr = 0 }) {
   };
 
   return (
-    <div className="glass-panel" style={{ padding: '1.25rem 1.5rem', border: '1px solid rgba(245,158,11,0.2)', background: 'rgba(245,158,11,0.02)' }}>
+    <div className="glass-panel" style={{ padding: '1.25rem 1.5rem', border: '1px solid rgba(245,158,11,0.25)', background: 'var(--panel-dark)', transition: 'background-color 0.4s ease, border-color 0.4s ease' }}>
       {/* ── Header (collapsible) */}
       <button
         type="button"
@@ -95,13 +95,13 @@ function CTRThumbnailPanel({ currentCtr = 0 }) {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 36, height: 36, borderRadius: 8, background: 'rgba(245,158,11,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Image size={18} color="#F59E0B" />
+            <Image size={18} color="var(--accent-gold)" />
           </div>
           <div style={{ textAlign: 'left' }}>
-            <div style={{ fontWeight: 700, fontSize: '0.92rem', color: '#E2E8F0' }}>
+            <div style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-primary)', transition: 'color 0.4s' }}>
               CTR Thumbnail Generator
             </div>
-            <div style={{ fontSize: '0.76rem', color: '#94A3B8', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 6, transition: 'color 0.4s' }}>
               Desain thumbnail berdasarkan performa CTR Anda
               <span style={{ background: `${ctrLabel.color}18`, color: ctrLabel.color, border: `1px solid ${ctrLabel.color}30`, borderRadius: 4, padding: '1px 6px', fontSize: '0.7rem', fontWeight: 700 }}>
                 CTR {currentCtr}% — {ctrLabel.text}
@@ -109,7 +109,7 @@ function CTRThumbnailPanel({ currentCtr = 0 }) {
             </div>
           </div>
         </div>
-        {open ? <ChevronUp size={16} color="#64748B" /> : <ChevronDown size={16} color="#64748B" />}
+        {open ? <ChevronUp size={16} color="var(--text-dim)" /> : <ChevronDown size={16} color="var(--text-dim)" />}
       </button>
 
       {/* ── Body */}
@@ -121,8 +121,8 @@ function CTRThumbnailPanel({ currentCtr = 0 }) {
             {/* Form Input */}
             <form onSubmit={handleGenerate} style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
               <div>
-                <label style={{ fontSize: '0.78rem', color: '#64748B', display: 'block', marginBottom: 5 }}>
-                  📝 Judul Video <span style={{ color: '#EF4444' }}>*</span>
+                <label style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', marginBottom: 5 }}>
+                  📝 Judul Video <span style={{ color: 'var(--accent-red)' }}>*</span>
                 </label>
                 <input
                   className="input-dark"
@@ -134,7 +134,7 @@ function CTRThumbnailPanel({ currentCtr = 0 }) {
                 />
               </div>
               <div>
-                <label style={{ fontSize: '0.78rem', color: '#64748B', display: 'block', marginBottom: 5 }}>
+                <label style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', marginBottom: 5 }}>
                   📄 Deskripsi Konten
                 </label>
                 <textarea
@@ -148,18 +148,18 @@ function CTRThumbnailPanel({ currentCtr = 0 }) {
               </div>
 
               {/* CTR context badge */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '0.5rem 0.75rem', background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.15)', borderRadius: 8, fontSize: '0.78rem', color: '#FCD34D' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '0.5rem 0.75rem', background: 'var(--bg-badge)', border: '1px solid var(--border-glass)', borderRadius: 8, fontSize: '0.78rem', color: 'var(--accent-gold)' }}>
                 <MousePointerClick size={13} />
-                AI akan mendesain untuk CTR <strong>{currentCtr}%</strong> — menargetkan peningkatan klik maksimal
+                <span>AI akan mendesain untuk CTR <strong>{currentCtr}%</strong> — menargetkan peningkatan klik maksimal</span>
               </div>
 
               {error && (
-                <div style={{ fontSize: '0.78rem', color: '#EF4444', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', padding: '0.5rem 0.75rem', borderRadius: 8 }}>
+                <div style={{ fontSize: '0.78rem', color: 'var(--accent-red)', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', padding: '0.5rem 0.75rem', borderRadius: 8 }}>
                   {error}
                 </div>
               )}
 
-              <button className="btn-primary" type="submit" disabled={loading} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)' }}>
+              <button className="btn-primary" type="submit" disabled={loading} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg, var(--accent-gold) 0%, #D97706 100%)' }}>
                 {loading ? <Loader size={14} className="animate-spin" /> : <Sparkles size={14} />}
                 {loading ? 'AI Menganalisis...' : 'Generate Saran Desain'}
               </button>
@@ -168,35 +168,35 @@ function CTRThumbnailPanel({ currentCtr = 0 }) {
             {/* Editor Kustomisasi */}
             {editSuggestion && (
               <div className="glass-panel" style={{ padding: '1.1rem', border: '1px solid rgba(6,182,212,0.15)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                <h3 style={{ fontSize: '0.88rem', fontWeight: 800, color: '#06B6D4', marginBottom: 2 }}>
+                <h3 style={{ fontSize: '0.88rem', fontWeight: 800, color: 'var(--accent-cyan)', marginBottom: 2 }}>
                   🎨 Edit Saran Desain
                 </h3>
 
                 {/* Elemen Utama */}
                 <div>
-                  <label style={{ fontSize: '0.72rem', color: '#64748B', display: 'block', marginBottom: 3 }}>🖼 Detail Gambar / Elemen Utama</label>
+                  <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: 3 }}>🖼 Detail Gambar / Elemen Utama</label>
                   <textarea className="input-dark" value={editSuggestion.main_element} onChange={e => handleFieldChange('main_element', e.target.value)} rows={2} style={{ width: '100%', fontSize: '0.8rem', resize: 'vertical' }} />
                 </div>
 
                 {/* Background Description */}
                 <div>
-                  <label style={{ fontSize: '0.72rem', color: '#64748B', display: 'block', marginBottom: 3 }}>🌅 Deskripsi Background</label>
+                  <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: 3 }}>🌅 Deskripsi Background</label>
                   <textarea className="input-dark" value={editSuggestion.background_description} onChange={e => handleFieldChange('background_description', e.target.value)} rows={2} style={{ width: '100%', fontSize: '0.8rem', resize: 'vertical' }} />
                 </div>
 
                 {/* Warna Background + Warna Teks */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' }}>
                   <div>
-                    <label style={{ fontSize: '0.72rem', color: '#64748B', display: 'block', marginBottom: 3 }}>🎨 Warna Background</label>
+                    <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: 3 }}>🎨 Warna Background</label>
                     <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                      <input type="color" value={editSuggestion.background_color?.startsWith('#') ? editSuggestion.background_color : '#1A1A2E'} onChange={e => handleFieldChange('background_color', e.target.value)} style={{ width: 32, height: 32, borderRadius: 6, border: '2px solid rgba(255,255,255,0.15)', cursor: 'pointer', padding: 0 }} />
+                      <input type="color" value={editSuggestion.background_color?.startsWith('#') ? editSuggestion.background_color : '#1A1A2E'} onChange={e => handleFieldChange('background_color', e.target.value)} style={{ width: 32, height: 32, borderRadius: 6, border: '2px solid var(--border-glass)', cursor: 'pointer', padding: 0 }} />
                       <input className="input-dark" value={editSuggestion.background_color} onChange={e => handleFieldChange('background_color', e.target.value)} style={{ flex: 1, fontSize: '0.78rem' }} />
                     </div>
                   </div>
                   <div>
-                    <label style={{ fontSize: '0.72rem', color: '#64748B', display: 'block', marginBottom: 3 }}>✏️ Warna Teks</label>
+                    <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: 3 }}>✏️ Warna Teks</label>
                     <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                      <input type="color" value={editSuggestion.text_color?.startsWith('#') ? editSuggestion.text_color : '#FFFFFF'} onChange={e => handleFieldChange('text_color', e.target.value)} style={{ width: 32, height: 32, borderRadius: 6, border: '2px solid rgba(255,255,255,0.15)', cursor: 'pointer', padding: 0 }} />
+                      <input type="color" value={editSuggestion.text_color?.startsWith('#') ? editSuggestion.text_color : '#FFFFFF'} onChange={e => handleFieldChange('text_color', e.target.value)} style={{ width: 32, height: 32, borderRadius: 6, border: '2px solid var(--border-glass)', cursor: 'pointer', padding: 0 }} />
                       <input className="input-dark" value={editSuggestion.text_color} onChange={e => handleFieldChange('text_color', e.target.value)} style={{ flex: 1, fontSize: '0.78rem' }} />
                     </div>
                   </div>
@@ -205,40 +205,40 @@ function CTRThumbnailPanel({ currentCtr = 0 }) {
                 {/* Teks Overlay + Ekspresi */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' }}>
                   <div>
-                    <label style={{ fontSize: '0.72rem', color: '#64748B', display: 'block', marginBottom: 3 }}>📝 Teks Overlay</label>
+                    <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: 3 }}>📝 Teks Overlay</label>
                     <input className="input-dark" value={editSuggestion.text_overlay} onChange={e => handleFieldChange('text_overlay', e.target.value)} style={{ width: '100%', fontSize: '0.8rem' }} />
                   </div>
                   <div>
-                    <label style={{ fontSize: '0.72rem', color: '#64748B', display: 'block', marginBottom: 3 }}>😊 Ekspresi Wajah</label>
+                    <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: 3 }}>😊 Ekspresi Wajah</label>
                     <input className="input-dark" value={editSuggestion.facial_expression} onChange={e => handleFieldChange('facial_expression', e.target.value)} style={{ width: '100%', fontSize: '0.8rem' }} />
                   </div>
                 </div>
 
                 {/* Komposisi */}
                 <div>
-                  <label style={{ fontSize: '0.72rem', color: '#64748B', display: 'block', marginBottom: 3 }}>📐 Tips Komposisi</label>
+                  <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: 3 }}>📐 Tips Komposisi</label>
                   <textarea className="input-dark" value={editSuggestion.composition_tip} onChange={e => handleFieldChange('composition_tip', e.target.value)} rows={2} style={{ width: '100%', fontSize: '0.8rem', resize: 'vertical' }} />
                 </div>
 
                 {/* Palet Warna */}
                 <div>
-                  <label style={{ fontSize: '0.72rem', color: '#64748B', display: 'block', marginBottom: 5 }}>🌈 Palet Warna</label>
+                  <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: 5 }}>🌈 Palet Warna</label>
                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
                     {editSuggestion.color_palette.map((c, i) => (
                       <div key={i} style={{ position: 'relative' }}>
                         <input type="color" value={c.startsWith('#') ? c : '#FFFFFF'} onChange={e => handleColorChange(i, e.target.value)}
-                          style={{ width: 28, height: 28, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.2)', cursor: 'pointer', padding: 0 }}
+                          style={{ width: 28, height: 28, borderRadius: '50%', border: '2px solid var(--border-glass)', cursor: 'pointer', padding: 0 }}
                           title={c}
                         />
                         <button type="button" onClick={() => setEditSuggestion(p => ({ ...p, color_palette: p.color_palette.filter((_, idx) => idx !== i) }))}
-                          style={{ position: 'absolute', top: -4, right: -4, width: 13, height: 13, borderRadius: '50%', background: '#EF4444', color: '#FFF', border: 'none', fontSize: 9, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          style={{ position: 'absolute', top: -4, right: -4, width: 13, height: 13, borderRadius: '50%', background: 'var(--accent-red)', color: '#FFF', border: 'none', fontSize: 9, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                           ×
                         </button>
                       </div>
                     ))}
                     {editSuggestion.color_palette.length < 6 && (
                       <button type="button" onClick={() => setEditSuggestion(p => ({ ...p, color_palette: [...p.color_palette, '#06B6D4'] }))}
-                        style={{ width: 28, height: 28, borderRadius: '50%', border: '1px dashed rgba(255,255,255,0.35)', background: 'rgba(255,255,255,0.04)', color: '#E2E8F0', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        style={{ width: 28, height: 28, borderRadius: '50%', border: '1px dashed var(--text-dim)', background: 'var(--bg-hover)', color: 'var(--text-primary)', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         +
                       </button>
                     )}
@@ -247,7 +247,7 @@ function CTRThumbnailPanel({ currentCtr = 0 }) {
 
                 {/* Generate Image Button */}
                 <button className="btn-primary" type="button" onClick={handleGenerateImage}
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)', marginTop: 4 }}>
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg, var(--accent-cyan) 0%, #0891B2 100%)', marginTop: 4 }}>
                   <Sparkles size={14} />
                   Generate Gambar Thumbnail
                 </button>
@@ -259,14 +259,14 @@ function CTRThumbnailPanel({ currentCtr = 0 }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'flex-start' }}>
             {imageUrl ? (
               <>
-                <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#E2E8F0' }}>📺 Preview Thumbnail</h3>
+                <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>📺 Preview Thumbnail</h3>
 
                 {/* 16:9 Mockup */}
-                <div style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', background: '#0F172A', borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+                <div style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', background: 'var(--bg-dark)', borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border-glass)', boxShadow: 'var(--shadow-premium)' }}>
                   {imageLoading && (
-                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(15,23,42,0.85)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10, zIndex: 10 }}>
-                      <Loader className="animate-spin" size={28} color="#F59E0B" />
-                      <span style={{ fontSize: '0.78rem', color: '#94A3B8' }}>AI sedang melukis thumbnail...</span>
+                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(11,15,25,0.85)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10, zIndex: 10 }}>
+                      <Loader className="animate-spin" size={28} color="var(--accent-gold)" />
+                      <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>AI sedang melukis thumbnail...</span>
                     </div>
                   )}
                   <img
@@ -277,8 +277,8 @@ function CTRThumbnailPanel({ currentCtr = 0 }) {
                   />
                   {/* YouTube-style progress bar overlay */}
                   <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 36, background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)', display: 'flex', alignItems: 'center', padding: '0 10px', pointerEvents: 'none' }}>
-                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'rgba(255,255,255,0.2)' }}>
-                      <div style={{ width: '35%', height: '100%', background: '#EF4444' }} />
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'var(--border-glass)' }}>
+                      <div style={{ width: '35%', height: '100%', background: 'var(--accent-red)' }} />
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
                       <div style={{ width: 0, height: 0, borderTop: '4px solid transparent', borderBottom: '4px solid transparent', borderLeft: '8px solid white' }} />
@@ -290,15 +290,15 @@ function CTRThumbnailPanel({ currentCtr = 0 }) {
 
                 {/* Saran desain card */}
                 {editSuggestion && (
-                  <div style={{ background: 'rgba(15,23,42,0.4)', borderRadius: 10, padding: '0.9rem', border: '1px solid rgba(255,255,255,0.06)', fontSize: '0.78rem', color: '#94A3B8', lineHeight: 1.7 }}>
+                  <div style={{ background: 'var(--bg-input)', borderRadius: 10, padding: '0.9rem', border: '1px solid var(--border-glass)', fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.7 }}>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem 1.2rem' }}>
-                      <span><strong style={{ color: '#E2E8F0' }}>Background:</strong> <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', background: editSuggestion.background_color, verticalAlign: 'middle', marginRight: 4, border: '1px solid rgba(255,255,255,0.2)' }} />{editSuggestion.background_color}</span>
-                      <span><strong style={{ color: '#E2E8F0' }}>Teks:</strong> <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', background: editSuggestion.text_color, verticalAlign: 'middle', marginRight: 4, border: '1px solid rgba(255,255,255,0.2)' }} />{editSuggestion.text_color}</span>
+                      <span><strong style={{ color: 'var(--text-primary)' }}>Background:</strong> <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', background: editSuggestion.background_color, verticalAlign: 'middle', marginRight: 4, border: '1px solid var(--border-glass)' }} />{editSuggestion.background_color}</span>
+                      <span><strong style={{ color: 'var(--text-primary)' }}>Teks:</strong> <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', background: editSuggestion.text_color, verticalAlign: 'middle', marginRight: 4, border: '1px solid var(--border-glass)' }} />{editSuggestion.text_color}</span>
                     </div>
-                    <div style={{ marginTop: 6 }}><strong style={{ color: '#E2E8F0' }}>Overlay:</strong> "{editSuggestion.text_overlay}"</div>
+                    <div style={{ marginTop: 6 }}><strong style={{ color: 'var(--text-primary)' }}>Overlay:</strong> "{editSuggestion.text_overlay}"</div>
                     <div style={{ marginTop: 4, display: 'flex', gap: 4, flexWrap: 'wrap' }}>
                       {editSuggestion.color_palette.map((c, i) => (
-                        <span key={i} style={{ display: 'inline-block', width: 18, height: 18, borderRadius: 4, background: c, border: '1px solid rgba(255,255,255,0.15)' }} title={c} />
+                        <span key={i} style={{ display: 'inline-block', width: 18, height: 18, borderRadius: 4, background: c, border: '1px solid var(--border-glass)' }} title={c} />
                       ))}
                     </div>
                   </div>
@@ -309,29 +309,29 @@ function CTRThumbnailPanel({ currentCtr = 0 }) {
                   <button className="btn-primary" onClick={handleDownload} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontSize: '0.82rem' }}>
                     <Download size={13} /> Unduh JPG
                   </button>
-                  <button className="btn-ghost" onClick={handleGenerateImage} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.82rem', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <button className="btn-ghost" onClick={handleGenerateImage} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.82rem', border: '1px solid var(--border-glass)' }}>
                     <RefreshCw size={13} /> Ulang
                   </button>
                 </div>
               </>
             ) : suggestion ? (
               /* Waiting for image generation */
-              <div style={{ minHeight: 240, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(15,23,42,0.3)', borderRadius: 12, border: '1px dashed rgba(255,255,255,0.07)', padding: '2rem', textAlign: 'center', gap: 12 }}>
-                <Sparkles size={36} color="#F59E0B" style={{ opacity: 0.8 }} />
-                <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#E2E8F0' }}>Saran Desain Siap!</div>
-                <p style={{ fontSize: '0.78rem', color: '#64748B', maxWidth: 260 }}>
-                  Edit detail di kolom kiri jika perlu, lalu klik <strong style={{ color: '#06B6D4' }}>Generate Gambar Thumbnail</strong>
+              <div style={{ minHeight: 240, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-input)', borderRadius: 12, border: '1px dashed var(--border-glass)', padding: '2rem', textAlign: 'center', gap: 12 }}>
+                <Sparkles size={36} color="var(--accent-gold)" style={{ opacity: 0.8 }} />
+                <div style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-primary)' }}>Saran Desain Siap!</div>
+                <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', maxWidth: 260 }}>
+                  Edit detail di kolom kiri jika perlu, lalu klik <strong style={{ color: 'var(--accent-cyan)' }}>Generate Gambar Thumbnail</strong>
                 </p>
-                <button className="btn-primary" onClick={handleGenerateImage} style={{ display: 'flex', alignItems: 'center', gap: 7, background: 'linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)', fontSize: '0.83rem' }}>
+                <button className="btn-primary" onClick={handleGenerateImage} style={{ display: 'flex', alignItems: 'center', gap: 7, background: 'linear-gradient(135deg, var(--accent-cyan) 0%, #0891B2 100%)', fontSize: '0.83rem' }}>
                   <Sparkles size={13} /> Generate Sekarang
                 </button>
               </div>
             ) : (
               /* Empty state */
-              <div style={{ minHeight: 240, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(15,23,42,0.2)', borderRadius: 12, border: '1px dashed rgba(255,255,255,0.06)', color: '#334155', textAlign: 'center', gap: 10 }}>
+              <div style={{ minHeight: 240, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-input)', borderRadius: 12, border: '1px dashed var(--border-glass)', color: 'var(--text-dim)', textAlign: 'center', gap: 10 }}>
                 <Image size={36} style={{ opacity: 0.25 }} />
                 <p style={{ fontSize: '0.83rem' }}>Isi form & klik <strong>Generate Saran Desain</strong></p>
-                <p style={{ fontSize: '0.75rem', color: '#475569', maxWidth: 220 }}>AI akan membuat rekomendasi thumbnail yang dioptimalkan berdasarkan CTR kamu</p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', maxWidth: 220 }}>AI akan membuat rekomendasi thumbnail yang dioptimalkan berdasarkan CTR kamu</p>
               </div>
             )}
           </div>
@@ -489,7 +489,7 @@ export default function Dashboard() {
       {/* Header */}
       <div>
         <h1 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: 4 }}>Dashboard Performa</h1>
-        <p style={{ color: '#64748B', fontSize: '0.875rem' }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
           Prediksi views &amp; deteksi anomali berbasis Machine Learning
         </p>
       </div>
@@ -500,12 +500,11 @@ export default function Dashboard() {
         border: ytStatus.is_authenticated
           ? '1px solid rgba(16,185,129,0.3)'
           : '1px solid rgba(239,68,68,0.2)',
-        background: ytStatus.is_authenticated
-          ? 'rgba(16,185,129,0.04)'
-          : 'rgba(239,68,68,0.03)',
+        background: 'var(--panel-dark)',
         display: 'flex',
         flexDirection: 'column',
-        gap: '1rem'
+        gap: '1rem',
+        transition: 'background-color 0.4s ease, border-color 0.4s ease'
       }}>
         {/* Panel Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
@@ -516,15 +515,15 @@ export default function Dashboard() {
               display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}>
               {ytStatus.is_authenticated
-                ? <CheckCircle size={18} color="#10B981" />
-                : <Youtube size={18} color="#EF4444" />
+                ? <CheckCircle size={18} color="var(--accent-green)" />
+                : <Youtube size={18} color="var(--accent-red)" />
               }
             </div>
             <div>
               <div style={{ fontWeight: 700, fontSize: '0.92rem' }}>
                 {ytStatus.is_authenticated ? 'Terhubung dengan YouTube' : 'Hubungkan Akun YouTube'}
               </div>
-              <div style={{ fontSize: '0.78rem', color: '#94A3B8' }}>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                 {ytStatus.is_authenticated && ytChannel
                   ? `${ytChannel.title} • ${ytChannel.subscriber_count?.toLocaleString()} subscriber`
                   : ytStatus.is_configured
@@ -545,7 +544,7 @@ export default function Dashboard() {
                   Refresh
                 </button>
                 <button className="btn-ghost" onClick={handleLogout}
-                  style={{ padding: '0.45rem 0.85rem', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: 5, borderColor: 'rgba(239,68,68,0.3)', color: '#FCA5A5' }}>
+                  style={{ padding: '0.45rem 0.85rem', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: 5, borderColor: 'rgba(239,68,68,0.3)', color: 'var(--accent-red)' }}>
                   <LogOut size={13} /> Logout YT
                 </button>
               </>
@@ -564,7 +563,7 @@ export default function Dashboard() {
                 Login dengan YouTube
               </a>
             ) : (
-              <span style={{ fontSize: '0.78rem', color: '#64748B', padding: '0.4rem 0.75rem', background: 'rgba(100,116,139,0.1)', borderRadius: 6 }}>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', padding: '0.4rem 0.75rem', background: 'var(--bg-badge)', borderRadius: 6 }}>
                 ⚙️ Belum dikonfigurasi
               </span>
             )}
@@ -575,7 +574,7 @@ export default function Dashboard() {
         {ytStatus.is_authenticated && ytVideos.length > 0 && (
           <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-end', flexWrap: 'wrap' }}>
             <div style={{ flex: 1, minWidth: 280 }}>
-              <label style={{ fontSize: '0.75rem', color: '#64748B', display: 'block', marginBottom: 5 }}>
+              <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginBottom: 5 }}>
                 <Wifi size={11} style={{ marginRight: 4 }} />
                 Pilih Video dari Channel Anda (Real-Time)
               </label>
@@ -596,7 +595,7 @@ export default function Dashboard() {
               </select>
             </div>
             {ytSyncLoading && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#94A3B8', fontSize: '0.8rem', paddingBottom: 6 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-muted)', fontSize: '0.8rem', paddingBottom: 6 }}>
                 <Loader size={14} className="spin" />
                 Mengambil analytics real-time...
               </div>
@@ -608,7 +607,7 @@ export default function Dashboard() {
         {!ytStatus.is_authenticated && (
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
             <div style={{ flex: 1, minWidth: 260 }}>
-              <label style={{ fontSize: '0.75rem', color: '#64748B', display: 'block', marginBottom: 5 }}>
+              <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginBottom: 5 }}>
                 Video Sampel (Dataset Lokal)
               </label>
               <select className="input-dark" onChange={(e) => handleCsvSync(e.target.value)} defaultValue="" style={{ fontSize: '0.85rem' }}>
@@ -620,10 +619,10 @@ export default function Dashboard() {
                 ))}
               </select>
             </div>
-            <div style={{ color: '#475569', fontSize: '0.8rem', fontWeight: 600, paddingBottom: 6 }}>ATAU</div>
+            <div style={{ color: 'var(--text-dim)', fontSize: '0.8rem', fontWeight: 600, paddingBottom: 6 }}>ATAU</div>
             <div style={{ flex: 1.2, minWidth: 260, display: 'flex', gap: 6, alignItems: 'flex-end' }}>
               <div style={{ flex: 1 }}>
-                <label style={{ fontSize: '0.75rem', color: '#64748B', display: 'block', marginBottom: 5 }}>Link / ID Video YouTube</label>
+                <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginBottom: 5 }}>Link / ID Video YouTube</label>
                 <input className="input-dark" placeholder="https://youtube.com/watch?v=..." value={syncInput}
                   onChange={e => setSyncInput(e.target.value)} style={{ fontSize: '0.85rem' }} />
               </div>
@@ -641,8 +640,8 @@ export default function Dashboard() {
           <div style={{
             fontSize: '0.8rem', padding: '0.5rem 0.75rem', borderRadius: 8,
             background: ytMessage.type === 'success' ? 'rgba(16,185,129,0.08)' : ytMessage.type === 'error' ? 'rgba(239,68,68,0.08)' : 'rgba(100,116,139,0.08)',
-            border: `1px solid ${ytMessage.type === 'success' ? 'rgba(16,185,129,0.2)' : ytMessage.type === 'error' ? 'rgba(239,68,68,0.2)' : 'rgba(100,116,139,0.2)'}`,
-            color: ytMessage.type === 'success' ? '#A7F3D0' : ytMessage.type === 'error' ? '#FCA5A5' : '#94A3B8',
+            border: `1px solid ${ytMessage.type === 'success' ? 'rgba(16,185,129,0.25)' : ytMessage.type === 'error' ? 'rgba(239,68,68,0.25)' : 'rgba(100,116,139,0.25)'}`,
+            color: ytMessage.type === 'success' ? 'var(--accent-green)' : ytMessage.type === 'error' ? 'var(--accent-red)' : 'var(--text-muted)',
           }}>
             {ytMessage.text}
           </div>
@@ -651,9 +650,9 @@ export default function Dashboard() {
 
       {/* KPI Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
-        <MetricCard icon={Eye}               label="Views Saat Ini" value={form.views.toLocaleString()}  color="#06B6D4" />
-        <MetricCard icon={MousePointerClick} label="CTR"            value={`${form.ctr}%`}               color="#10B981" />
-        <MetricCard icon={Users}             label="Subs Gained"    value={form.subscriber_gained}       color="#F59E0B" />
+        <MetricCard icon={Eye}               label="Views Saat Ini" value={form.views.toLocaleString()}  color="var(--accent-cyan)" />
+        <MetricCard icon={MousePointerClick} label="CTR"            value={`${form.ctr}%`}               color="var(--accent-green)" />
+        <MetricCard icon={Users}             label="Subs Gained"    value={form.subscriber_gained}       color="var(--accent-gold)" />
         <MetricCard icon={TrendingUp}        label="Retensi"        value={`${form.retention_rate}%`}   color="#A78BFA" />
       </div>
 
@@ -667,37 +666,37 @@ export default function Dashboard() {
         <div className="glass-panel" style={{ padding: '1.5rem' }}>
           <div style={{ marginBottom: '1rem' }}>
             <h2 style={{ fontSize: '1rem', fontWeight: 700 }}>Proyeksi Views</h2>
-            <p style={{ fontSize: '0.78rem', color: '#64748B' }}>Horizon 1 / 2 / 3 hari ke depan (Detail per jam antara Hari 1-2)</p>
+            <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Horizon 1 / 2 / 3 hari ke depan (Detail per jam antara Hari 1-2)</p>
           </div>
           {result ? (
             <ResponsiveContainer width="100%" height={240}>
               <AreaChart data={chartData}>
                 <defs>
                   <linearGradient id="viewsGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%"  stopColor="#06B6D4" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#06B6D4" stopOpacity={0} />
+                    <stop offset="5%"  stopColor="var(--accent-cyan)" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="var(--accent-cyan)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                <XAxis dataKey="label" stroke="#475569" tick={{ fontSize: 12 }} />
-                <YAxis stroke="#475569" tick={{ fontSize: 12 }} tickFormatter={v => v.toLocaleString()} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" />
+                <XAxis dataKey="label" stroke="var(--text-dim)" tick={{ fontSize: 12 }} />
+                <YAxis stroke="var(--text-dim)" tick={{ fontSize: 12 }} tickFormatter={v => v.toLocaleString()} />
                 <Tooltip
-                  contentStyle={{ background: '#1e293b', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 10 }}
-                  labelStyle={{ color: '#94A3B8' }}
+                  contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', borderRadius: 10 }}
+                  labelStyle={{ color: 'var(--text-muted)' }}
                   formatter={(v) => [v?.toLocaleString(), 'Views']}
                 />
-                <Area type="monotone" dataKey="views" stroke="#06B6D4" fill="url(#viewsGrad)" strokeWidth={2} dot={false} />
+                <Area type="monotone" dataKey="views" stroke="var(--accent-cyan)" fill="url(#viewsGrad)" strokeWidth={2} dot={false} />
               </AreaChart>
             </ResponsiveContainer>
           ) : (
-            <div style={{ height: 240, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#475569', fontSize: '0.875rem', flexDirection: 'column', gap: 8 }}>
+            <div style={{ height: 240, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-dim)', fontSize: '0.875rem', flexDirection: 'column', gap: 8 }}>
               <Eye size={28} style={{ opacity: 0.3 }} />
               Pilih video atau isi form, lalu klik Prediksi
             </div>
           )}
 
           {result && (
-            <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(15,23,42,0.5)', borderRadius: 10 }}>
+            <div style={{ marginTop: '1rem', padding: '1rem', background: 'var(--bg-badge)', borderRadius: 10 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: '0.4rem', flexWrap: 'wrap' }}>
                 <span className={`badge ${result.status === 'Tidak Viral' ? 'badge-red' : result.status === 'Viral' ? 'badge-cyan' : 'badge-yellow'}`}
                   style={{ background: STATUS_COLOR[result.status] + '22', color: STATUS_COLOR[result.status], border: `1px solid ${STATUS_COLOR[result.status]}55` }}>
@@ -705,15 +704,15 @@ export default function Dashboard() {
                   {result.status}
                 </span>
                 {result.is_viral && (
-                  <span style={{ fontSize: '0.72rem', background: 'rgba(6,182,212,0.12)', color: '#06B6D4', border: '1px solid rgba(6,182,212,0.3)', borderRadius: 6, padding: '2px 8px', fontWeight: 700 }}>
+                  <span style={{ fontSize: '0.72rem', background: 'rgba(6,182,212,0.12)', color: 'var(--accent-cyan)', border: '1px solid rgba(6,182,212,0.3)', borderRadius: 6, padding: '2px 8px', fontWeight: 700 }}>
                     IS VIRAL ✓
                   </span>
                 )}
-                <span style={{ fontSize: '0.8rem', color: '#94A3B8' }}>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                   Confidence: {(result.confidence * 100).toFixed(0)}%
                 </span>
               </div>
-              <p style={{ fontSize: '0.83rem', color: '#CBD5E1', lineHeight: 1.6 }}>{result.recommendation}</p>
+              <p style={{ fontSize: '0.83rem', color: 'var(--text-primary)', lineHeight: 1.6 }}>{result.recommendation}</p>
             </div>
           )}
         </div>
@@ -738,7 +737,7 @@ export default function Dashboard() {
               { name: 'rolling_mean_views_14d', label: 'Avg 14 Hari',      type: 'number' },
             ].map(({ name, label, type, step, placeholder }) => (
               <div key={name}>
-                <label style={{ fontSize: '0.75rem', color: '#64748B', display: 'block', marginBottom: 3 }}>{label}</label>
+                <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginBottom: 3 }}>{label}</label>
                 <input
                   className="input-dark"
                   type={type} name={name} value={form[name] ?? ''}
@@ -749,7 +748,7 @@ export default function Dashboard() {
             ))}
 
             {error && (
-              <div style={{ fontSize: '0.78rem', color: '#EF4444', background: 'rgba(239,68,68,0.1)', padding: '0.5rem 0.75rem', borderRadius: 8 }}>
+              <div style={{ fontSize: '0.78rem', color: 'var(--accent-red)', background: 'rgba(239,68,68,0.08)', padding: '0.5rem 0.75rem', borderRadius: 8 }}>
                 {error}
               </div>
             )}

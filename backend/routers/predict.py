@@ -9,9 +9,9 @@ import numpy as np
 import pandas as pd
 from fastapi import APIRouter, HTTPException, status
 
-from schemas.prediction import PredictionInput, PredictionOutput, ViewsForecast, AnomalyResult, ProjectionPoint
+from schemas.prediction import PredictionInput, PredictionOutput, ViewsForecast, AnomalyResult, DeclineResult, ProjectionPoint
 from utils.model_loader import get_model, is_model_available
-from utils.feature_engineering import compute_features, MODEL1_FEATURES, MODEL3_FEATURES
+from utils.feature_engineering import compute_features, MODEL1_FEATURES, MODEL3_FEATURES, MODEL4_FEATURES
 
 router = APIRouter(prefix="/predict", tags=["Prediction"])
 
@@ -150,6 +150,35 @@ async def predict_performance(input_data: PredictionInput):
     chart_data.append(ProjectionPoint(label="Hari 2", views=V2))
     chart_data.append(ProjectionPoint(label="Hari 3", views=V3))
 
+    # ── Model 4: Decline Classifier ──────────────────────────────────────────
+    decline_result = None
+    try:
+        clf4      = get_model("decline_clf")
+        scaler_m4 = get_model("scaler_m4")
+        thr4      = get_model("decline_threshold")
+        if clf4 is not None and scaler_m4 is not None:
+            X4 = pd.DataFrame([feats])[MODEL4_FEATURES].values
+            X4_scaled = scaler_m4.transform(X4)
+            decline_prob  = float(clf4.predict_proba(X4_scaled)[0][1])
+            is_declining  = decline_prob >= thr4
+
+            if decline_prob < 0.30:
+                risk_level = "Low Risk"
+            elif decline_prob < 0.55:
+                risk_level = "Medium Risk"
+            elif decline_prob < 0.75:
+                risk_level = "High Risk"
+            else:
+                risk_level = "Critical"
+
+            decline_result = DeclineResult(
+                is_declining=bool(is_declining),
+                decline_probability=round(decline_prob, 4),
+                risk_level=risk_level,
+            )
+    except Exception:
+        pass
+
     recommendation = _build_recommendation(
         status_label, anomaly_flag, input_data.ctr, input_data.retention_rate
     )
@@ -169,5 +198,6 @@ async def predict_performance(input_data: PredictionInput):
             anomaly_score=round(anomaly_score, 6),
             label=anomaly_label,
         ),
+        decline=decline_result,
         recommendation=recommendation,
     )

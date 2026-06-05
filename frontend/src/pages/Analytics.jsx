@@ -9,11 +9,12 @@ import {
 
 // Hippo Academy rule: Viral ≥2k/2h | Normal 1k–2k/2h | Tidak Viral <1k/2h
 const STATUS_CONFIG = {
-  Viral:        { color: '#06B6D4', bg: 'rgba(6,182,212,0.1)',   icon: TrendingUp,   cls: 'badge-cyan'   },
-  Normal:       { color: '#F59E0B', bg: 'rgba(245,158,11,0.1)',  icon: Minus,        cls: 'badge-yellow' },
-  'Tidak Viral':{ color: '#EF4444', bg: 'rgba(239,68,68,0.1)',   icon: TrendingDown, cls: 'badge-red'    },
+  Viral:        { color: 'var(--accent-cyan)', bg: 'rgba(6,182,212,0.1)',   icon: TrendingUp,   cls: 'badge-cyan'   },
+  Normal:       { color: 'var(--accent-gold)', bg: 'rgba(245,158,11,0.1)',  icon: Minus,        cls: 'badge-yellow' },
+  'Tidak Viral':{ color: 'var(--accent-red)', bg: 'rgba(239,68,68,0.1)',   icon: TrendingDown, cls: 'badge-red'    },
 };
 
+// ─── Skeleton loader ──────────────────────────────────────────────────────────
 // ─── Skeleton loader ──────────────────────────────────────────────────────────
 function TableSkeleton() {
   return (
@@ -50,7 +51,7 @@ function ForecastChart() {
   if (loading) return <div className="skeleton" style={{ height: 260, borderRadius: 12 }} />;
 
   if (error || data.length === 0) return (
-    <div style={{ height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#475569', fontSize: '0.85rem', flexDirection: 'column', gap: 8 }}>
+    <div style={{ height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-dim)', fontSize: '0.85rem', flexDirection: 'column', gap: 8 }}>
       <span>📈</span>
       <span>{error ? `Gagal memuat forecast: ${error}` : 'Data forecast Prophet belum tersedia. Jalankan notebook 09 terlebih dahulu.'}</span>
     </div>
@@ -59,10 +60,10 @@ function ForecastChart() {
   const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
     return (
-      <div style={{ background: '#1E293B', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10, padding: '0.65rem 0.9rem', fontSize: '0.8rem' }}>
-        <p style={{ color: '#94A3B8', marginBottom: 4 }}>{label}</p>
-        <p style={{ color: '#06B6D4' }}>Prediksi: <strong>{payload[0]?.payload?.yhat?.toLocaleString()}</strong></p>
-        <p style={{ color: '#475569' }}>
+      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', borderRadius: 10, padding: '0.65rem 0.9rem', fontSize: '0.8rem' }}>
+        <p style={{ color: 'var(--text-muted)', marginBottom: 4 }}>{label}</p>
+        <p style={{ color: 'var(--accent-cyan)' }}>Prediksi: <strong>{payload[0]?.payload?.yhat?.toLocaleString()}</strong></p>
+        <p style={{ color: 'var(--text-dim)' }}>
           CI: {payload[0]?.payload?.lower?.toLocaleString()} – {payload[0]?.payload?.upper?.toLocaleString()}
         </p>
       </div>
@@ -74,29 +75,29 @@ function ForecastChart() {
       <AreaChart data={data} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
         <defs>
           <linearGradient id="yhatGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%"  stopColor="#06B6D4" stopOpacity={0.25} />
-            <stop offset="95%" stopColor="#06B6D4" stopOpacity={0} />
+            <stop offset="5%"  stopColor="var(--accent-cyan)" stopOpacity={0.25} />
+            <stop offset="95%" stopColor="var(--accent-cyan)" stopOpacity={0} />
           </linearGradient>
           <linearGradient id="ciGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%"  stopColor="#475569" stopOpacity={0.15} />
-            <stop offset="95%" stopColor="#475569" stopOpacity={0} />
+            <stop offset="5%"  stopColor="var(--text-dim)" stopOpacity={0.15} />
+            <stop offset="95%" stopColor="var(--text-dim)" stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" />
         <XAxis
           dataKey="date"
-          tick={{ fontSize: 10, fill: '#475569' }}
+          tick={{ fontSize: 10, fill: 'var(--text-dim)' }}
           tickFormatter={v => v.slice(5)} // MM-DD only
           interval="preserveStartEnd"
         />
-        <YAxis tick={{ fontSize: 10, fill: '#475569' }} tickFormatter={v => `${(v/1000).toFixed(0)}K`} />
+        <YAxis tick={{ fontSize: 10, fill: 'var(--text-dim)' }} tickFormatter={v => `${(v/1000).toFixed(0)}K`} />
         <Tooltip content={<CustomTooltip />} />
         {/* CI band — upper */}
         <Area type="monotone" dataKey="upper" stroke="none" fill="url(#ciGrad)" fillOpacity={1} legendType="none" />
         {/* CI band — lower (mask the bottom to create a band effect) */}
-        <Area type="monotone" dataKey="lower" stroke="none" fill="var(--bg-dark, #0B0F19)" fillOpacity={1} legendType="none" />
+        <Area type="monotone" dataKey="lower" stroke="none" fill="var(--bg-dark)" fillOpacity={1} legendType="none" />
         {/* Main forecast line */}
-        <Area type="monotone" dataKey="yhat" stroke="#06B6D4" fill="url(#yhatGrad)" strokeWidth={2} dot={false} />
+        <Area type="monotone" dataKey="yhat" stroke="var(--accent-cyan)" fill="url(#yhatGrad)" strokeWidth={2} dot={false} />
       </AreaChart>
     </ResponsiveContainer>
   );
@@ -106,13 +107,13 @@ function ForecastChart() {
 function EmptyState({ onRefresh }) {
   return (
     <div style={{ padding: '3rem 1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', textAlign: 'center' }}>
-      <div style={{ width: 64, height: 64, borderRadius: 16, background: 'rgba(100,116,139,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.8rem' }}>
+      <div style={{ width: 64, height: 64, borderRadius: 16, background: 'var(--bg-badge)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.8rem' }}>
         📊
       </div>
       <div>
-        <p style={{ fontWeight: 700, color: '#94A3B8', fontSize: '0.95rem', marginBottom: 6 }}>Data video belum tersedia</p>
-        <p style={{ color: '#475569', fontSize: '0.8rem', lineHeight: 1.7, maxWidth: 360 }}>
-          Pipeline notebook belum dijalankan atau file <code style={{ background: 'rgba(255,255,255,0.06)', padding: '1px 6px', borderRadius: 4 }}>abis_cleaning.csv</code> belum ada.
+        <p style={{ fontWeight: 700, color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: 6 }}>Data video belum tersedia</p>
+        <p style={{ color: 'var(--text-dim)', fontSize: '0.8rem', lineHeight: 1.7, maxWidth: 360 }}>
+          Pipeline notebook belum dijalankan atau file <code style={{ background: 'var(--bg-hover)', padding: '1px 6px', borderRadius: 4 }}>abis_cleaning.csv</code> belum ada.
           <br />Jalankan notebook <strong>02–07</strong> untuk mengisi data.
         </p>
       </div>
@@ -132,7 +133,7 @@ function KpiCard({ label, value, color, bg, pct, loading }) {
       ) : (
         <>
           <div style={{ fontSize: '2rem', fontWeight: 800, color, lineHeight: 1 }}>{value}</div>
-          <div style={{ fontSize: '0.78rem', color: '#94A3B8', marginTop: 4 }}>{label}</div>
+          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 4 }}>{label}</div>
           {pct != null && (
             <div style={{ fontSize: '0.7rem', color, marginTop: 3, opacity: 0.75 }}>
               {pct}% dari total
@@ -205,7 +206,7 @@ export default function Analytics() {
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h1 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: 4 }}>Analitik Video</h1>
-          <p style={{ color: '#64748B', fontSize: '0.875rem' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
             {loading
               ? 'Memuat data...'
               : noData
@@ -227,15 +228,15 @@ export default function Analytics() {
 
       {/* ── KPI Cards — selalu tampil (skeleton saat loading, 0 saat noData) ─── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
-        <KpiCard loading={loading} label="🚀 Video Viral"   value={viralCount}      color="#06B6D4" bg="rgba(6,182,212,0.07)"  pct={pct(viralCount)} />
-        <KpiCard loading={loading} label="📊 Video Normal"  value={normalCount}     color="#F59E0B" bg="rgba(245,158,11,0.07)" pct={pct(normalCount)} />
-        <KpiCard loading={loading} label="📉 Tidak Viral"   value={tidakViralCount} color="#EF4444" bg="rgba(239,68,68,0.07)"  pct={pct(tidakViralCount)} />
+        <KpiCard loading={loading} label="🚀 Video Viral"   value={viralCount}      color="var(--accent-cyan)" bg="rgba(6,182,212,0.07)"  pct={pct(viralCount)} />
+        <KpiCard loading={loading} label="📊 Video Normal"  value={normalCount}     color="var(--accent-gold)" bg="rgba(245,158,11,0.07)" pct={pct(normalCount)} />
+        <KpiCard loading={loading} label="📉 Tidak Viral"   value={tidakViralCount} color="var(--accent-red)" bg="rgba(239,68,68,0.07)"  pct={pct(tidakViralCount)} />
         <KpiCard loading={loading} label="⚠️ Anomali"       value={anomalyCount}    color="#A78BFA" bg="rgba(167,139,250,0.07)" pct={pct(anomalyCount)} />
       </div>
 
       {/* ── Error Banner ──────────────────────────────────────────────────────── */}
       {error && (
-        <div style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 10, padding: '0.85rem 1.1rem', color: '#FCA5A5', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 10, padding: '0.85rem 1.1rem', color: 'var(--accent-red)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 8 }}>
           <AlertTriangle size={16} style={{ flexShrink: 0 }} />
           <span>Gagal memuat data: <strong>{error}</strong> — pastikan backend berjalan di port 8000.</span>
         </div>
@@ -245,7 +246,7 @@ export default function Analytics() {
       <div className="glass-panel" style={{ padding: '1.25rem 1.5rem' }}>
         <div style={{ marginBottom: '1rem' }}>
           <h2 style={{ fontSize: '1rem', fontWeight: 700 }}>Forecast Views — Prophet Model</h2>
-          <p style={{ fontSize: '0.78rem', color: '#64748B' }}>30 hari ke depan · Area abu-abu = confidence interval 95%</p>
+          <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>30 hari ke depan · Area abu-abu = confidence interval 95%</p>
         </div>
         <ForecastChart />
       </div>
@@ -253,7 +254,7 @@ export default function Analytics() {
       {/* ── Filter & Sort Controls ────────────────────────────────────────────── */}
       <div className="glass-panel" style={{ padding: '1rem 1.25rem', display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
         <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
-          <Search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#475569' }} />
+          <Search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)' }} />
           <input
             className="input-dark"
             placeholder="Cari judul video..."
@@ -283,12 +284,12 @@ export default function Analytics() {
           ))}
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#64748B', fontSize: '0.8rem', marginLeft: 'auto' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-muted)', fontSize: '0.8rem', marginLeft: 'auto' }}>
           <Filter size={14} />
-          <button className="btn-ghost" onClick={() => toggleSort('views')} style={{ padding: '0.4rem 0.7rem', color: sortKey === 'views' ? '#06B6D4' : undefined }}>
+          <button className="btn-ghost" onClick={() => toggleSort('views')} style={{ padding: '0.4rem 0.7rem', color: sortKey === 'views' ? 'var(--accent-cyan)' : undefined }}>
             Views {sortKey === 'views' ? (sortDir === 'desc' ? '↓' : '↑') : ''}
           </button>
-          <button className="btn-ghost" onClick={() => toggleSort('ctr')} style={{ padding: '0.4rem 0.7rem', color: sortKey === 'ctr' ? '#06B6D4' : undefined }}>
+          <button className="btn-ghost" onClick={() => toggleSort('ctr')} style={{ padding: '0.4rem 0.7rem', color: sortKey === 'ctr' ? 'var(--accent-cyan)' : undefined }}>
             CTR {sortKey === 'ctr' ? (sortDir === 'desc' ? '↓' : '↑') : ''}
           </button>
         </div>
@@ -304,11 +305,11 @@ export default function Analytics() {
           <>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.01)' }}>
+                <tr style={{ borderBottom: '1px solid var(--border-glass)', background: 'var(--bg-badge)' }}>
                   {['Judul Video', 'Views', 'CTR', 'Status', 'Upload', 'Anomali'].map(h => (
                     <th key={h} style={{
                       padding: '0.85rem 1.25rem', textAlign: 'left',
-                      fontSize: '0.72rem', color: '#64748B', fontWeight: 600,
+                      fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600,
                       textTransform: 'uppercase', letterSpacing: '0.06em',
                     }}>
                       {h}
@@ -319,7 +320,7 @@ export default function Analytics() {
               <tbody>
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={6} style={{ padding: '2.5rem', textAlign: 'center', color: '#475569', fontSize: '0.875rem' }}>
+                    <td colSpan={6} style={{ padding: '2.5rem', textAlign: 'center', color: 'var(--text-dim)', fontSize: '0.875rem' }}>
                       Tidak ada video yang cocok dengan filter <strong>&quot;{filter}&quot;</strong>{search ? ` + kata kunci "${search}"` : ''}.
                     </td>
                   </tr>
@@ -331,23 +332,23 @@ export default function Analytics() {
                     <tr
                       key={v.video_id || i}
                       style={{
-                        borderBottom: '1px solid rgba(255,255,255,0.04)',
-                        background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.015)',
+                        borderBottom: '1px solid var(--border-glass)',
+                        background: i % 2 === 0 ? 'transparent' : 'var(--bg-badge)',
                         transition: 'background 0.15s',
                       }}
-                      onMouseEnter={e => e.currentTarget.style.background = 'rgba(6,182,212,0.04)'}
-                      onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.015)'}
+                      onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-hover)'}
+                      onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? 'transparent' : 'var(--bg-badge)'}
                     >
                       {/* Judul */}
                       <td style={{ padding: '0.9rem 1.25rem', maxWidth: 300 }}>
-                        <span style={{ fontSize: '0.875rem', color: '#E2E8F0', fontWeight: 500, display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <span style={{ fontSize: '0.875rem', color: 'var(--text-primary)', fontWeight: 500, display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {v.title || 'Video'}
                         </span>
-                        <span style={{ fontSize: '0.7rem', color: '#334155' }}>{v.video_id}</span>
+                        <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>{v.video_id}</span>
                       </td>
                       {/* Views */}
                       <td style={{ padding: '0.9rem 1.25rem', whiteSpace: 'nowrap' }}>
-                        <span style={{ fontWeight: 700, color: '#F8FAFC', fontSize: '0.9rem' }}>
+                        <span style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '0.9rem' }}>
                           {(v.views ?? 0).toLocaleString()}
                         </span>
                       </td>
@@ -355,11 +356,11 @@ export default function Analytics() {
                       <td style={{ padding: '0.9rem 1.25rem' }}>
                         <span style={{
                           fontWeight: 700,
-                          color: v.ctr >= 5 ? '#10B981' : v.ctr >= 3 ? '#F59E0B' : '#EF4444',
+                          color: v.ctr >= 5 ? 'var(--accent-green)' : v.ctr >= 3 ? 'var(--accent-gold)' : 'var(--accent-red)',
                         }}>
                           {(v.ctr ?? 0).toFixed(1)}%
                         </span>
-                        <div style={{ fontSize: '0.65rem', color: v.ctr >= 5 ? '#10B98180' : v.ctr >= 3 ? '#F59E0B80' : '#EF444480', marginTop: 1 }}>
+                        <div style={{ fontSize: '0.65rem', color: v.ctr >= 5 ? 'rgba(16,185,129,0.5)' : v.ctr >= 3 ? 'rgba(245,158,11,0.5)' : 'rgba(239,68,68,0.5)', marginTop: 1 }}>
                           {v.ctr >= 5 ? 'Baik' : v.ctr >= 3 ? 'Rata-rata' : 'Rendah'}
                         </div>
                       </td>
@@ -371,7 +372,7 @@ export default function Analytics() {
                         </span>
                       </td>
                       {/* Upload date */}
-                      <td style={{ padding: '0.9rem 1.25rem', color: '#64748B', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>{dateStr}</td>
+                      <td style={{ padding: '0.9rem 1.25rem', color: 'var(--text-muted)', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>{dateStr}</td>
                       {/* Anomali */}
                       <td style={{ padding: '0.9rem 1.25rem' }}>
                         {v.anomaly ? (
@@ -380,7 +381,7 @@ export default function Analytics() {
                             Anomali
                           </span>
                         ) : (
-                          <span style={{ color: '#1E293B', fontSize: '0.85rem', fontWeight: 700 }}>—</span>
+                          <span style={{ color: 'var(--text-dim)', fontSize: '0.85rem', fontWeight: 700 }}>—</span>
                         )}
                       </td>
                     </tr>
@@ -389,10 +390,10 @@ export default function Analytics() {
               </tbody>
             </table>
             {/* Footer */}
-            <div style={{ padding: '0.65rem 1.25rem', borderTop: '1px solid rgba(255,255,255,0.04)', color: '#334155', fontSize: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ padding: '0.65rem 1.25rem', borderTop: '1px solid var(--border-glass)', color: 'var(--text-dim)', fontSize: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span>
-                Menampilkan <strong style={{ color: '#64748B' }}>{filtered.length}</strong> dari <strong style={{ color: '#64748B' }}>{videos.length}</strong> video
-                {total > videos.length && <span style={{ color: '#475569' }}> (dataset penuh: {total.toLocaleString()})</span>}
+                Menampilkan <strong style={{ color: 'var(--text-muted)' }}>{filtered.length}</strong> dari <strong style={{ color: 'var(--text-muted)' }}>{videos.length}</strong> video
+                {total > videos.length && <span style={{ color: 'var(--text-dim)' }}> (dataset penuh: {total.toLocaleString()})</span>}
               </span>
               {filter !== 'All' && (
                 <button className="btn-ghost" onClick={() => { setFilter('All'); setSearch(''); }}

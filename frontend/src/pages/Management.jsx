@@ -91,22 +91,22 @@ function ThumbnailTab() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
-            <label style={{ fontSize: '0.8rem', color: '#64748B', display: 'block', marginBottom: 6 }}>Judul Video</label>
+            <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: 6 }}>Judul Video</label>
             <input className="input-dark" value={form.video_title} onChange={e => setForm(f => ({ ...f, video_title: e.target.value }))} placeholder="Contoh: Cara Naik Subscribers 1000 Orang" required />
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
             <div>
-              <label style={{ fontSize: '0.8rem', color: '#64748B', display: 'block', marginBottom: 6 }}>Tipe Konten</label>
+              <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: 6 }}>Tipe Konten</label>
               <select className="input-dark" value={form.content_type} onChange={e => setForm(f => ({ ...f, content_type: e.target.value }))}>
                 {['Edukatif', 'Tutorial', 'Vlog', 'Review', 'Motivasi', 'Hiburan'].map(t => <option key={t}>{t}</option>)}
               </select>
             </div>
             <div>
-              <label style={{ fontSize: '0.8rem', color: '#64748B', display: 'block', marginBottom: 6 }}>Target Audiens</label>
+              <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: 6 }}>Target Audiens</label>
               <input className="input-dark" value={form.target_audience} onChange={e => setForm(f => ({ ...f, target_audience: e.target.value }))} placeholder="Contoh: Kreator YouTube pemula" />
             </div>
           </div>
-          {error && <div style={{ fontSize: '0.8rem', color: '#EF4444', background: 'rgba(239,68,68,0.1)', padding: '0.5rem 0.75rem', borderRadius: 8 }}>{error}</div>}
+          {error && <div style={{ fontSize: '0.8rem', color: 'var(--accent-red)', background: 'rgba(239,68,68,0.08)', padding: '0.5rem 0.75rem', borderRadius: 8 }}>{error}</div>}
           <button className="btn-primary" type="submit" disabled={loading} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
             {loading ? <Loader size={14} className="animate-spin" /> : <Sparkles size={14} />}
             {loading ? 'Menganalisis...' : 'Generate Saran Thumbnail'}
@@ -115,39 +115,39 @@ function ThumbnailTab() {
 
         {/* Editor Kustomisasi Detail */}
         {editableResult && (
-          <div className="glass-panel" style={{ padding: '1.25rem', border: '1px solid rgba(6,182,212,0.15)', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-            <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#06B6D4', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+          <div className="glass-panel" style={{ padding: '1.25rem', border: '1px solid rgba(6,182,212,0.25)', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+            <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--accent-cyan)', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
               🎨 Kustomisasi Detail Thumbnail
             </h3>
             
             <div>
-              <label style={{ fontSize: '0.72rem', color: '#64748B', display: 'block', marginBottom: 4 }}> Elemen Utama</label>
+              <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}> Elemen Utama</label>
               <textarea className="input-dark" value={editableResult.main_element} onChange={e => handleFieldChange('main_element', e.target.value)} rows={2} style={{ width: '100%', fontSize: '0.8rem', resize: 'vertical' }} />
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
               <div>
-                <label style={{ fontSize: '0.72rem', color: '#64748B', display: 'block', marginBottom: 4 }}>📝 Teks Overlay</label>
+                <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>📝 Teks Overlay</label>
                 <input className="input-dark" value={editableResult.text_overlay} onChange={e => handleFieldChange('text_overlay', e.target.value)} style={{ width: '100%', fontSize: '0.8rem' }} />
               </div>
               <div>
-                <label style={{ fontSize: '0.72rem', color: '#64748B', display: 'block', marginBottom: 4 }}>😊 Ekspresi Wajah</label>
+                <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>😊 Ekspresi Wajah</label>
                 <input className="input-dark" value={editableResult.facial_expression} onChange={e => handleFieldChange('facial_expression', e.target.value)} style={{ width: '100%', fontSize: '0.8rem' }} />
               </div>
             </div>
 
             <div>
-              <label style={{ fontSize: '0.72rem', color: '#64748B', display: 'block', marginBottom: 4 }}>📐 Komposisi</label>
+              <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>📐 Komposisi</label>
               <textarea className="input-dark" value={editableResult.composition_tip} onChange={e => handleFieldChange('composition_tip', e.target.value)} rows={2} style={{ width: '100%', fontSize: '0.8rem', resize: 'vertical' }} />
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
               <div>
-                <label style={{ fontSize: '0.72rem', color: '#64748B', display: 'block', marginBottom: 4 }}>🎨 Background</label>
+                <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>🎨 Background</label>
                 <input className="input-dark" value={editableResult.background_color} onChange={e => handleFieldChange('background_color', e.target.value)} style={{ width: '100%', fontSize: '0.8rem' }} />
               </div>
               <div>
-                <label style={{ fontSize: '0.72rem', color: '#64748B', display: 'block', marginBottom: 4 }}>🌈 Palet Warna (Klik & Atur)</label>
+                <label style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>🌈 Palet Warna (Klik & Atur)</label>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginTop: 4 }}>
                   {editableResult.color_palette.map((c, i) => (
                     <div key={i} style={{ position: 'relative', display: 'inline-block' }}>
@@ -159,7 +159,7 @@ function ThumbnailTab() {
                           width: 28,
                           height: 28,
                           borderRadius: '50%',
-                          border: '2px solid rgba(255,255,255,0.2)',
+                          border: '2px solid var(--border-glass)',
                           cursor: 'pointer',
                           padding: 0,
                           background: 'none'
@@ -176,7 +176,7 @@ function ThumbnailTab() {
                           width: 14,
                           height: 14,
                           borderRadius: '50%',
-                          background: '#EF4444',
+                          background: 'var(--accent-red)',
                           color: '#FFF',
                           border: 'none',
                           fontSize: 9,
@@ -198,9 +198,9 @@ function ThumbnailTab() {
                         width: 28,
                         height: 28,
                         borderRadius: '50%',
-                        border: '1px dashed rgba(255,255,255,0.4)',
-                        background: 'rgba(255,255,255,0.05)',
-                        color: '#E2E8F0',
+                        border: '1px dashed var(--border-glass)',
+                        background: 'var(--bg-badge)',
+                        color: 'var(--text-primary)',
                         fontSize: 14,
                         cursor: 'pointer',
                         display: 'flex',
@@ -215,7 +215,7 @@ function ThumbnailTab() {
               </div>
             </div>
 
-            <button className="btn-primary" type="button" onClick={handleGenerateImage} style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)' }}>
+            <button className="btn-primary" type="button" onClick={handleGenerateImage} style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg, var(--accent-cyan) 0%, #0891B2 100%)' }}>
               <Sparkles size={14} />
               Render Gambar Thumbnail (AI)
             </button>
@@ -227,17 +227,17 @@ function ThumbnailTab() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'center' }}>
         {generatedImageUrl ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#E2E8F0' }}>📺 Live Preview YouTube Player</h3>
+            <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-primary)' }}>📺 Live Preview YouTube Player</h3>
             
             {/* 16:9 YouTube Video Mockup */}
             <div style={{
               position: 'relative',
               width: '100%',
               paddingBottom: '56.25%',
-              background: '#0F172A',
+              background: 'var(--bg-dark)',
               borderRadius: 12,
               overflow: 'hidden',
-              border: '1px solid rgba(255,255,255,0.1)',
+              border: '1px solid var(--border-glass)',
               boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
             }}>
               {imageLoading && (
@@ -247,7 +247,7 @@ function ThumbnailTab() {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  background: 'rgba(15,23,42,0.85)',
+                  background: 'rgba(11,15,25,0.85)',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
@@ -255,8 +255,8 @@ function ThumbnailTab() {
                   gap: 12,
                   zIndex: 10
                 }}>
-                  <Loader className="animate-spin" size={30} color="#06B6D4" />
-                  <span style={{ fontSize: '0.8rem', color: '#94A3B8' }}>AI sedang melukis thumbnail Anda...</span>
+                  <Loader className="animate-spin" size={30} color="var(--accent-cyan)" />
+                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>AI sedang melukis thumbnail Anda...</span>
                 </div>
               )}
               <img 
@@ -292,20 +292,20 @@ function ThumbnailTab() {
                   left: 0,
                   right: 0,
                   height: 3,
-                  background: 'rgba(255,255,255,0.2)'
+                  background: 'var(--border-glass)'
                 }}>
-                  <div style={{ width: '35%', height: '100%', background: '#EF4444' }} />
+                  <div style={{ width: '35%', height: '100%', background: 'var(--accent-red)' }} />
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <div style={{ width: 0, height: 0, borderTop: '5px solid transparent', borderBottom: '5px solid transparent', borderLeft: '10px solid white' }} />
-                  <span style={{ fontSize: '0.7rem', color: '#CBD5E1' }}>0:00 / 08:45</span>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>0:00 / 08:45</span>
                 </div>
                 <span style={{
                   background: 'rgba(0,0,0,0.8)',
                   padding: '2px 5px',
                   borderRadius: 3,
                   fontSize: '0.65rem',
-                  color: '#FFF',
+                  color: 'var(--text-primary)',
                   fontWeight: 'bold'
                 }}>
                   08:45
@@ -319,17 +319,17 @@ function ThumbnailTab() {
                 <Download size={14} />
                 Unduh Thumbnail (JPG)
               </button>
-              <button className="btn-ghost" onClick={handleGenerateImage} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, border: '1px solid rgba(255,255,255,0.08)' }}>
+              <button className="btn-ghost" onClick={handleGenerateImage} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, border: '1px solid var(--border-glass)' }}>
                 <RefreshCw size={14} />
                 Generate Ulang
               </button>
             </div>
           </div>
         ) : result ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center', justifyContent: 'center', minHeight: 300, background: 'rgba(15,23,42,0.3)', borderRadius: 12, border: '1px dashed rgba(255,255,255,0.06)', padding: '2rem', textAlign: 'center' }}>
-            <Sparkles size={40} color="#06B6D4" style={{ marginBottom: 8, opacity: 0.8 }} />
-            <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#E2E8F0', marginBottom: 4 }}>Saran Desain Berhasil Dibuat!</h4>
-            <p style={{ fontSize: '0.8rem', color: '#64748B', maxWidth: 300, marginBottom: 12 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center', justifyContent: 'center', minHeight: 300, background: 'var(--bg-badge)', borderRadius: 12, border: '1px dashed var(--border-glass)', padding: '2rem', textAlign: 'center' }}>
+            <Sparkles size={40} color="var(--accent-cyan)" style={{ marginBottom: 8, opacity: 0.8 }} />
+            <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>Saran Desain Berhasil Dibuat!</h4>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', maxWidth: 300, marginBottom: 12 }}>
               Sesuaikan detail desain di kolom kiri jika diperlukan, lalu klik **Render Gambar Thumbnail** untuk melihat visualisasinya!
             </p>
             <button className="btn-primary" onClick={handleGenerateImage} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -338,7 +338,7 @@ function ThumbnailTab() {
             </button>
           </div>
         ) : (
-          <div style={{ minHeight: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#334155', textAlign: 'center', border: '1px dashed rgba(255,255,255,0.06)', borderRadius: 12, background: 'rgba(15,23,42,0.1)' }}>
+          <div style={{ minHeight: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-dim)', textAlign: 'center', border: '1px dashed var(--border-glass)', borderRadius: 12, background: 'var(--bg-badge)' }}>
             <div>
               <Image size={40} style={{ marginBottom: 12, opacity: 0.3 }} />
               <p style={{ fontSize: '0.85rem' }}>Saran desain & preview thumbnail akan muncul di sini</p>
@@ -368,27 +368,27 @@ function ScheduleTab() {
     {[...Array(5)].map((_, i) => <div key={i} className="skeleton" style={{ height: 64, borderRadius: 10 }} />)}
   </div>;
 
-  if (error) return <div style={{ color: '#EF4444', fontSize: '0.875rem' }}>{error}</div>;
+  if (error) return <div style={{ color: 'var(--accent-red)', fontSize: '0.875rem' }}>{error}</div>;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       {slots.map((slot, i) => (
         <div key={i} className="glass-panel" style={{ padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '1rem', borderLeft: `3px solid hsl(${180 + slot.score}deg, 80%, 55%)` }}>
           <div style={{ minWidth: 48, textAlign: 'center' }}>
-            <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#F8FAFC' }}>{i + 1}</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)' }}>{i + 1}</div>
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontWeight: 600, fontSize: '0.95rem', marginBottom: 3 }}>{slot.day} — {slot.time_wib} WIB</div>
-            <div style={{ fontSize: '0.8rem', color: '#94A3B8' }}>{slot.reason}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{slot.reason}</div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Star size={14} color="#F59E0B" fill="#F59E0B" />
-            <span style={{ fontWeight: 700, color: '#F59E0B' }}>{slot.score}</span>
+            <Star size={14} color="var(--accent-gold)" fill="var(--accent-gold)" />
+            <span style={{ fontWeight: 700, color: 'var(--accent-gold)' }}>{slot.score}</span>
           </div>
         </div>
       ))}
       {tip && (
-        <div style={{ background: 'rgba(6,182,212,0.07)', border: '1px solid rgba(6,182,212,0.2)', borderRadius: 10, padding: '0.85rem 1rem', fontSize: '0.82rem', color: '#7DD3FC', lineHeight: 1.7 }}>
+        <div style={{ background: 'rgba(6,182,212,0.08)', border: '1px solid rgba(6,182,212,0.25)', borderRadius: 10, padding: '0.85rem 1rem', fontSize: '0.82rem', color: 'var(--accent-cyan)', lineHeight: 1.7 }}>
           💡 {tip}
         </div>
       )}
@@ -397,6 +397,12 @@ function ScheduleTab() {
 }
 
 // ── Drafts Tab ────────────────────────────────────────────────────────────────
+const STATUS_CONFIG = {
+  'Draft': { bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.25)', text: 'var(--accent-gold)' },
+  'Ready to Post': { bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.25)', text: 'var(--accent-green)' },
+  'Scheduled': { bg: 'rgba(6,182,212,0.08)', border: 'rgba(6,182,212,0.25)', text: 'var(--accent-cyan)' }
+};
+
 function DraftsTab() {
   const [drafts,  setDrafts]  = useState([]);
   const [loading, setLoading] = useState(true);
@@ -417,19 +423,17 @@ function DraftsTab() {
     await deleteDraft(id); load();
   };
 
-  const STATUS_COLOR = { Draft: '#F59E0B', 'Ready to Post': '#10B981', Scheduled: '#06B6D4' };
-
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '340px 1fr', gap: '1.5rem' }}>
       {/* Create Form */}
       <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
         <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 4 }}>Tambah Draf Baru</h3>
         <div>
-          <label style={{ fontSize: '0.75rem', color: '#64748B', display: 'block', marginBottom: 5 }}>Judul Video</label>
+          <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginBottom: 5 }}>Judul Video</label>
           <input className="input-dark" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="Judul draf video..." required />
         </div>
         <div>
-          <label style={{ fontSize: '0.75rem', color: '#64748B', display: 'block', marginBottom: 5 }}>Outline Skrip</label>
+          <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginBottom: 5 }}>Outline Skrip</label>
           <textarea className="input-dark" value={form.script_outline} onChange={e => setForm(f => ({ ...f, script_outline: e.target.value }))}
             placeholder="Intro → Poin 1 → Poin 2 → CTA"
             rows={4} style={{ resize: 'vertical' }}
@@ -448,29 +452,32 @@ function DraftsTab() {
         </h3>
         {loading ? [...Array(3)].map((_, i) => <div key={i} className="skeleton" style={{ height: 72, borderRadius: 10 }} />) :
           drafts.length === 0 ? (
-            <div style={{ textAlign: 'center', color: '#334155', padding: '2rem' }}>
+            <div style={{ textAlign: 'center', color: 'var(--text-dim)', padding: '2rem' }}>
               <FileText size={32} style={{ opacity: 0.3, marginBottom: 10 }} />
               <p style={{ fontSize: '0.85rem' }}>Belum ada draf. Buat yang pertama!</p>
             </div>
-          ) : drafts.map(d => (
-            <div key={d.id} className="glass-panel" style={{ padding: '0.9rem 1.1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 600, fontSize: '0.875rem', marginBottom: 4, color: '#E2E8F0' }}>{d.title}</div>
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                  <span className="badge" style={{ background: `${STATUS_COLOR[d.status]}18`, color: STATUS_COLOR[d.status], border: `1px solid ${STATUS_COLOR[d.status]}30`, fontSize: '0.7rem', padding: '2px 8px' }}>
-                    {d.status}
-                  </span>
-                  <span style={{ fontSize: '0.72rem', color: '#475569' }}>{new Date(d.created_at).toLocaleDateString('id-ID')}</span>
+          ) : drafts.map(d => {
+            const sc = STATUS_CONFIG[d.status] || STATUS_CONFIG['Draft'];
+            return (
+              <div key={d.id} className="glass-panel" style={{ padding: '0.9rem 1.1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 600, fontSize: '0.875rem', marginBottom: 4, color: 'var(--text-primary)' }}>{d.title}</div>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <span className="badge" style={{ background: sc.bg, color: sc.text, border: `1px solid ${sc.border}`, fontSize: '0.7rem', padding: '2px 8px' }}>
+                      {d.status}
+                    </span>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>{new Date(d.created_at).toLocaleDateString('id-ID')}</span>
+                  </div>
                 </div>
+                <button onClick={() => handleDelete(d.id)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', padding: 6, borderRadius: 6, transition: 'color 0.2s' }}
+                  onMouseEnter={e => e.currentTarget.style.color = 'var(--accent-red)'}
+                  onMouseLeave={e => e.currentTarget.style.color = 'var(--text-dim)'}
+                >
+                  <Trash2 size={15} />
+                </button>
               </div>
-              <button onClick={() => handleDelete(d.id)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#475569', padding: 6, borderRadius: 6, transition: 'color 0.2s' }}
-                onMouseEnter={e => e.currentTarget.style.color = '#EF4444'}
-                onMouseLeave={e => e.currentTarget.style.color = '#475569'}
-              >
-                <Trash2 size={15} />
-              </button>
-            </div>
-          ))
+            );
+          })
         }
       </div>
     </div>
@@ -486,7 +493,7 @@ export default function Management() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <div>
         <h1 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: 4 }}>Management</h1>
-        <p style={{ color: '#64748B', fontSize: '0.875rem' }}>Tools pengelolaan konten Hippo Academy</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Tools pengelolaan konten Hippo Academy</p>
       </div>
 
       <div className="tab-bar" style={{ maxWidth: 500 }}>

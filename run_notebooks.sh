@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Path to the virtual environment's jupyter
-JUPYTER_EXEC="./captonevenv/bin/jupyter"
+# Path to the virtual environment's python
+PYTHON_EXEC="./captonevenv/bin/python"
 
-# Check if jupyter exists in venv
-if [ ! -f "$JUPYTER_EXEC" ]; then
-    echo "Error: Jupyter not found in $JUPYTER_EXEC"
+# Check if python exists in venv
+if [ ! -f "$PYTHON_EXEC" ]; then
+    echo "Error: Python not found in $PYTHON_EXEC"
     exit 1
 fi
 
@@ -27,7 +27,7 @@ notebooks=(
 for nb in "${notebooks[@]}"; do
     if [ -f "$nb" ]; then
         echo "Executing $nb..."
-        "$JUPYTER_EXEC" nbconvert --to notebook --execute --ExecutePreprocessor.kernel_name=captonevenv --inplace "$nb"
+        "$PYTHON_EXEC" -m nbconvert --to notebook --execute --ExecutePreprocessor.kernel_name=captonevenv --inplace "$nb"
         if [ $? -eq 0 ]; then
             echo "Successfully executed $nb"
         else

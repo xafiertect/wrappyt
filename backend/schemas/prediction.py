@@ -74,12 +74,21 @@ class AnomalyResult(BaseModel):
     label: Literal["Normal", "Anomali"] = Field(description="Label status video")
 
 
+class DeclineResult(BaseModel):
+    is_declining: bool = Field(description="True jika diprediksi video mengalami penurunan views")
+    decline_probability: float = Field(ge=0, le=1, description="Probabilitas penurunan (0–1)")
+    risk_level: Literal["Low Risk", "Medium Risk", "High Risk", "Critical"] = Field(
+        description="Level risiko penurunan: Low (<30%), Medium (30-55%), High (55-75%), Critical (>75%)"
+    )
+
+
 class PredictionOutput(BaseModel):
     status: Literal["Viral", "Normal", "Tidak Viral"]
     confidence: float = Field(ge=0, le=1, description="Confidence score prediksi status (0–1)")
     is_viral: bool = Field(description="True jika video diprediksi berpotensi viral (Hippo Academy 2-jam rule: views/2h ≥ 2.000)")
     predicted_views: ViewsForecast
     anomaly: AnomalyResult
+    decline: Optional[DeclineResult] = Field(default=None, description="Hasil Model 4 Decline Classifier — None jika model tidak tersedia")
     recommendation: str = Field(description="Rekomendasi actionable berdasarkan hasil prediksi")
 
 

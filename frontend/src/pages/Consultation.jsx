@@ -65,7 +65,7 @@ export default function Consultation() {
       {/* Header */}
       <div>
         <h1 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: 4 }}>AI Consultant</h1>
-        <p style={{ color: '#64748B', fontSize: '0.875rem' }}>Hippo Academy Assistant — RAG powered by Gemini</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Hippo Academy Assistant — RAG powered by Gemini</p>
       </div>
 
       {/* Chat Area */}
@@ -79,13 +79,13 @@ export default function Consultation() {
                 background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)',
                 borderRadius: 12, padding: '0.75rem 1rem',
               }}>
-                <ShieldAlert size={16} color="#EF4444" style={{ flexShrink: 0, marginTop: 2 }} />
-                <span style={{ fontSize: '0.85rem', color: '#FCA5A5' }}>{msg.text}</span>
+                <ShieldAlert size={16} color="var(--accent-red)" style={{ flexShrink: 0, marginTop: 2 }} />
+                <span style={{ fontSize: '0.85rem', color: 'var(--accent-red)' }}>{msg.text}</span>
               </div>
             );
 
             if (msg.role === 'error') return (
-              <div key={i} style={{ fontSize: '0.82rem', color: '#EF4444', padding: '0.5rem 0.75rem', background: 'rgba(239,68,68,0.08)', borderRadius: 8 }}>
+              <div key={i} style={{ fontSize: '0.82rem', color: 'var(--accent-red)', padding: '0.5rem 0.75rem', background: 'rgba(239,68,68,0.08)', borderRadius: 8 }}>
                 {msg.text}
               </div>
             );
@@ -96,22 +96,22 @@ export default function Consultation() {
                 {/* Avatar */}
                 <div style={{
                   width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
-                  background: isUser ? 'rgba(6,182,212,0.2)' : 'rgba(30,41,59,0.8)',
-                  border: `1px solid ${isUser ? 'rgba(6,182,212,0.4)' : 'rgba(255,255,255,0.1)'}`,
+                  background: isUser ? 'rgba(6,182,212,0.15)' : 'var(--bg-card)',
+                  border: `1px solid ${isUser ? 'rgba(6,182,212,0.3)' : 'var(--border-glass)'}`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
-                  {isUser ? <User size={15} color="#06B6D4" /> : <Bot size={15} color="#94A3B8" />}
+                  {isUser ? <User size={15} color="var(--accent-cyan)" /> : <Bot size={15} color="var(--text-muted)" />}
                 </div>
                 {/* Bubble */}
                 <div style={{
                   maxWidth: '72%',
-                  background: isUser ? 'rgba(6,182,212,0.12)' : 'rgba(30,41,59,0.7)',
-                  border: `1px solid ${isUser ? 'rgba(6,182,212,0.2)' : 'rgba(255,255,255,0.07)'}`,
+                  background: isUser ? 'rgba(6,182,212,0.08)' : 'var(--bg-card)',
+                  border: `1px solid ${isUser ? 'rgba(6,182,212,0.15)' : 'var(--border-glass)'}`,
                   borderRadius: isUser ? '16px 4px 16px 16px' : '4px 16px 16px 16px',
                   padding: '0.75rem 1rem',
                   fontSize: '0.875rem',
                   lineHeight: 1.65,
-                  color: '#E2E8F0',
+                  color: 'var(--text-primary)',
                   whiteSpace: 'pre-wrap',
                 }}>
                   {msg.text}
@@ -121,12 +121,12 @@ export default function Consultation() {
           })}
           {loading && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(30,41,59,0.8)', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Bot size={15} color="#94A3B8" />
+              <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Bot size={15} color="var(--text-muted)" />
               </div>
-              <div style={{ display: 'flex', gap: 5, padding: '0.6rem 1rem', background: 'rgba(30,41,59,0.7)', borderRadius: '4px 16px 16px 16px', border: '1px solid rgba(255,255,255,0.07)' }}>
+              <div style={{ display: 'flex', gap: 5, padding: '0.6rem 1rem', background: 'var(--bg-card)', borderRadius: '4px 16px 16px 16px', border: '1px solid var(--border-glass)' }}>
                 {[0,1,2].map(j => (
-                  <div key={j} style={{ width: 7, height: 7, borderRadius: '50%', background: '#06B6D4', animation: `bounce 1.2s ${j * 0.2}s infinite` }} />
+                  <div key={j} style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--accent-cyan)', animation: `bounce 1.2s ${j * 0.2}s infinite` }} />
                 ))}
               </div>
             </div>
@@ -135,7 +135,7 @@ export default function Consultation() {
         </div>
 
         {/* Preset Chips */}
-        <div style={{ padding: '0.75rem 1.5rem 0', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        <div style={{ padding: '0.75rem 1.5rem 0', borderTop: '1px solid var(--border-glass)', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           {PRESETS.map((p) => (
             <button key={p} className="btn-ghost" onClick={() => sendMessage(p)}
               style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem', borderRadius: 20 }}
