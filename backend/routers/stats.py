@@ -11,7 +11,9 @@ from fastapi import APIRouter, HTTPException
 
 router = APIRouter(prefix="/stats", tags=["Statistics"])
 
-DATA_DIR = os.getenv("DATA_PROCESSED_PATH", "../data/processed")
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+DATA_DIR = os.getenv("DATA_PROCESSED_PATH", os.path.join(_PROJECT_ROOT, "data", "processed"))
+_CLEANED_DIR = os.path.join(_PROJECT_ROOT, "data", "cleaned")
 
 
 def _read_csv_safe(filename: str) -> pd.DataFrame:
@@ -57,7 +59,7 @@ async def get_stats():
 @router.get("/youtube-videos")
 async def get_youtube_videos(limit: int = 15):
     """Daftar video sampel dari abis_cleaning.csv untuk pengisian otomatis."""
-    csv_path = "../data/cleaned/abis_cleaning.csv"
+    csv_path = os.path.join(_CLEANED_DIR, "abis_cleaning.csv")
     if not os.path.exists(csv_path):
         return {"data": []}
     try:
@@ -85,7 +87,7 @@ async def sync_youtube_video(video_id_or_url: str):
                 video_id = match.group(1)
                 break
 
-    csv_path = "../data/cleaned/abis_cleaning.csv"
+    csv_path = os.path.join(_CLEANED_DIR, "abis_cleaning.csv")
     if not os.path.exists(csv_path):
         raise HTTPException(status_code=404, detail="Dataset abis_cleaning.csv tidak ditemukan.")
 
@@ -181,7 +183,7 @@ async def get_videos_analytics(limit: int = 50):
     Daftar lengkap video dengan status, CTR, anomaly flag, dan tanggal publish.
     Menggabungkan abis_cleaning.csv + model_output_anomaly.csv + model_output_regression.csv.
     """
-    base_path = os.path.join(os.path.dirname(DATA_DIR), "cleaned", "abis_cleaning.csv")
+    base_path = os.path.join(_CLEANED_DIR, "abis_cleaning.csv")
 
     if not os.path.exists(base_path):
         return {"data": [], "message": "Data abis_cleaning.csv tidak tersedia."}
@@ -226,17 +228,20 @@ async def get_videos_analytics(limit: int = 50):
         else:
             df["views_predicted"] = df["views"]
 
-        # Tentukan status berdasarkan CTR + anomaly + views
-        # Konsisten dengan Hippo Academy 2-jam rule di /predict:
-        #   Viral: CTR > 7% atau views > 50k
-        #   Normal: CTR 3-7% (borderline)
-        #   Tidak Viral: CTR < 3% atau terdeteksi anomali
+        # Tentukan status berdasarkan views absolut + anomaly model output.
+        # Threshold berbasis distribusi dataset Hippo Academy (mean 42k, p75 37k):
+        #   Anomali   : terdeteksi IsolationForest (anomaly_label_model = 1)
+        #   Viral     : views >= 100.000
+        #   Normal    : 20.000 <= views < 100.000
+        #   Tidak Viral: views < 20.000
         def derive_status(row):
-            if row["anomaly"] or row["ctr"] < 3.0:
-                return "Tidak Viral"
-            if row["ctr"] > 7.0 or row["views"] > 50000:
+            if row["anomaly"]:
+                return "Anomali"
+            if row["views"] >= 100_000:
                 return "Viral"
-            return "Normal"
+            if row["views"] >= 20_000:
+                return "Normal"
+            return "Tidak Viral"
 
         df["status"] = df.apply(derive_status, axis=1)
 

@@ -86,18 +86,18 @@ async def chat_with_ai(request: ConsultationRequest):
 
     full_prompt = "\n\n".join(augmented_parts)
 
-    # ── Build conversation history (google.genai format) ──────────────────────
-    history_contents = [
-        genai_types.Content(
-            role=msg.role,
-            parts=[genai_types.Part.from_text(text=msg.content or "")]
-        )
-        for msg in request.history
-        if msg.content
-    ]
-
-    # ── Call Gemini API (google.genai SDK v2) ─────────────────────────────────
+    # ── Call Gemini API (google.genai SDK v2) — everything inside one try ────────
     try:
+        # Build conversation history inside try so any genai_types errors are caught
+        history_contents = [
+            genai_types.Content(
+                role=msg.role,
+                parts=[genai_types.Part.from_text(text=msg.content or "")]
+            )
+            for msg in request.history
+            if msg.content
+        ]
+
         client = genai.Client(api_key=api_key)
         model_name = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
@@ -108,12 +108,13 @@ async def chat_with_ai(request: ConsultationRequest):
             ),
             history=history_contents,
         )
-        response  = chat.send_message(full_prompt)
+        response = chat.send_message(full_prompt)
         reply_text = response.text
 
     except Exception as e:
         logger.error(f"[Consultation] Gemini API error: {e}")
         # Fallback lokal cerdas standar Hippo Academy jika API Gemini limit/error
+        # PENTING: blok ini selalu return 200 — tidak boleh raise HTTPException
         msg_lower = request.message.lower()
         if "ctr" in msg_lower or "thumbnail" in msg_lower:
             reply_text = (
@@ -139,13 +140,22 @@ async def chat_with_ai(request: ConsultationRequest):
                 "2. **Audit Metadata Terkini**: Apakah Anda baru saja mengubah judul atau thumbnail? Jika ya, kembalikan ke versi sebelumnya yang stabil.\n"
                 "3. **Tingkatkan Interaksi**: Balas komentar-komentar awal dengan pertanyaan terbuka untuk memicu diskusi baru, yang dapat mendorong algoritma merekomendasikan video kembali."
             )
+        elif "viral" in msg_lower or "views" in msg_lower or "prediksi" in msg_lower:
+            reply_text = (
+                "Berdasarkan model prediksi Hippo Academy, berikut faktor utama yang menentukan potensi viral sebuah video:\n\n"
+                "**Faktor Kritis:**\n"
+                "1. **Momentum 2 Jam Pertama**: Video dengan ≥1.000 views dalam 2 jam pertama upload memiliki peluang viral 3x lebih tinggi.\n"
+                "2. **CTR & Retensi Bersamaan**: CTR ≥4% + Retensi ≥45% adalah kombinasi terkuat untuk mendorong rekomendasi algoritma.\n"
+                "3. **Distribusi Awal**: Share video ke 3-5 komunitas relevan dalam 30 menit pertama setelah upload untuk memicu momentum awal."
+            )
         else:
             reply_text = (
                 "Halo! Terima kasih telah berkonsultasi dengan Hippo Academy AI Consultant.\n\n"
-                "Saat ini server kami sedang mengalami antrean trafik tinggi (pembatasan kuota API), namun berikut adalah strategi emas dari Hippo Academy untuk optimasi performa channel Anda:\n\n"
+                "Berikut adalah strategi emas dari Hippo Academy untuk optimasi performa channel Anda:\n\n"
                 "1. **Analisis CTR**: Pastikan CTR Anda selalu di atas target minimal 4.0% dengan thumbnail beresolusi tinggi dan berkarakter.\n"
                 "2. **Pahami Retensi**: Jaga agar retensi penonton di atas 45.0% dengan memangkas bagian video yang membosankan dan mempercepat tempo cerita.\n"
-                "3. **Konsistensi Posting**: Unggah konten secara konsisten di hari-hari produktif (Rabu, Jumat, atau Sabtu) sesuai analisis data audiens Anda."
+                "3. **Konsistensi Posting**: Unggah konten secara konsisten di hari-hari produktif (Rabu, Jumat, atau Sabtu) sesuai analisis data audiens Anda.\n\n"
+                "_Catatan: Layanan AI sedang dalam mode terbatas. Respons di atas berdasarkan knowledge base lokal Hippo Academy._"
             )
 
     return ConsultationResponse(

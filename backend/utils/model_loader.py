@@ -33,8 +33,9 @@ def load_all_models() -> None:
     """
     global _models, _is_loaded
 
-    model_dir  = os.getenv("MODEL_PATH",  "./models")
-    scaler_dir = os.getenv("SCALER_PATH", "./scalers")
+    _backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    model_dir  = os.getenv("MODEL_PATH",  os.path.join(_backend_dir, "models"))
+    scaler_dir = os.getenv("SCALER_PATH", os.path.join(_backend_dir, "scalers"))
 
     # ── Model 1: XGBoost Regression ──────────────────────────────────────────
     # Coba load versi multi-horizon dulu
@@ -100,6 +101,23 @@ def load_all_models() -> None:
 
     thr4 = _try_load(os.path.join(model_dir, "model4_threshold.pkl"))
     _models["decline_threshold"] = thr4 if thr4 is not None else 0.5
+
+    # ── Model 5: Cox PH Survival (Viral Detection) ───────────────────────────
+    survival_model = _try_load(os.path.join(model_dir, "model5_viral_survival.pkl"))
+    _models["survival"] = survival_model
+    if survival_model is None:
+        logger.warning("[ModelLoader] Model 5 (Survival) tidak ditemukan — prediksi viral berbasis survival dinonaktifkan.")
+
+    survival_meta = _try_load(os.path.join(model_dir, "model5_metadata.pkl"))
+    _models["survival_meta"] = survival_meta
+
+    # Model 4 calibrated (opsional — lebih akurat untuk confidence score)
+    clf4_cal = _try_load(os.path.join(model_dir, "model4_decline_classifier_calibrated.pkl"))
+    _models["decline_clf_calibrated"] = clf4_cal
+
+    # Model 4 selected features
+    feats4 = _try_load(os.path.join(model_dir, "model4_selected_features.pkl"))
+    _models["model4_selected_features"] = feats4
 
     # ── Selected Features (untuk reference) ──────────────────────────────────
     _models["selected_features"] = _try_load(

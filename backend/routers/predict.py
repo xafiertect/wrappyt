@@ -9,9 +9,15 @@ import numpy as np
 import pandas as pd
 from fastapi import APIRouter, HTTPException, status
 
-from schemas.prediction import PredictionInput, PredictionOutput, ViewsForecast, AnomalyResult, DeclineResult, ProjectionPoint
+from schemas.prediction import (
+    PredictionInput, PredictionOutput, ViewsForecast, AnomalyResult,
+    DeclineResult, ProjectionPoint, SurvivalResult
+)
 from utils.model_loader import get_model, is_model_available
-from utils.feature_engineering import compute_features, MODEL1_FEATURES, MODEL3_FEATURES, MODEL4_FEATURES
+from utils.feature_engineering import (
+    compute_features, MODEL1_FEATURES, MODEL3_FEATURES, MODEL4_FEATURES,
+    compute_survival_features, SURVIVAL_FEATURES
+)
 
 router = APIRouter(prefix="/predict", tags=["Prediction"])
 
@@ -179,6 +185,61 @@ async def predict_performance(input_data: PredictionInput):
     except Exception:
         pass
 
+    # ── Model 5: Cox PH Survival Viral Detection ──────────────────────────────
+    survival_result = None
+    try:
+        surv_model = get_model("survival")
+        if surv_model is not None:
+            age_h = (
+                input_data.video_age_hours
+                if input_data.video_age_hours is not None
+                else input_data.video_age_days * 24
+            )
+            ch_avg = input_data.channel_avg_velocity_2h or 500.0
+            ph = input_data.publish_hour if input_data.publish_hour is not None else 19
+            iw = 1 if (ph is not None and input_data.video_age_days is not None and
+                       input_data.video_age_days == 0) else 0
+
+            s_feats = compute_survival_features(
+                views=input_data.views,
+                ctr=input_data.ctr,
+                likes=input_data.likes,
+                comments=input_data.comments,
+                retention_rate=input_data.retention_rate,
+                subscriber_gained=input_data.subscriber_gained,
+                video_age_hours=float(age_h),
+                video_title=input_data.video_title or '',
+                channel_avg_velocity_2h=ch_avg,
+                publish_hour=ph,
+                is_weekend=iw,
+            )
+            S_df = pd.DataFrame([s_feats])[SURVIVAL_FEATURES]
+            sf   = surv_model.predict_survival_function(S_df, times=[2, 24, 48])
+            p2   = round(float(1 - sf.loc[2].values[0]),  4)
+            p24  = round(float(1 - sf.loc[24].values[0]), 4)
+            p48  = round(float(1 - sf.loc[48].values[0]), 4)
+
+            if p24 >= 0.65:
+                s_status = "Viral"
+                s_conf   = p24
+            elif p24 >= 0.35:
+                s_status = "Normal"
+                s_conf   = p24
+            else:
+                s_status = "Tidak Viral"
+                s_conf   = round(1 - p24, 4)
+
+            survival_result = SurvivalResult(
+                viral_prob_2h=p2,
+                viral_prob_24h=p24,
+                viral_prob_48h=p48,
+                status=s_status,
+                confidence=s_conf,
+                viral_ratio=round(s_feats['viral_ratio'], 4),
+            )
+    except Exception:
+        pass
+
     recommendation = _build_recommendation(
         status_label, anomaly_flag, input_data.ctr, input_data.retention_rate
     )
@@ -199,5 +260,115 @@ async def predict_performance(input_data: PredictionInput):
             label=anomaly_label,
         ),
         decline=decline_result,
+        survival=survival_result,
         recommendation=recommendation,
     )
+
+
+@router.post(
+    "/from-youtube/{video_id}",
+    response_model=PredictionOutput,
+    responses={
+        401: {"description": "YouTube OAuth belum login"},
+        503: {"description": "Model ML belum siap"},
+    },
+    summary="Auto-prediksi langsung dari data YouTube channel yang login"
+)
+async def predict_from_youtube(video_id: str):
+    """
+    Fetch data video langsung dari YouTube Analytics API menggunakan OAuth token
+    yang sudah tersimpan, lalu jalankan pipeline prediksi lengkap (Model 1–5).
+
+    Tidak perlu input manual — semua metrik (views, CTR, retention, dll) diambil
+    otomatis dari akun YouTube yang sedang login.
+    """
+    from utils.youtube_oauth import load_token
+    from utils.youtube_api import (
+        fetch_video_analytics, fetch_channel_info, fetch_recent_videos
+    )
+    from fastapi import HTTPException, status as http_status
+
+    # ── Cek OAuth aktif ───────────────────────────────────────────────────────
+    try:
+        creds = load_token()
+        if creds is None or not creds.valid:
+            raise HTTPException(
+                status_code=http_status.HTTP_401_UNAUTHORIZED,
+                detail="YouTube OAuth belum login atau token expired. Login dulu via /auth/youtube/login"
+            )
+    except Exception as e:
+        raise HTTPException(
+            status_code=http_status.HTTP_401_UNAUTHORIZED,
+            detail=f"YouTube OAuth error: {str(e)}"
+        )
+
+    # ── Fetch data channel & video dari YouTube API ───────────────────────────
+    try:
+        channel_info = fetch_channel_info()
+        channel_id   = channel_info.get("channel_id", "")
+
+        # Analytics (views, CTR, retention, dll)
+        analytics = fetch_video_analytics(video_id, channel_id)
+        if "_analytics_error" in analytics:
+            raise HTTPException(
+                status_code=http_status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail=f"YouTube Analytics API error: {analytics['_analytics_error']}"
+            )
+
+        # Data video (title, durasi, usia, thumbnail)
+        recent = fetch_recent_videos(max_results=50)
+        video_data = next((v for v in recent if v["video_id"] == video_id), {})
+
+        if not video_data:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Video {video_id} tidak ditemukan di channel yang login."
+            )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=http_status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"Gagal fetch data dari YouTube: {str(e)}"
+        )
+
+    # ── Hitung channel avg velocity dari 20 video terbaru ────────────────────
+    channel_avg_velocity_2h = 500.0   # default fallback
+    try:
+        if recent:
+            velocities = []
+            for v in recent:
+                v_age_h = max(v.get("video_age_days", 1) * 24, 1)
+                vel = (v.get("views", 0) / v_age_h) * 2
+                velocities.append(vel)
+            if velocities:
+                import statistics
+                channel_avg_velocity_2h = statistics.median(velocities)
+    except Exception:
+        pass
+
+    # ── Bangun PredictionInput dari data YouTube ──────────────────────────────
+    age_days  = video_data.get("video_age_days", 1)
+    age_hours = max(age_days * 24, 1)
+
+    input_data = PredictionInput(
+        views             = analytics.get("views", video_data.get("views", 0)),
+        ctr               = analytics.get("ctr", 3.0),
+        impressions       = analytics.get("impressions", 1000),
+        avg_view_duration = analytics.get("avg_view_duration", "00:03:00"),
+        video_duration    = video_data.get("video_duration", "00:10:00"),
+        likes             = video_data.get("likes", 0),
+        comments          = video_data.get("comments", 0),
+        retention_rate    = analytics.get("retention_rate", 35.0),
+        subscriber_gained = analytics.get("subscriber_gained", 0),
+        video_age_days    = age_days,
+        video_age_hours   = age_hours,
+        lag_views_7d      = float(analytics.get("lag_views_7d", 0)),
+        rolling_mean_views_14d = float(analytics.get("rolling_mean_views_14d", 0)),
+        video_title       = video_data.get("title", ""),
+        channel_avg_velocity_2h = channel_avg_velocity_2h,
+    )
+
+    # ── Jalankan pipeline prediksi yang sama dengan endpoint /predict ─────────
+    return await predict_performance(input_data)

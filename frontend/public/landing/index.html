@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hippo Academy — YouTube Analytics</title>
+<meta name="description" content="Platform diagnosis & pemulihan views YouTube berbasis Machine Learning dan AI dari Hippo Academy.">
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ BACKGROUND ============ -->
+<div class="bg-stack" aria-hidden="true">
+  <div class="bg-base"></div>
+  <div class="bg-grid"></div>
+  <div class="blob a"></div>
+  <div class="blob b"></div>
+  <div class="blob c"></div>
+</div>
+<canvas id="net-canvas" aria-hidden="true"></canvas>
+
+<!-- ============ NAVBAR ============ -->
+<div class="nav-shell">
+  <nav class="nav glass glow" data-screen-label="Navbar">
+    <div class="brand">
+      <div class="brand-logo">H</div>
+      <div>
+        <div class="brand-name">Hippo Academy</div>
+        <div class="brand-sub">YouTube Analytics</div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn" id="theme-toggle" aria-label="Ganti tema">
+        <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      </button>
+      <a href="/dashboard" class="btn btn-primary"><span class="label-hide">Dashboard</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+      </a>
+      <a href="/login" class="btn btn-danger">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"></path></svg>
+        <span class="label-hide">Keluar</span>
+      </a>
+    </div>
+  </nav>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="hero wrap" data-screen-label="Hero">
+  <div class="hero-badge reveal">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"></path><path d="M19 14l.8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8z"></path></svg>
+    Solusi Berbasis Machine Learning &amp; AI
+  </div>
+  <h1 class="reveal">Diagnosis &amp; Pulihkan Penurunan Views <span class="grad">YouTube Anda</span></h1>
+  <p class="lead reveal">Gabungan <strong>XGBoost Regression</strong>, <strong>Prophet Forecasting</strong>, dan <strong>Gemini RAG Consultant</strong> untuk membantu kreator Hippo Academy mendeteksi anomali views serta menyusun strategi pemulihan terbaik secara real-time.</p>
+  <div class="hero-cta reveal">
+    <a href="/dashboard" class="btn btn-primary">Masuk ke Aplikasi
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+    </a>
+    <a href="#fitur" class="btn btn-ghost">Pelajari Fitur</a>
+  </div>
+  <div class="hero-trust reveal">
+    <span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg> Analisis real-time</span>
+    <span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg> Deteksi anomali otomatis</span>
+    <span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg> Rekomendasi pemulihan</span>
+  </div>
+</section>
+
+<!-- ============ DASHBOARD PREVIEW ============ -->
+<section class="preview-area wrap" data-screen-label="Dashboard Preview">
+  <div class="preview glass glow reveal">
+    <div class="preview-bar">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <span class="file">hippo-academy-analytics-v2.0</span>
+      <span class="live-tag"><span class="pulse"></span>LIVE PREVIEW MODEL ACTIVE</span>
+    </div>
+    <div class="preview-grid">
+      <!-- forecast panel -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Proyeksi Views 30 Hari (Prophet Model)</h3>
+            <div class="sub">Tren views jangka panjang beserta area tingkat kepercayaan (confidence interval)</div>
+          </div>
+          <span class="legend"><span class="sw"></span>Proyeksi</span>
+        </div>
+        <div class="chart-wrap" id="forecast-chart"></div>
+        <div class="stat-row">
+          <div class="stat"><div class="k">Proyeksi 30 hari</div><div class="v">1.84<small>M</small></div></div>
+          <div class="stat"><div class="k">MAPE Model</div><div class="v">4.2<small>%</small></div></div>
+          <div class="stat"><div class="k">Tren</div><div class="v" style="color:var(--danger)">−24<small style="color:var(--danger)">%</small></div></div>
+        </div>
+      </div>
+      <!-- side col -->
+      <div class="side-col">
+        <div class="alert">
+          <div class="alert-head">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 7v6c0 5 3.8 8.5 9 9 5.2-.5 9-4 9-9V7z"></path><path d="M12 8v4M12 16h.01"></path></svg>
+            Views Anomaly Detected!
+          </div>
+          <p>Isolation Forest mendeteksi penurunan penayangan non-normal sebesar <strong>24%</strong> pada video terakhir Anda.</p>
+        </div>
+        <div class="mini-metric">
+          <div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg> Akurasi Model</div>
+          <div class="v">98.4<span style="font-size:16px;color:var(--accent-cyan)">%</span></div>
+          <div class="delta up">▲ XGBoost Regression aktif</div>
+        </div>
+        <div class="mini-metric ring-row">
+          <svg class="ring" viewBox="0 0 36 36">
+            <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--glass-hairline)" stroke-width="4"></circle>
+            <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--accent-cyan)" stroke-width="4" stroke-linecap="round" stroke-dasharray="97.4" stroke-dashoffset="14" transform="rotate(-90 18 18)"></circle>
+            <text x="18" y="20" text-anchor="middle" font-size="9" fill="var(--text-strong)">86%</text>
+          </svg>
+          <div>
+            <div class="k" style="margin-bottom:4px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"></path><path d="M12 2v10l7 4"></path></svg> Skor Pemulihan</div>
+            <div style="font-size:13px;color:var(--text-muted);">Gemini RAG menyusun <strong>5 langkah</strong> aksi prioritas.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="sec wrap" id="fitur" data-screen-label="Fitur">
+  <div class="sec-head reveal">
+    <span class="eyebrow">Mesin Analitik</span>
+    <h2>Empat model bekerja bersama dalam satu alur</h2>
+    <p>Setiap channel dianalisis berlapis — dari prediksi tren, deteksi anomali, hingga konsultan AI yang memberi rekomendasi konkret.</p>
+  </div>
+  <div class="feature-grid">
+    <div class="feature reveal">
+      <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 14l3-4 3 3 5-7"></path></svg></div>
+      <h3>XGBoost Regression</h3>
+      <p>Memprediksi performa views dari ratusan fitur metadata video dengan akurasi model hingga 98.4%.</p>
+      <span class="tag">// gradient_boosting</span>
+    </div>
+    <div class="feature reveal">
+      <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2 7 4-14 2 7h6"></path></svg></div>
+      <h3>Prophet Forecasting</h3>
+      <p>Proyeksi views 30 hari ke depan lengkap dengan confidence interval dan pola musiman channel.</p>
+      <span class="tag">// time_series</span>
+    </div>
+    <div class="feature reveal">
+      <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"></path></svg></div>
+      <h3>Gemini RAG Consultant</h3>
+      <p>Konsultan AI yang membaca konteks data channel Anda dan menyusun strategi pemulihan yang dipersonalisasi.</p>
+      <span class="tag">// retrieval_augmented</span>
+    </div>
+    <div class="feature reveal">
+      <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 7v6c0 5 3.8 8.5 9 9 5.2-.5 9-4 9-9V7z"></path><path d="M9 12l2 2 4-4"></path></svg></div>
+      <h3>Isolation Forest</h3>
+      <p>Deteksi anomali otomatis yang menandai penurunan penayangan non-normal sebelum berdampak besar.</p>
+      <span class="tag">// anomaly_detection</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="sec wrap" id="cara-kerja" data-screen-label="Cara Kerja">
+  <div class="sec-head reveal">
+    <span class="eyebrow">Alur Kerja</span>
+    <h2>Dari data mentah ke strategi, empat langkah</h2>
+    <p>Hubungkan channel sekali — sisanya berjalan otomatis dan diperbarui secara real-time.</p>
+  </div>
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-num">01</div><span class="line"></span>
+      <h3>Hubungkan Channel</h3>
+      <p>Sinkronkan data YouTube Analytics Anda dengan aman lewat OAuth resmi.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">02</div><span class="line"></span>
+      <h3>Analisis Otomatis</h3>
+      <p>Empat model ML memproses histori views, metadata, dan pola interaksi audiens.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">03</div><span class="line"></span>
+      <h3>Diagnosis Anomali</h3>
+      <p>Sistem menandai penurunan tidak wajar beserta kemungkinan penyebabnya.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">04</div>
+      <h3>Pulihkan Performa</h3>
+      <p>Gemini RAG memberi langkah pemulihan prioritas yang siap dieksekusi.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta-band wrap" data-screen-label="CTA">
+  <div class="cta-card reveal">
+    <h2>Siap menghentikan penurunan views Anda?</h2>
+    <p>Mulai diagnosis channel Hippo Academy Anda sekarang dan dapatkan strategi pemulihan dalam hitungan detik.</p>
+    <div class="hero-cta">
+      <a href="/dashboard" class="btn btn-primary">Masuk ke Aplikasi
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+      </a>
+      <a href="#fitur" class="btn btn-ghost">Pelajari Fitur</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="wrap" data-screen-label="Footer">
+  <div class="foot">
+    <div class="foot-brand">
+      <div class="brand">
+        <div class="brand-logo">H</div>
+        <div>
+          <div class="brand-name">Hippo Academy</div>
+          <div class="brand-sub">YouTube Analytics</div>
+        </div>
+      </div>
+      <p>Platform diagnosis &amp; pemulihan views berbasis machine learning untuk kreator yang serius bertumbuh.</p>
+    </div>
+    <div class="foot-cols">
+      <div class="foot-col">
+        <h4>Produk</h4>
+        <a href="#fitur">Fitur</a><a href="#cara-kerja">Cara Kerja</a><a href="/">Dashboard</a><a href="/">Harga</a>
+      </div>
+      <div class="foot-col">
+        <h4>Model</h4>
+        <a href="/">XGBoost</a><a href="/">Prophet</a><a href="/">Gemini RAG</a><a href="/">Isolation Forest</a>
+      </div>
+      <div class="foot-col">
+        <h4>Perusahaan</h4>
+        <a href="/">Tentang</a><a href="/">Blog</a><a href="/">Kontak</a><a href="/">Privasi</a>
+      </div>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 Hippo Academy. Semua hak dilindungi.</span>
+    <span>Dibuat untuk kreator yang bertumbuh 🦛</span>
+  </div>
+</footer>
+
+
+
+<script src="neural.js"></script>
+<script src="app.js"></script>
+
+<!-- Mobile Bottom Nav Dock -->
+<div class="mobile-nav-shell">
+  <a href="/landing/index.html" class="mobile-link active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Home</span>
+  </a>
+  <a href="/dashboard" class="mobile-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <span>Dashboard</span>
+  </a>
+  <a href="/analytics" class="mobile-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+    <span>Analitik</span>
+  </a>
+  <a href="/consult" class="mobile-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg>
+    <span>Consultant</span>
+  </a>
+  <a href="/management" class="mobile-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <span>Management</span>
+  </a>
+</div>
+
+</body>
+</html>

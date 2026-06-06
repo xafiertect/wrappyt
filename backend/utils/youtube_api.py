@@ -110,10 +110,11 @@ def fetch_recent_videos(max_results: int = 20) -> list[dict]:
             dur_sec = 0
         video_duration = _seconds_to_hhmmss(dur_sec)
 
-        # Hitung usia video dalam hari
+        # Hitung usia video dalam hari dan jam
         published_str = v["snippet"]["publishedAt"]
         published_dt = datetime.fromisoformat(published_str.replace("Z", "+00:00"))
         age_days = (datetime.now(timezone.utc) - published_dt).days
+        age_hours = max(int((datetime.now(timezone.utc) - published_dt).total_seconds() / 3600), 1)
 
         results.append({
             "video_id": v["id"],
@@ -121,6 +122,7 @@ def fetch_recent_videos(max_results: int = 20) -> list[dict]:
             "thumbnail": v["snippet"]["thumbnails"].get("medium", {}).get("url", ""),
             "published_at": published_str,
             "video_age_days": age_days,
+            "video_age_hours": age_hours,
             "views": int(v["statistics"].get("viewCount", 0)),
             "likes": int(v["statistics"].get("likeCount", 0)),
             "comments": int(v["statistics"].get("commentCount", 0)),
