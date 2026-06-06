@@ -61,7 +61,7 @@ export default function Consultation() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 60px)', gap: '1rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 160px)', gap: '1rem' }}>
       {/* Header */}
       <div>
         <h1 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: 4 }}>AI Consultant</h1>
@@ -69,7 +69,7 @@ export default function Consultation() {
       </div>
 
       {/* Chat Area */}
-      <div className="glass-panel" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: 0 }}>
+      <div className="glass-panel card-3d glow-cyan" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: 0 }}>
         {/* Messages */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {messages.map((msg, i) => {
@@ -134,11 +134,20 @@ export default function Consultation() {
           <div ref={bottomRef} />
         </div>
 
-        {/* Preset Chips */}
-        <div style={{ padding: '0.75rem 1.5rem 0', borderTop: '1px solid var(--border-glass)', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        {/* Preset Chips (Scroll horizontally on mobile) */}
+        <div style={{
+          padding: '0.75rem 1.5rem 0.5rem',
+          borderTop: '1px solid var(--border-glass)',
+          display: 'flex',
+          gap: '8px',
+          overflowX: 'auto',
+          whiteSpace: 'nowrap',
+          scrollbarWidth: 'none', /* Firefox */
+          msOverflowStyle: 'none', /* IE 10+ */
+        }}>
           {PRESETS.map((p) => (
             <button key={p} className="btn-ghost" onClick={() => sendMessage(p)}
-              style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem', borderRadius: 20 }}
+              style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem', borderRadius: 20, flexShrink: 0 }}
             >
               {p}
             </button>

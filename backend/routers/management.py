@@ -27,7 +27,8 @@ router = APIRouter(prefix="/management", tags=["Hippo Academy Management"])
 # ─── In-memory draft store (ganti dengan DB di produksi) ─────────────────────
 _drafts_db: dict = {}
 
-DRAFTS_FILE = os.getenv("DRAFTS_FILE", "./data/drafts.json")
+_BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DRAFTS_FILE = os.getenv("DRAFTS_FILE", os.path.join(_BACKEND_DIR, "data", "drafts.json"))
 
 
 def _load_drafts():

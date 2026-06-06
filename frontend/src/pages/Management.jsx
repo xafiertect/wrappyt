@@ -18,6 +18,7 @@ function ThumbnailTab() {
   // States untuk edit manual & render gambar
   const [editableResult, setEditableResult] = useState(null);
   const [imageLoading, setImageLoading] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const [generatedImageUrl, setGeneratedImageUrl] = useState(null);
 
   const handleSubmit = async (e) => {
@@ -58,12 +59,13 @@ function ThumbnailTab() {
   const handleGenerateImage = () => {
     if (!editableResult) return;
     setImageLoading(true);
+    setImageError(false);
     
     const promptText = `16:9 ultra-detailed professional YouTube thumbnail. Main element: ${editableResult.main_element}. Text overlay bold: '${editableResult.text_overlay}'. Facial expression: ${editableResult.facial_expression}. Background: ${editableResult.background_color}. Palette: ${editableResult.color_palette.join(", ")}. ${editableResult.composition_tip}. YouTube thumbnail, clean graphics, vibrant colors, epic composition, 4k, cinematic lighting.`;
     
     const encodedPrompt = encodeURIComponent(promptText);
     const randomSeed = Math.floor(Math.random() * 1000000);
-    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1280&height=720&nologo=true&seed=${randomSeed}`;
+    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1280&height=720&nologo=true&seed=${randomSeed}&model=turbo`;
     
     setGeneratedImageUrl(imageUrl);
   };
@@ -86,7 +88,7 @@ function ThumbnailTab() {
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+    <div className="management-grid">
       {/* Kolom Kiri: Form Input & Editor Saran */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -234,12 +236,86 @@ function ThumbnailTab() {
               position: 'relative',
               width: '100%',
               paddingBottom: '56.25%',
-              background: 'var(--bg-dark)',
+              background: editableResult?.background_color || 'var(--bg-dark)',
               borderRadius: 12,
               overflow: 'hidden',
               border: '1px solid var(--border-glass)',
               boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
             }}>
+              {/* Fallback CSS Layout: Always displays a beautiful visual preview of details */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                background: `radial-gradient(circle at 80% 20%, ${(editableResult?.color_palette?.[0]) || '#FF0055'}25, transparent 65%), 
+                             radial-gradient(circle at 20% 80%, ${(editableResult?.color_palette?.[1]) || '#FFDD00'}15, transparent 55%),
+                             ${editableResult?.background_color || '#1D1E2C'}`,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                padding: '1.25rem',
+                boxSizing: 'border-box'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div style={{
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: 8,
+                    padding: '4px 10px',
+                    fontSize: '0.62rem',
+                    color: 'rgba(255,255,255,0.9)',
+                    maxWidth: '70%',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.04em',
+                    fontWeight: 600
+                  }}>
+                    ✨ {editableResult?.main_element || 'Presenter'}
+                  </div>
+                  <div style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: '50%',
+                    background: 'rgba(255,0,85,0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '1px solid rgba(255,0,85,0.35)'
+                  }}>
+                    <div style={{ width: 0, height: 0, borderTop: '4px solid transparent', borderBottom: '4px solid transparent', borderLeft: '8px solid #FF0055' }} />
+                  </div>
+                </div>
+
+                <div style={{
+                  fontSize: 'calc(1.1rem + 1.2vw)',
+                  fontWeight: 900,
+                  color: '#FFFFFF',
+                  textTransform: 'uppercase',
+                  lineHeight: '1.15',
+                  textAlign: 'left',
+                  maxWidth: '90%',
+                  wordBreak: 'break-word',
+                  textShadow: '3px 3px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 0 6px 15px rgba(0,0,0,0.7)',
+                  fontFamily: 'system-ui, -apple-system, sans-serif'
+                }}>
+                  {editableResult?.text_overlay || 'TRIPEL VIEWS!'}
+                </div>
+
+                <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                  {editableResult?.color_palette?.map((c, i) => (
+                    <div key={i} style={{ width: 10, height: 10, borderRadius: '50%', background: c, border: '1px solid rgba(255,255,255,0.2)' }} />
+                  ))}
+                  <span style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.45)', marginLeft: 4 }}>
+                    {editableResult?.facial_expression || 'Excited'}
+                  </span>
+                </div>
+              </div>
+
               {imageLoading && (
                 <div style={{
                   position: 'absolute',
@@ -247,7 +323,7 @@ function ThumbnailTab() {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  background: 'rgba(11,15,25,0.85)',
+                  background: 'rgba(11,15,25,0.8)',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
@@ -259,19 +335,28 @@ function ThumbnailTab() {
                   <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>AI sedang melukis thumbnail Anda...</span>
                 </div>
               )}
-              <img 
-                src={generatedImageUrl} 
-                alt="Thumbnail Preview"
-                onLoad={() => setImageLoading(false)}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover'
-                }}
-              />
+              
+              {!imageError && generatedImageUrl && (
+                <img 
+                  src={generatedImageUrl} 
+                  alt="Thumbnail Preview"
+                  onLoad={() => setImageLoading(false)}
+                  onError={() => {
+                    setImageLoading(false);
+                    setImageError(true);
+                  }}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    opacity: imageLoading ? 0 : 1,
+                    transition: 'opacity 0.3s ease'
+                  }}
+                />
+              )}
               {/* Controls Overlay */}
               <div style={{
                 position: 'absolute',
@@ -424,7 +509,7 @@ function DraftsTab() {
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '340px 1fr', gap: '1.5rem' }}>
+    <div className="drafts-grid">
       {/* Create Form */}
       <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
         <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 4 }}>Tambah Draf Baru</h3>
@@ -505,7 +590,7 @@ export default function Management() {
         ))}
       </div>
 
-      <div className="glass-panel" style={{ padding: '1.5rem' }}>
+      <div className="glass-panel card-3d glow-cyan" style={{ padding: '1.5rem' }}>
         <ActiveComponent />
       </div>
     </div>

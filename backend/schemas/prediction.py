@@ -47,6 +47,20 @@ class PredictionInput(BaseModel):
     rolling_mean_views_14d: float = Field(
         default=0.0, ge=0, description="Rata-rata views 14 hari terakhir"
     )
+    video_title: str = Field(
+        default="",
+        max_length=300,
+        description="Judul video — digunakan untuk fitur NLP Model 5 Survival"
+    )
+    channel_avg_velocity_2h: Optional[float] = Field(
+        default=None, ge=0,
+        description="Rata-rata views per 2 jam channel (untuk relative viral threshold). "
+                    "Jika None, backend gunakan default 500 atau hitung dari data YouTube."
+    )
+    publish_hour: Optional[int] = Field(
+        default=None, ge=0, le=23,
+        description="Jam upload video (0-23 WIB) — untuk fitur primetime Model 5"
+    )
 
     @field_validator("ctr", "retention_rate")
     @classmethod
@@ -82,6 +96,15 @@ class DeclineResult(BaseModel):
     )
 
 
+class SurvivalResult(BaseModel):
+    viral_prob_2h: float = Field(ge=0, le=1, description="P(viral dalam 2 jam) dari Model 5")
+    viral_prob_24h: float = Field(ge=0, le=1, description="P(viral dalam 24 jam) dari Model 5")
+    viral_prob_48h: float = Field(ge=0, le=1, description="P(viral dalam 48 jam) dari Model 5")
+    status: Literal["Viral", "Normal", "Tidak Viral"] = Field(description="Status dari survival model")
+    confidence: float = Field(ge=0, le=1)
+    viral_ratio: float = Field(description="Relative velocity: views_2h / channel_avg_2h")
+
+
 class PredictionOutput(BaseModel):
     status: Literal["Viral", "Normal", "Tidak Viral"]
     confidence: float = Field(ge=0, le=1, description="Confidence score prediksi status (0–1)")
@@ -89,6 +112,10 @@ class PredictionOutput(BaseModel):
     predicted_views: ViewsForecast
     anomaly: AnomalyResult
     decline: Optional[DeclineResult] = Field(default=None, description="Hasil Model 4 Decline Classifier — None jika model tidak tersedia")
+    survival: Optional[SurvivalResult] = Field(
+        default=None,
+        description="Hasil Model 5 Survival (Cox PH) — None jika model belum dilatih"
+    )
     recommendation: str = Field(description="Rekomendasi actionable berdasarkan hasil prediksi")
 
 

@@ -21,7 +21,8 @@ def _load_kb() -> None:
     """Membaca hippo_kb.md dan memecah per section heading."""
     global _kb_sections, _kb_raw
 
-    kb_path = os.getenv("HIPPO_KB_PATH", "./data/hippo_kb.md")
+    _backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    kb_path = os.getenv("HIPPO_KB_PATH", os.path.join(_backend_dir, "data", "hippo_kb.md"))
     if not os.path.exists(kb_path):
         logger.warning(f"[RAG] Knowledge base tidak ditemukan: {kb_path}")
         return

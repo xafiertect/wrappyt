@@ -243,3 +243,106 @@ MODEL4_FEATURES = [
     "revenue_idr_log",
     "ts1_views",
 ]
+
+
+# ── Model 5: Survival Viral Detection features ────────────────────────────────
+import re as _re
+
+_CLICKBAIT_KW = [
+    r'\bterungkap\b', r'\bviral\b', r'\bgreget\b', r'\bkisah nyata\b',
+    r'\bawas\b', r'\brahasia\b', r'\bbongkar\b', r'\bexposed\b',
+    r'\btrik\b', r'\bsecret\b', r'\bschok\b', r'\btidak akan percaya\b',
+]
+_EDU_KW = [
+    r'\bcara\b', r'\btutorial\b', r'\bbelajar\b', r'\btips\b',
+    r'\bpanduan\b', r'\bjelaskan\b', r'\bpahami\b',
+]
+
+
+def extract_title_features(title: str) -> dict:
+    """Ekstrak fitur NLP dari judul video untuk Model 5 Survival."""
+    t = title.lower() if isinstance(title, str) else ''
+    raw = title if isinstance(title, str) else ''
+    words = t.split()
+    return {
+        'title_len_words':       len(words),
+        'title_has_number':      int(bool(_re.search(r'\d', t))),
+        'title_has_question':    int('?' in t),
+        'title_has_exclaim':     int('!' in raw),
+        'title_caps_ratio':      round(sum(1 for c in raw if c.isupper()) / (len(raw) + 1), 6),
+        'title_clickbait_score': sum(1 for kw in _CLICKBAIT_KW if _re.search(kw, t)),
+        'title_edu_score':       sum(1 for kw in _EDU_KW if _re.search(kw, t)),
+    }
+
+
+def compute_survival_features(
+    views: int,
+    ctr: float,
+    likes: int,
+    comments: int,
+    retention_rate: float,
+    subscriber_gained: int,
+    video_age_hours: float,
+    video_title: str = '',
+    channel_avg_velocity_2h: float = 0.0,
+    publish_hour: int = 19,
+    is_weekend: int = 0,
+) -> dict:
+    """
+    Hitung features untuk Model 5 (Cox PH Survival Viral Detection).
+    Semua features berbasis RELATIVE metrics, bukan absolut.
+    """
+    import math
+
+    def safe(v):
+        return 0.0 if (math.isnan(v) or math.isinf(v)) else round(v, 6)
+
+    # Relative viral velocity
+    age_h = max(float(video_age_hours), 1.0)
+    views_velocity_2h = (views / age_h) * 2.0
+    ch_avg = max(channel_avg_velocity_2h, 1.0)
+    viral_ratio = views_velocity_2h / ch_avg
+
+    # Relative CTR (vs asumsi channel avg 5%)
+    ctr_vs_ch = ctr / 5.0
+
+    # Engagement rate
+    engagement_rate = (likes + comments) / (views + 1)
+
+    # Retention proxy (0–1)
+    retention_proxy = retention_rate / 100.0
+
+    # Subscriber ratio
+    subscriber_ratio = subscriber_gained / (views + 1)
+
+    # Primetime flag
+    is_primetime = int(18 <= publish_hour <= 22)
+
+    title_feats = extract_title_features(video_title)
+
+    return {
+        'ctr_vs_channel_avg':    safe(ctr_vs_ch),
+        'engagement_rate':       safe(engagement_rate),
+        'retention_proxy':       safe(retention_proxy),
+        'subscriber_ratio':      safe(subscriber_ratio),
+        'viral_ratio':           safe(viral_ratio),
+        'publish_hour':          int(publish_hour),
+        'is_primetime':          int(is_primetime),
+        'is_weekend':            int(is_weekend),
+        'title_len_words':       title_feats['title_len_words'],
+        'title_has_number':      title_feats['title_has_number'],
+        'title_has_question':    title_feats['title_has_question'],
+        'title_has_exclaim':     title_feats['title_has_exclaim'],
+        'title_caps_ratio':      title_feats['title_caps_ratio'],
+        'title_clickbait_score': title_feats['title_clickbait_score'],
+        'title_edu_score':       title_feats['title_edu_score'],
+        'video_age_hours':       safe(age_h),
+    }
+
+
+SURVIVAL_FEATURES = [
+    'ctr_vs_channel_avg', 'engagement_rate', 'retention_proxy', 'subscriber_ratio',
+    'viral_ratio', 'publish_hour', 'is_primetime', 'is_weekend',
+    'title_len_words', 'title_has_number', 'title_has_question', 'title_has_exclaim',
+    'title_caps_ratio', 'title_clickbait_score', 'title_edu_score', 'video_age_hours',
+]

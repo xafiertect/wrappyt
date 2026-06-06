@@ -69,18 +69,32 @@ export default function App() {
           )
         } />
 
-        {/* Protected Dashboard/App Pages (Dengan Sidebar Layout) */}
+        {/* Protected Dashboard/App Pages (Dengan Top Navbar Layout) */}
         <Route path="/*" element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-dark)', transition: 'background-color 0.4s ease' }}>
+            <div style={{ minHeight: '100vh', position: 'relative' }}>
+              {/* Background stack */}
+              <div className="bg-stack" aria-hidden="true">
+                <div className="bg-base"></div>
+                <div className="bg-grid"></div>
+                <div className="blob a"></div>
+                <div className="blob b"></div>
+                <div className="blob c"></div>
+                {/* 3D Animated Floating Orbs */}
+                <div className="floating-orb orb-1"></div>
+                <div className="floating-orb orb-2"></div>
+                <div className="floating-orb orb-3"></div>
+              </div>
+
+              {/* Top Navbar */}
               <Sidebar theme={theme} toggleTheme={toggleTheme} onLogout={handleLogout} />
-              <main style={{
-                flex: 1,
-                padding: '2.5rem',
-                overflowY: 'auto',
-                minWidth: 0,
-                background: 'var(--bg-gradient-main)',
-                transition: 'background-color 0.4s ease',
+
+              {/* Main content wrapper */}
+              <main className="wrap" style={{
+                paddingTop: '2.5rem',
+                paddingBottom: '80px',
+                position: 'relative',
+                zIndex: 10
               }}>
                 <Routes>
                   <Route path="/dashboard"  element={<Dashboard />} />

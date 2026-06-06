@@ -7,11 +7,12 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
 
-// Hippo Academy rule: Viral ≥2k/2h | Normal 1k–2k/2h | Tidak Viral <1k/2h
+// Threshold views: Viral ≥100k | Normal 20k–100k | Tidak Viral <20k | Anomali = IsolationForest
 const STATUS_CONFIG = {
   Viral:        { color: 'var(--accent-cyan)', bg: 'rgba(6,182,212,0.1)',   icon: TrendingUp,   cls: 'badge-cyan'   },
   Normal:       { color: 'var(--accent-gold)', bg: 'rgba(245,158,11,0.1)',  icon: Minus,        cls: 'badge-yellow' },
   'Tidak Viral':{ color: 'var(--accent-red)', bg: 'rgba(239,68,68,0.1)',   icon: TrendingDown, cls: 'badge-red'    },
+  Anomali:      { color: '#A78BFA',            bg: 'rgba(167,139,250,0.1)', icon: AlertTriangle, cls: 'badge-purple' },
 };
 
 // ─── Skeleton loader ──────────────────────────────────────────────────────────
@@ -125,9 +126,9 @@ function EmptyState({ onRefresh }) {
 }
 
 // ─── KPI Card ─────────────────────────────────────────────────────────────────
-function KpiCard({ label, value, color, bg, pct, loading }) {
+function KpiCard({ label, value, color, bg, pct, loading, glowClass }) {
   return (
-    <div className="glass-panel" style={{ padding: '1rem 1.25rem', background: bg, borderRadius: 12, minWidth: 0 }}>
+    <div className={`glass-panel card-3d ${glowClass || ''}`} style={{ padding: '1rem 1.25rem', background: bg, borderRadius: 12, minWidth: 0 }}>
       {loading ? (
         <div className="skeleton" style={{ height: 42, borderRadius: 8 }} />
       ) : (
@@ -159,7 +160,7 @@ export default function Analytics() {
   const fetchVideos = () => {
     setLoading(true);
     setError(null);
-    getVideoAnalytics(100)
+    getVideoAnalytics(2500)
       .then(res => {
         setVideos(res.data?.data || []);
         setTotal(res.data?.total || 0);
@@ -173,10 +174,7 @@ export default function Analytics() {
   const filtered = videos
     .filter(v => {
       const matchSearch = (v.title || '').toLowerCase().includes(search.toLowerCase());
-      const matchFilter =
-        filter === 'All'     ? true :
-        filter === 'Anomaly' ? v.anomaly :
-        v.status === filter;
+      const matchFilter = filter === 'All' ? true : v.status === filter;
       return matchSearch && matchFilter;
     })
     .sort((a, b) => {
@@ -191,10 +189,10 @@ export default function Analytics() {
   };
 
   // Derived summary counts (dihitung saat data ada maupun kosong)
-  const anomalyCount    = videos.filter(v => v.anomaly).length;
+  const anomalyCount    = videos.filter(v => v.status === 'Anomali').length;
   const viralCount      = videos.filter(v => v.status === 'Viral').length;
   const tidakViralCount = videos.filter(v => v.status === 'Tidak Viral').length;
-  const normalCount     = videos.length - viralCount - tidakViralCount;
+  const normalCount     = videos.filter(v => v.status === 'Normal').length;
   const pct = (n) => videos.length > 0 ? ((n / videos.length) * 100).toFixed(0) : null;
 
   const noData = !loading && !error && videos.length === 0;
@@ -227,11 +225,11 @@ export default function Analytics() {
       </div>
 
       {/* ── KPI Cards — selalu tampil (skeleton saat loading, 0 saat noData) ─── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
-        <KpiCard loading={loading} label="🚀 Video Viral"   value={viralCount}      color="var(--accent-cyan)" bg="rgba(6,182,212,0.07)"  pct={pct(viralCount)} />
-        <KpiCard loading={loading} label="📊 Video Normal"  value={normalCount}     color="var(--accent-gold)" bg="rgba(245,158,11,0.07)" pct={pct(normalCount)} />
-        <KpiCard loading={loading} label="📉 Tidak Viral"   value={tidakViralCount} color="var(--accent-red)" bg="rgba(239,68,68,0.07)"  pct={pct(tidakViralCount)} />
-        <KpiCard loading={loading} label="⚠️ Anomali"       value={anomalyCount}    color="#A78BFA" bg="rgba(167,139,250,0.07)" pct={pct(anomalyCount)} />
+      <div className="analytics-kpi-grid">
+        <KpiCard loading={loading} label="🚀 Video Viral"   value={viralCount}      color="var(--accent-cyan)" bg="rgba(6,182,212,0.07)"  pct={pct(viralCount)} glowClass="glow-cyan" />
+        <KpiCard loading={loading} label="📊 Video Normal"  value={normalCount}     color="var(--accent-gold)" bg="rgba(245,158,11,0.07)" pct={pct(normalCount)} glowClass="glow-gold" />
+        <KpiCard loading={loading} label="📉 Tidak Viral"   value={tidakViralCount} color="var(--accent-red)" bg="rgba(239,68,68,0.07)"  pct={pct(tidakViralCount)} glowClass="glow-red" />
+        <KpiCard loading={loading} label="⚠️ Anomali"       value={anomalyCount}    color="#A78BFA" bg="rgba(167,139,250,0.07)" pct={pct(anomalyCount)} glowClass="glow-purple" />
       </div>
 
       {/* ── Error Banner ──────────────────────────────────────────────────────── */}
@@ -243,7 +241,7 @@ export default function Analytics() {
       )}
 
       {/* ── Prophet Forecast ──────────────────────────────────────────────────── */}
-      <div className="glass-panel" style={{ padding: '1.25rem 1.5rem' }}>
+      <div className="glass-panel card-3d glow-cyan" style={{ padding: '1.25rem 1.5rem' }}>
         <div style={{ marginBottom: '1rem' }}>
           <h2 style={{ fontSize: '1rem', fontWeight: 700 }}>Forecast Views — Prophet Model</h2>
           <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>30 hari ke depan · Area abu-abu = confidence interval 95%</p>
@@ -271,7 +269,7 @@ export default function Analytics() {
             { key: 'Viral',       label: `🚀 Viral (${viralCount})` },
             { key: 'Normal',      label: `📊 Normal (${normalCount})` },
             { key: 'Tidak Viral', label: `📉 Tidak Viral (${tidakViralCount})` },
-            { key: 'Anomaly',     label: `⚠️ Anomali (${anomalyCount})` },
+            { key: 'Anomali',     label: `⚠️ Anomali (${anomalyCount})` },
           ].map(({ key, label }) => (
             <button
               key={key}
@@ -296,7 +294,7 @@ export default function Analytics() {
       </div>
 
       {/* ── Table ─────────────────────────────────────────────────────────────── */}
-      <div className="glass-panel" style={{ padding: 0, overflow: 'hidden' }}>
+      <div className="glass-panel card-3d" style={{ padding: 0, overflowX: 'auto' }}>
         {loading ? (
           <TableSkeleton />
         ) : noData ? (
