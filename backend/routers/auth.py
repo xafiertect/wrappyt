@@ -21,14 +21,15 @@ from utils.youtube_api import (
 
 router = APIRouter(prefix="/auth", tags=["YouTube OAuth"])
 
-# State CSRF — disimpan di memory (cukup untuk single-user local app)
+# State CSRF & PKCE — disimpan di memory (cukup untuk single-user local app)
 _oauth_state: str = ""
+_oauth_verifier: str = ""
 
 
 @router.get("/youtube/login")
 async def youtube_login():
     """Memulai flow OAuth 2.0. Redirect ke halaman consent Google."""
-    global _oauth_state
+    global _oauth_state, _oauth_verifier
 
     if not is_configured():
         raise HTTPException(
@@ -45,13 +46,16 @@ async def youtube_login():
         state=_oauth_state,
         prompt="consent"
     )
+    # Simpan PKCE verifier yang di-generate otomatis
+    _oauth_verifier = getattr(flow, "code_verifier", "")
+    
     return RedirectResponse(url=auth_url)
 
 
 @router.get("/youtube/callback")
 async def youtube_callback(code: str = "", state: str = "", error: str = ""):
     """Callback dari Google setelah user menyetujui OAuth."""
-    global _oauth_state
+    global _oauth_state, _oauth_verifier
 
     # Handle user rejection
     if error:
@@ -66,6 +70,10 @@ async def youtube_callback(code: str = "", state: str = "", error: str = ""):
 
     try:
         flow = build_flow()
+        # Restore PKCE verifier
+        if _oauth_verifier:
+            flow.code_verifier = _oauth_verifier
+            
         flow.fetch_token(code=code)
         save_token(flow.credentials)
     except Exception as e:
