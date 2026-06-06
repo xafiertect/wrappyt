@@ -3,22 +3,29 @@ import { chatConsultation } from '../services/api';
 import { Send, Loader, Bot, User, ShieldAlert } from 'lucide-react';
 
 const PRESETS = [
-  'Bagaimana cara menaikkan CTR thumbnail?',
-  'Strategi hook 10 detik pertama yang efektif',
-  'Mengapa retensi video saya rendah?',
-  'Jam terbaik upload konten edukatif',
-  'Cara riset topik viral YouTube',
+  'Berapa % video channel ini yang viral dan kenapa?',
+  'Gimana cara kerja model prediksi views-nya?',
+  'CTR channel rata-rata berapa? Bagus atau enggak?',
+  'Strategi hook 30 detik pertama yang terbukti efektif',
+  'Video mana yang paling berisiko decline?',
+  'Cara riset topik yang punya potensi viral tinggi',
+  'Kenapa anomali bisa terjadi di channel ini?',
+  'Gimana cara nulis judul yang CTR-nya tinggi?',
 ];
 
-const OFF_TOPIC_KEYWORDS = ['saham', 'crypto', 'resep', 'cuaca', 'berita', 'politik', 'olahraga', 'game'];
+const HARD_BLOCK_PHRASES = [
+  'resep masakan', 'cara masak', 'cuaca hari ini', 'ramalan cuaca',
+  'harga saham', 'jadwal liga', 'skor bola', 'cara main game',
+];
 
-function isOffTopic(msg) {
-  return OFF_TOPIC_KEYWORDS.some(kw => msg.toLowerCase().includes(kw));
+function isHardOffTopic(msg) {
+  const lower = msg.toLowerCase();
+  return HARD_BLOCK_PHRASES.some(p => lower.includes(p));
 }
 
 export default function Consultation() {
   const [messages,  setMessages]  = useState([
-    { role: 'ai', text: 'Halo! Saya Hippo Assistant 🦛 — AI konsultan YouTube dari Hippo Academy. Tanyakan apa saja seputar strategi konten, CTR, retensi, atau analitik channel Anda!' }
+    { role: 'ai', text: 'Hei! Gue AI engineer yang ngebangun sistem analitik Hippo Academy ini.\n\nGue punya akses ke data lengkap: 2.356 video dianalisis, model XGBoost buat prediksi views, Isolation Forest buat deteksi anomali, plus semua output dari pipeline ML-nya.\n\nTanya apa aja — strategi konten, cara kerja modelnya, kenapa ada video yang anomali, atau gimana channel ini bisa lebih optimal.' }
   ]);
   const [input,    setInput]    = useState('');
   const [loading,  setLoading]  = useState(false);
@@ -33,11 +40,11 @@ export default function Consultation() {
     const msg = text || input.trim();
     if (!msg) return;
 
-    // Off-topic guardrail (client-side)
-    if (isOffTopic(msg)) {
+    // Hanya block topik yang benar-benar tidak relevan sama sekali
+    if (isHardOffTopic(msg)) {
       setMessages(prev => [...prev,
         { role: 'user', text: msg },
-        { role: 'system-warn', text: 'Pertanyaan di luar topik dibatasi oleh sistem. Silakan tanyakan seputar YouTube, strategi konten, atau analitik channel.' },
+        { role: 'system-warn', text: 'Itu di luar scope gue. Tanya yang nyambung ke konten, YouTube, atau data channel ya.' },
       ]);
       setInput('');
       return;
@@ -65,7 +72,7 @@ export default function Consultation() {
       {/* Header */}
       <div>
         <h1 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: 4 }}>AI Consultant</h1>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Hippo Academy Assistant — RAG powered by Gemini</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>AI Engineer — data channel, model ML, strategi konten · Powered by Gemini + RAG</p>
       </div>
 
       {/* Chat Area */}
@@ -158,7 +165,7 @@ export default function Consultation() {
         <div style={{ padding: '1rem 1.5rem', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
           <input
             className="input-dark"
-            placeholder="Ketik pertanyaan seputar YouTube atau Hippo Academy..."
+            placeholder="Tanya soal data channel, model ML, strategi konten, atau apapun yang nyambung..."
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}

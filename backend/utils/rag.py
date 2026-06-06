@@ -1,8 +1,7 @@
 """
 RAG Engine — Hippo Academy Knowledge Base
 ==========================================
-Melakukan retrieval context dari hippo_kb.md berdasarkan kata kunci query user.
-Digunakan sebagai context injection sebelum request dikirim ke Gemini API.
+Retrieval context dari hippo_kb.md berdasarkan relevansi query pengguna.
 """
 
 import os
@@ -12,9 +11,41 @@ from typing import List, Tuple
 
 logger = logging.getLogger(__name__)
 
-# ─── Global KB Cache ─────────────────────────────────────────────────────────
-_kb_sections: List[Tuple[str, str]] = []   # [(heading, content), ...]
+# --- Global KB Cache ---------------------------------------------------------
+_kb_sections: List[Tuple[str, str]] = []
 _kb_raw: str = ""
+
+# Sinonim & ekspansi kata kunci untuk retrieval lebih luas
+_SYNONYMS = {
+    "ctr":         ["klik", "click", "tayangan", "impression", "thumbnail"],
+    "retensi":     ["retention", "tonton", "watch time", "durasi", "bertahan"],
+    "views":       ["penayangan", "tontonan", "tonton", "viral", "populer"],
+    "anomali":     ["anomaly", "turun", "drop", "penurunan", "decline", "drastis"],
+    "thumbnail":   ["gambar", "cover", "desain", "visual", "foto", "sampul"],
+    "algoritma":   ["algorithm", "rekomendasi", "recommend", "suggest", "fyp"],
+    "monetisasi":  ["monetize", "revenue", "pendapatan", "adsense", "iklan", "ads"],
+    "subscriber":  ["subs", "subscriber", "penonton setia", "follower"],
+    "upload":      ["posting", "publish", "jadwal", "schedule", "rilis"],
+    "script":      ["skrip", "naskah", "konten", "cerita", "narasi"],
+    "engagement":  ["interaksi", "like", "komentar", "share", "diskusi"],
+    "viral":       ["trending", "populer", "hits", "booming", "meledak"],
+    "seo":         ["judul", "title", "tag", "deskripsi", "description", "keyword"],
+    "prediksi":    ["forecast", "predict", "model", "xgboost", "prophet", "ml"],
+    "hook":        ["pembuka", "intro", "opening", "detik pertama", "awal"],
+    "pacing":      ["tempo", "ritme", "editing", "cut", "transisi"],
+    "niche":       ["topik", "genre", "kategori", "tema", "konten"],
+    "channel":     ["saluran", "akun", "kreator", "creator", "youtuber"],
+}
+
+# Topik yang jelas tidak relevan (blocklist, bukan allowlist)
+_OFFTOPIC_HARD_BLOCK = [
+    "resep masakan", "cara masak", "cuaca hari ini", "ramalan cuaca",
+    "harga saham", "investasi saham", "kurs dollar", "nilai tukar",
+    "jadwal liga", "skor bola", "prediksi bola", "pertandingan",
+    "cara main game", "cheat game", "walkthrough",
+    "lowongan kerja", "gaji pns", "berita politik", "pemilu",
+    "obat", "penyakit", "dokter", "medis",
+]
 
 
 def _load_kb() -> None:
@@ -30,7 +61,6 @@ def _load_kb() -> None:
     with open(kb_path, "r", encoding="utf-8") as f:
         _kb_raw = f.read()
 
-    # Pecah per section (## heading)
     chunks = re.split(r"\n(?=## )", _kb_raw)
     for chunk in chunks:
         lines = chunk.strip().splitlines()
@@ -42,23 +72,47 @@ def _load_kb() -> None:
     logger.info(f"[RAG] Knowledge base dimuat: {len(_kb_sections)} sections")
 
 
-def _keyword_score(query: str, section_content: str) -> int:
-    """
-    Menghitung skor relevansi berdasarkan jumlah kata kunci query
-    yang ditemukan di konten section (case-insensitive).
-    """
+def _expand_query(query: str) -> List[str]:
+    """Ekspansi query dengan sinonim agar retrieval lebih luas."""
     words = re.findall(r"\w+", query.lower())
-    content_lower = section_content.lower()
-    return sum(1 for w in words if len(w) > 3 and w in content_lower)
+    expanded = set(words)
+    for word in words:
+        for key, synonyms in _SYNONYMS.items():
+            if word == key or word in synonyms:
+                expanded.add(key)
+                expanded.update(synonyms)
+    return list(expanded)
 
 
-def retrieve_hippo_context(query: str, top_k: int = 2, max_chars: int = 1500) -> str:
+def _keyword_score(query: str, section_content: str) -> float:
     """
-    Mengambil top_k section paling relevan dari knowledge base
-    berdasarkan kemiripan kata kunci dengan query pengguna.
+    Skor relevansi gabungan: exact match + synonym match + partial match.
+    Tidak ada minimum panjang kata - 'ctr', 'seo', 'ml' semuanya valid.
+    """
+    expanded_words = _expand_query(query)
+    content_lower  = section_content.lower()
+    score = 0.0
 
-    Returns:
-        String teks konteks yang siap di-inject ke prompt Gemini.
+    for word in expanded_words:
+        if word in content_lower:
+            # Exact word boundary match bernilai lebih tinggi
+            if re.search(r'\b' + re.escape(word) + r'\b', content_lower):
+                score += 2.0
+            else:
+                score += 1.0
+
+    # Bonus jika query phrase-nya langsung ada di konten
+    query_lower = query.lower().strip()
+    if len(query_lower) > 6 and query_lower in content_lower:
+        score += 5.0
+
+    return score
+
+
+def retrieve_hippo_context(query: str, top_k: int = 4, max_chars: int = 5000) -> str:
+    """
+    Ambil top_k section paling relevan dari KB.
+    Selalu kembalikan konteks — jika tidak ada match, kembalikan semua section overview.
     """
     global _kb_sections
 
@@ -68,26 +122,21 @@ def retrieve_hippo_context(query: str, top_k: int = 2, max_chars: int = 1500) ->
     if not _kb_sections:
         return ""
 
-    # Hitung skor relevansi tiap section
-    scored = [
-        (score, content)
-        for heading, content in _kb_sections
-        if (score := _keyword_score(query, content)) > 0
-    ]
+    scored = []
+    for heading, content in _kb_sections:
+        s = _keyword_score(query, content)
+        scored.append((s, content))
 
-    # Urutkan berdasarkan skor tertinggi
     scored.sort(key=lambda x: x[0], reverse=True)
 
-    # Ambil top_k dan gabungkan
-    selected = [content for _, content in scored[:top_k]]
+    # Ambil yang relevan (score > 0), fallback ke top-2 section jika semua 0
+    relevant = [(s, c) for s, c in scored if s > 0]
+    if not relevant:
+        relevant = scored[:2]
 
-    if not selected:
-        # Fallback: ambil section pertama (overview umum)
-        selected = [_kb_sections[0][1]]
+    selected = [c for _, c in relevant[:top_k]]
+    context  = "\n\n---\n\n".join(selected)
 
-    context = "\n\n---\n\n".join(selected)
-
-    # Truncate agar tidak melebihi batas karakter
     if len(context) > max_chars:
         context = context[:max_chars] + "\n...[konteks dipotong]"
 
@@ -96,14 +145,18 @@ def retrieve_hippo_context(query: str, top_k: int = 2, max_chars: int = 1500) ->
 
 def is_topic_relevant(query: str) -> bool:
     """
-    Deteksi kasar apakah query relevan dengan topik YouTube / Hippo Academy.
-    Digunakan untuk client-side warning sebelum dikirim ke Gemini.
+    Cek apakah query layak dijawab AI Consultant.
+    Strategi: BLOCKLIST — default RELEVAN, tolak hanya yang jelas di luar scope.
+    Jauh lebih luas dari sebelumnya: pertanyaan teknis, kreatif, dan bisnis konten
+    semuanya dianggap relevan.
     """
-    youtube_keywords = [
-        "youtube", "video", "channel", "thumbnail", "views", "penayangan",
-        "ctr", "klik", "retensi", "subscriber", "upload", "konten", "monetisasi",
-        "iklan", "adsense", "hook", "script", "skrip", "analitik", "performa",
-        "hippo", "academy", "algoritma", "shorts", "vlog", "like", "komentar"
-    ]
     query_lower = query.lower()
-    return any(kw in query_lower for kw in youtube_keywords)
+
+    # Hard block: topik yang benar-benar tidak ada hubungannya
+    for phrase in _OFFTOPIC_HARD_BLOCK:
+        if phrase in query_lower:
+            return False
+
+    # Semua pertanyaan lain dianggap relevan —
+    # biarkan Gemini + system prompt yang menentukan batas jawaban
+    return True

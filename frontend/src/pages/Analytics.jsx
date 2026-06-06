@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { getVideoAnalytics, getForecastData } from '../services/api';
+import { getVideoAnalytics, getForecastData, predictPerformance, getYouTubeStatus, getYouTubeChannel } from '../services/api';
 import {
   Search, Filter, TrendingDown, TrendingUp, Minus, AlertTriangle, RefreshCw,
+  Zap, X, Youtube, CheckCircle, XCircle,
 } from 'lucide-react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -21,7 +22,7 @@ function TableSkeleton() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '1rem 1.25rem' }}>
       {[...Array(8)].map((_, i) => (
-        <div key={i} className="skeleton" style={{ height: 48, borderRadius: 8 }} />
+        <div key={i} className="skeleton" style={{ height: 64, borderRadius: 8 }} />
       ))}
     </div>
   );
@@ -104,6 +105,136 @@ function ForecastChart() {
   );
 }
 
+// ─── Predict Modal ────────────────────────────────────────────────────────────
+function PredictModal({ video, result, onClose }) {
+  if (!result) return null;
+
+  const { predicted_views, anomaly, decline, status, confidence, recommendation } = result;
+
+  const riskColor = {
+    'Low Risk':    'var(--accent-green)',
+    'Medium Risk': 'var(--accent-gold)',
+    'High Risk':   'var(--accent-red)',
+    'Critical':    '#FF4500',
+  };
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 9999,
+        background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem',
+      }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        className="glass-panel card-3d"
+        style={{ width: '100%', maxWidth: 540, borderRadius: 16, padding: '1.5rem', position: 'relative' }}
+      >
+        {/* Close */}
+        <button onClick={onClose} style={{ position: 'absolute', top: 14, right: 14, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)' }}>
+          <X size={18} />
+        </button>
+
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
+          {video.video_id && (
+            <img
+              src={`https://img.youtube.com/vi/${video.video_id}/mqdefault.jpg`}
+              alt={video.title}
+              style={{ width: 80, height: 45, borderRadius: 6, objectFit: 'cover', flexShrink: 0 }}
+            />
+          )}
+          <div style={{ overflow: 'hidden' }}>
+            <p style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {video.title || 'Video'}
+            </p>
+            <p style={{ fontSize: '0.72rem', color: 'var(--text-dim)', marginTop: 2 }}>
+              Prediksi Views · XGBoost + Isolation Forest
+            </p>
+          </div>
+        </div>
+
+        {/* Status badge */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+          <span style={{
+            padding: '0.3rem 0.75rem', borderRadius: 20, fontSize: '0.8rem', fontWeight: 700,
+            background: status === 'Viral' ? 'rgba(6,182,212,0.15)' : status === 'Tidak Viral' ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)',
+            color: status === 'Viral' ? 'var(--accent-cyan)' : status === 'Tidak Viral' ? 'var(--accent-red)' : 'var(--accent-gold)',
+          }}>
+            {status === 'Viral' ? '🚀' : status === 'Tidak Viral' ? '📉' : '📊'} {status}
+          </span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
+            confidence {(confidence * 100).toFixed(0)}%
+          </span>
+        </div>
+
+        {/* Views forecast */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '1rem' }}>
+          {[
+            { label: '1 Hari', val: predicted_views?.days_1 },
+            { label: '2 Hari', val: predicted_views?.days_2 },
+            { label: '3 Hari', val: predicted_views?.days_3 },
+          ].map(({ label, val }) => (
+            <div key={label} style={{
+              background: 'var(--bg-card)', borderRadius: 10, padding: '0.75rem', textAlign: 'center',
+              border: '1px solid var(--border-glass)',
+            }}>
+              <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--accent-cyan)' }}>
+                {val != null ? (val >= 1000 ? `${(val / 1000).toFixed(1)}K` : val) : '—'}
+              </div>
+              <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: 3 }}>+{label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Anomaly + Decline */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
+          <div style={{
+            background: 'var(--bg-card)', borderRadius: 10, padding: '0.75rem',
+            border: `1px solid ${anomaly?.is_anomaly ? 'rgba(239,68,68,0.3)' : 'var(--border-glass)'}`,
+          }}>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: 4 }}>Anomali</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              {anomaly?.is_anomaly
+                ? <XCircle size={14} color="var(--accent-red)" />
+                : <CheckCircle size={14} color="var(--accent-green)" />}
+              <span style={{ fontSize: '0.82rem', fontWeight: 700, color: anomaly?.is_anomaly ? 'var(--accent-red)' : 'var(--accent-green)' }}>
+                {anomaly?.label || 'Normal'}
+              </span>
+            </div>
+          </div>
+          {decline && (
+            <div style={{
+              background: 'var(--bg-card)', borderRadius: 10, padding: '0.75rem',
+              border: `1px solid ${decline.is_declining ? 'rgba(239,68,68,0.25)' : 'var(--border-glass)'}`,
+            }}>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: 4 }}>Risiko Decline</div>
+              <div style={{ fontSize: '0.82rem', fontWeight: 700, color: riskColor[decline.risk_level] || 'var(--text-primary)' }}>
+                {decline.risk_level}
+              </div>
+              <div style={{ fontSize: '0.68rem', color: 'var(--text-dim)', marginTop: 2 }}>
+                {(decline.decline_probability * 100).toFixed(0)}% prob
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Recommendation */}
+        {recommendation && (
+          <div style={{
+            background: 'rgba(6,182,212,0.06)', borderRadius: 10, padding: '0.75rem 1rem',
+            border: '1px solid rgba(6,182,212,0.15)', fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.65,
+          }}>
+            {recommendation}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Empty State Component ────────────────────────────────────────────────────
 function EmptyState({ onRefresh }) {
   return (
@@ -148,18 +279,30 @@ function KpiCard({ label, value, color, bg, pct, loading, glowClass }) {
 
 // ─── Main Analytics Page ──────────────────────────────────────────────────────
 export default function Analytics() {
-  const [videos,   setVideos]   = useState([]);
-  const [loading,  setLoading]  = useState(true);
-  const [error,    setError]    = useState(null);
-  const [total,    setTotal]    = useState(0);
-  const [search,   setSearch]   = useState('');
-  const [filter,   setFilter]   = useState('All');
-  const [sortKey,  setSortKey]  = useState('views');
-  const [sortDir,  setSortDir]  = useState('desc');
+  const PAGE_SIZE = 50;
+
+  const [videos,      setVideos]      = useState([]);
+  const [loading,     setLoading]     = useState(true);
+  const [error,       setError]       = useState(null);
+  const [total,       setTotal]       = useState(0);
+  const [search,      setSearch]      = useState('');
+  const [filter,      setFilter]      = useState('All');
+  const [sortKey,     setSortKey]     = useState('views');
+  const [sortDir,     setSortDir]     = useState('desc');
+  const [page,        setPage]        = useState(1);
+
+  // Per-video prediction
+  const [predModal,   setPredModal]   = useState(null);  // { video, result }
+  const [predLoading, setPredLoading] = useState(null);  // video_id
+
+  // YouTube sync
+  const [ytSyncing,   setYtSyncing]   = useState(false);
+  const [ytMsg,       setYtMsg]       = useState(null);  // { type: 'ok'|'err'|'info', text }
 
   const fetchVideos = () => {
     setLoading(true);
     setError(null);
+    setPage(1);
     getVideoAnalytics(2500)
       .then(res => {
         setVideos(res.data?.data || []);
@@ -170,6 +313,56 @@ export default function Analytics() {
   };
 
   useEffect(() => { fetchVideos(); }, []);
+
+  const handlePredict = async (video) => {
+    setPredLoading(video.video_id);
+    try {
+      // Pakai data video yang sudah ada di tabel — tidak perlu panggil API lain
+      const payload = {
+        views:                  video.views              ?? 0,
+        ctr:                    video.ctr                ?? 0,
+        impressions:            video.impressions        ?? 0,
+        avg_view_duration:      video.avg_view_duration  ?? '00:03:00',
+        video_duration:         video.video_duration     ?? '00:10:00',
+        likes:                  video.likes              ?? 0,
+        comments:               video.comments           ?? 0,
+        retention_rate:         video.retention_rate     ?? 0,
+        subscriber_gained:      video.subscriber_gained  ?? 0,
+        video_age_days:         video.video_age_days     ?? 30,
+        lag_views_7d:           video.lag_views_7d       ?? 0,
+        rolling_mean_views_14d: video.rolling_mean_14d   ?? 0,
+        video_title:            video.title              ?? '',
+      };
+      const predRes = await predictPerformance(payload);
+      setPredModal({ video, result: predRes.data });
+    } catch (err) {
+      setYtMsg({ type: 'err', text: `Prediksi gagal: ${err.message}` });
+      setTimeout(() => setYtMsg(null), 4000);
+    } finally {
+      setPredLoading(null);
+    }
+  };
+
+  const handleYtSync = async () => {
+    setYtSyncing(true);
+    setYtMsg(null);
+    try {
+      const statusRes = await getYouTubeStatus();
+      if (!statusRes.data?.is_authenticated) {
+        setYtMsg({ type: 'info', text: 'Belum login YouTube. Buka /auth/youtube/login di backend untuk autentikasi.' });
+        return;
+      }
+      const chRes = await getYouTubeChannel(10);
+      const ch = chRes.data;
+      const vCount = ch?.video_count || ch?.recent_videos?.length || '?';
+      setYtMsg({ type: 'ok', text: `Sinkronisasi berhasil · ${vCount} video terbaru dimuat dari YouTube` });
+    } catch (err) {
+      setYtMsg({ type: 'err', text: `Sync gagal: ${err.message}` });
+    } finally {
+      setYtSyncing(false);
+      setTimeout(() => setYtMsg(null), 5000);
+    }
+  };
 
   const filtered = videos
     .filter(v => {
@@ -183,10 +376,17 @@ export default function Analytics() {
       return sortDir === 'desc' ? bv - av : av - bv;
     });
 
+  const pageCount  = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated  = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
   const toggleSort = (key) => {
     if (sortKey === key) setSortDir(d => d === 'desc' ? 'asc' : 'desc');
     else { setSortKey(key); setSortDir('desc'); }
+    setPage(1);
   };
+
+  const handleFilterChange = (key) => { setFilter(key); setPage(1); };
+  const handleSearch = (val) => { setSearch(val); setPage(1); };
 
   // Derived summary counts (dihitung saat data ada maupun kosong)
   const anomalyCount    = videos.filter(v => v.status === 'Anomali').length;
@@ -199,6 +399,24 @@ export default function Analytics() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      {/* Prediction Modal */}
+      {predModal && (
+        <PredictModal video={predModal.video} result={predModal.result} onClose={() => setPredModal(null)} />
+      )}
+
+      {/* Toast notification */}
+      {ytMsg && (
+        <div style={{
+          position: 'fixed', bottom: 24, right: 24, zIndex: 8888,
+          padding: '0.75rem 1.1rem', borderRadius: 10, fontSize: '0.82rem',
+          background: ytMsg.type === 'ok' ? 'rgba(16,185,129,0.12)' : ytMsg.type === 'err' ? 'rgba(239,68,68,0.12)' : 'rgba(6,182,212,0.12)',
+          border: `1px solid ${ytMsg.type === 'ok' ? 'rgba(16,185,129,0.3)' : ytMsg.type === 'err' ? 'rgba(239,68,68,0.3)' : 'rgba(6,182,212,0.3)'}`,
+          color: ytMsg.type === 'ok' ? 'var(--accent-green)' : ytMsg.type === 'err' ? 'var(--accent-red)' : 'var(--accent-cyan)',
+          maxWidth: 360,
+        }}>
+          {ytMsg.text}
+        </div>
+      )}
 
       {/* ── Header ────────────────────────────────────────────────────────────── */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
@@ -213,15 +431,26 @@ export default function Analytics() {
             }
           </p>
         </div>
-        <button
-          className="btn-ghost"
-          onClick={fetchVideos}
-          disabled={loading}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.8rem' }}
-        >
-          <RefreshCw size={14} style={loading ? { animation: 'spin 1s linear infinite' } : {}} />
-          Refresh
-        </button>
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <button
+            className="btn-ghost"
+            onClick={handleYtSync}
+            disabled={ytSyncing}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.8rem' }}
+          >
+            <Youtube size={14} style={ytSyncing ? { animation: 'spin 1s linear infinite' } : {}} />
+            Sync YouTube
+          </button>
+          <button
+            className="btn-ghost"
+            onClick={fetchVideos}
+            disabled={loading}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.8rem' }}
+          >
+            <RefreshCw size={14} style={loading ? { animation: 'spin 1s linear infinite' } : {}} />
+            Refresh
+          </button>
+        </div>
       </div>
 
       {/* ── KPI Cards — selalu tampil (skeleton saat loading, 0 saat noData) ─── */}
@@ -257,7 +486,7 @@ export default function Analytics() {
             className="input-dark"
             placeholder="Cari judul video..."
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={e => handleSearch(e.target.value)}
             style={{ paddingLeft: 36 }}
             disabled={videos.length === 0}
           />
@@ -273,7 +502,7 @@ export default function Analytics() {
           ].map(({ key, label }) => (
             <button
               key={key}
-              onClick={() => setFilter(key)}
+              onClick={() => handleFilterChange(key)}
               className={filter === key ? 'btn-primary' : 'btn-ghost'}
               style={{ padding: '0.45rem 0.9rem', fontSize: '0.78rem' }}
             >
@@ -304,11 +533,12 @@ export default function Analytics() {
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-glass)', background: 'var(--bg-badge)' }}>
-                  {['Judul Video', 'Views', 'CTR', 'Status', 'Upload', 'Anomali'].map(h => (
+                  {['Judul Video', 'Views', 'CTR', 'Status', 'Upload', 'Anomali', 'Prediksi'].map(h => (
                     <th key={h} style={{
                       padding: '0.85rem 1.25rem', textAlign: 'left',
                       fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600,
                       textTransform: 'uppercase', letterSpacing: '0.06em',
+                      minWidth: h === 'Judul Video' ? 300 : undefined,
                     }}>
                       {h}
                     </th>
@@ -318,11 +548,11 @@ export default function Analytics() {
               <tbody>
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={6} style={{ padding: '2.5rem', textAlign: 'center', color: 'var(--text-dim)', fontSize: '0.875rem' }}>
+                    <td colSpan={7} style={{ padding: '2.5rem', textAlign: 'center', color: 'var(--text-dim)', fontSize: '0.875rem' }}>
                       Tidak ada video yang cocok dengan filter <strong>&quot;{filter}&quot;</strong>{search ? ` + kata kunci "${search}"` : ''}.
                     </td>
                   </tr>
-                ) : filtered.map((v, i) => {
+                ) : paginated.map((v, i) => {
                   const cfg = STATUS_CONFIG[v.status] || STATUS_CONFIG['Normal'];
                   const Icon = cfg.icon;
                   const dateStr = v.date ? String(v.date).slice(0, 10) : '—';
@@ -338,11 +568,35 @@ export default function Analytics() {
                       onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? 'transparent' : 'var(--bg-badge)'}
                     >
                       {/* Judul */}
-                      <td style={{ padding: '0.9rem 1.25rem', maxWidth: 300 }}>
-                        <span style={{ fontSize: '0.875rem', color: 'var(--text-primary)', fontWeight: 500, display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {v.title || 'Video'}
-                        </span>
-                        <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>{v.video_id}</span>
+                      <td style={{ padding: '0.75rem 1.25rem', maxWidth: 360 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                          {v.video_id ? (
+                            <img
+                              src={`https://img.youtube.com/vi/${v.video_id}/mqdefault.jpg`}
+                              alt={v.title || 'thumbnail'}
+                              loading="lazy"
+                              onError={e => { e.currentTarget.src = 'https://placehold.co/96x54/1a1a2e/666?text=No+Thumb'; }}
+                              style={{
+                                width: 96, height: 54, borderRadius: 6,
+                                objectFit: 'cover', flexShrink: 0,
+                                border: '1px solid var(--border-glass)',
+                              }}
+                            />
+                          ) : (
+                            <div style={{
+                              width: 96, height: 54, borderRadius: 6, flexShrink: 0,
+                              background: 'var(--bg-badge)', border: '1px solid var(--border-glass)',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              fontSize: '1.2rem',
+                            }}>🎬</div>
+                          )}
+                          <div style={{ overflow: 'hidden' }}>
+                            <span style={{ fontSize: '0.875rem', color: 'var(--text-primary)', fontWeight: 500, display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {v.title || 'Video'}
+                            </span>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>{v.video_id}</span>
+                          </div>
+                        </div>
                       </td>
                       {/* Views */}
                       <td style={{ padding: '0.9rem 1.25rem', whiteSpace: 'nowrap' }}>
@@ -382,23 +636,69 @@ export default function Analytics() {
                           <span style={{ color: 'var(--text-dim)', fontSize: '0.85rem', fontWeight: 700 }}>—</span>
                         )}
                       </td>
+                      {/* Prediksi */}
+                      <td style={{ padding: '0.9rem 1.25rem' }}>
+                        <button
+                          className="btn-ghost"
+                          disabled={predLoading === v.video_id}
+                          onClick={() => handlePredict(v)}
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', padding: '0.35rem 0.7rem' }}
+                        >
+                          <Zap size={11} style={predLoading === v.video_id ? { animation: 'spin 1s linear infinite' } : {}} />
+                          {predLoading === v.video_id ? '...' : 'Prediksi'}
+                        </button>
+                      </td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
-            {/* Footer */}
-            <div style={{ padding: '0.65rem 1.25rem', borderTop: '1px solid var(--border-glass)', color: 'var(--text-dim)', fontSize: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span>
-                Menampilkan <strong style={{ color: 'var(--text-muted)' }}>{filtered.length}</strong> dari <strong style={{ color: 'var(--text-muted)' }}>{videos.length}</strong> video
-                {total > videos.length && <span style={{ color: 'var(--text-dim)' }}> (dataset penuh: {total.toLocaleString()})</span>}
+            {/* Footer / Pagination */}
+            <div style={{ padding: '0.65rem 1.25rem', borderTop: '1px solid var(--border-glass)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+              <span style={{ color: 'var(--text-dim)', fontSize: '0.75rem' }}>
+                Hal <strong style={{ color: 'var(--text-muted)' }}>{page}</strong>/{pageCount || 1} ·{' '}
+                <strong style={{ color: 'var(--text-muted)' }}>{filtered.length}</strong> hasil
+                {total > videos.length && <span> (total dataset: {total.toLocaleString()})</span>}
               </span>
-              {filter !== 'All' && (
-                <button className="btn-ghost" onClick={() => { setFilter('All'); setSearch(''); }}
-                  style={{ fontSize: '0.72rem', padding: '0.25rem 0.6rem' }}>
-                  × Hapus filter
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                {filter !== 'All' && (
+                  <button className="btn-ghost" onClick={() => { handleFilterChange('All'); handleSearch(''); }}
+                    style={{ fontSize: '0.72rem', padding: '0.25rem 0.6rem' }}>
+                    × Hapus filter
+                  </button>
+                )}
+                <button
+                  className="btn-ghost"
+                  disabled={page <= 1}
+                  onClick={() => setPage(p => p - 1)}
+                  style={{ fontSize: '0.75rem', padding: '0.3rem 0.65rem' }}
+                >
+                  ← Prev
                 </button>
-              )}
+                {/* Page number chips — show up to 5 pages around current */}
+                {Array.from({ length: Math.min(pageCount, 5) }, (_, i) => {
+                  const start = Math.max(1, Math.min(page - 2, pageCount - 4));
+                  const pg = start + i;
+                  return pg <= pageCount ? (
+                    <button
+                      key={pg}
+                      onClick={() => setPage(pg)}
+                      className={pg === page ? 'btn-primary' : 'btn-ghost'}
+                      style={{ fontSize: '0.72rem', padding: '0.3rem 0.6rem', minWidth: 32 }}
+                    >
+                      {pg}
+                    </button>
+                  ) : null;
+                })}
+                <button
+                  className="btn-ghost"
+                  disabled={page >= pageCount}
+                  onClick={() => setPage(p => p + 1)}
+                  style={{ fontSize: '0.75rem', padding: '0.3rem 0.65rem' }}
+                >
+                  Next →
+                </button>
+              </div>
             </div>
           </>
         )}

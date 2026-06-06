@@ -193,13 +193,21 @@ async def get_videos_analytics(limit: int = 50):
         anomaly_df = _read_csv_safe("model_output_anomaly.csv")
         regression_df = _read_csv_safe("model_output_regression.csv")
 
-        # Pilih kolom yang dibutuhkan dari dataset utama
-        cols_needed = [c for c in ["video_id", "judul_video", "waktu_publikasi_video",
-                                   "penayangan_tak_dilewati", "penayangan",
-                                   "rasio_klik_tayang_dari_tayangan"] if c in base_df.columns]
+        # Kolom base + semua kolom untuk prediksi ML
+        _pred_cols = [
+            "tayangan", "rata_rata_durasi_tonton", "durasi",
+            "suka", "komentar_ditambahkan", "persentase_penayangan_rata_rata",
+            "subscriber_yang_diperoleh", "ts1_views", "ts2_views",
+        ]
+        cols_needed = [c for c in [
+            "video_id", "judul_video", "waktu_publikasi_video", "tanggal_upload",
+            "penayangan_tak_dilewati", "penayangan",
+            "rasio_klik_tayang_dari_tayangan",
+            *_pred_cols,
+        ] if c in base_df.columns]
         df = base_df[cols_needed].copy()
 
-        # Normalisasi kolom views (bisa pakai penayangan_tak_dilewati atau penayangan)
+        # Normalisasi kolom views
         if "penayangan_tak_dilewati" in df.columns:
             df["views"] = df["penayangan_tak_dilewati"].fillna(df.get("penayangan", 0)).fillna(0).astype(int)
         elif "penayangan" in df.columns:
@@ -210,6 +218,56 @@ async def get_videos_analytics(limit: int = 50):
         df["ctr"] = df["rasio_klik_tayang_dari_tayangan"].fillna(0.0).astype(float) if "rasio_klik_tayang_dari_tayangan" in df.columns else 0.0
         df["date"] = df["waktu_publikasi_video"].fillna("").astype(str) if "waktu_publikasi_video" in df.columns else ""
         df["title"] = df["judul_video"].fillna("Video").astype(str) if "judul_video" in df.columns else "Video"
+
+        # ── Prediction-ready fields ──────────────────────────────────────────
+        df["impressions"] = df["tayangan"].fillna(0).astype(int) if "tayangan" in df.columns else 0
+
+        # avg_view_duration: "0:03:37" → "00:03:37"
+        def _fmt_duration(raw):
+            s = str(raw) if raw and str(raw) not in ("nan", "None", "") else "00:03:00"
+            parts = s.split(":")
+            if len(parts) == 2:
+                return f"00:{parts[0].zfill(2)}:{parts[1].zfill(2)}"
+            if len(parts) == 3:
+                return f"{parts[0].zfill(2)}:{parts[1].zfill(2)}:{parts[2].zfill(2)}"
+            return "00:03:00"
+
+        if "rata_rata_durasi_tonton" in df.columns:
+            df["avg_view_duration"] = df["rata_rata_durasi_tonton"].apply(_fmt_duration)
+        else:
+            df["avg_view_duration"] = "00:03:00"
+
+        # video_duration: seconds float → "HH:MM:SS"
+        def _secs_to_hms(val):
+            try:
+                total = int(float(val))
+            except (ValueError, TypeError):
+                return "00:10:00"
+            h, rem = divmod(total, 3600)
+            m, s = divmod(rem, 60)
+            return f"{h:02d}:{m:02d}:{s:02d}"
+
+        if "durasi" in df.columns:
+            df["video_duration"] = df["durasi"].apply(_secs_to_hms)
+        else:
+            df["video_duration"] = "00:10:00"
+
+        df["likes"]             = df["suka"].fillna(0).astype(int)                          if "suka"                        in df.columns else 0
+        df["comments"]          = df["komentar_ditambahkan"].fillna(0).astype(int)           if "komentar_ditambahkan"         in df.columns else 0
+        df["retention_rate"]    = df["persentase_penayangan_rata_rata"].fillna(0.0).astype(float) if "persentase_penayangan_rata_rata" in df.columns else 0.0
+        df["subscriber_gained"] = df["subscriber_yang_diperoleh"].fillna(0).astype(int)     if "subscriber_yang_diperoleh"    in df.columns else 0
+        df["lag_views_7d"]      = df["ts1_views"].fillna(0).astype(float)                   if "ts1_views"                   in df.columns else 0.0
+        df["rolling_mean_14d"]  = df["ts2_views"].fillna(0).astype(float)                   if "ts2_views"                   in df.columns else 0.0
+
+        # video_age_days dari tanggal_upload
+        date_col = "tanggal_upload" if "tanggal_upload" in df.columns else \
+                   ("waktu_publikasi_video" if "waktu_publikasi_video" in df.columns else None)
+        if date_col:
+            dates = pd.to_datetime(df[date_col], errors="coerce")
+            today = pd.Timestamp.now(tz=None)
+            df["video_age_days"] = (today - dates.dt.tz_localize(None)).dt.days.fillna(30).astype(int).clip(lower=1)
+        else:
+            df["video_age_days"] = 30
 
         # Gabung dengan anomaly data
         if not anomaly_df.empty and "video_id" in anomaly_df.columns and "anomaly_label_model" in anomaly_df.columns:
@@ -245,8 +303,14 @@ async def get_videos_analytics(limit: int = 50):
 
         df["status"] = df.apply(derive_status, axis=1)
 
-        # Format output
-        result = df[["video_id", "title", "views", "ctr", "date", "status", "anomaly", "anomaly_score"]]\
+        # Format output — sertakan semua field yang dibutuhkan untuk prediksi per-video
+        out_cols = [
+            "video_id", "title", "views", "ctr", "date", "status", "anomaly", "anomaly_score",
+            "impressions", "avg_view_duration", "video_duration",
+            "likes", "comments", "retention_rate", "subscriber_gained",
+            "lag_views_7d", "rolling_mean_14d", "video_age_days",
+        ]
+        result = df[[c for c in out_cols if c in df.columns]]\
             .head(limit)\
             .to_dict(orient="records")
 
