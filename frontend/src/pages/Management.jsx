@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getOptimalSchedule, suggestThumbnail, getDrafts, createDraft, deleteDraft } from '../services/api';
+import { getOptimalSchedule, suggestThumbnail, renderThumbnailImage, getDrafts, createDraft, deleteDraft } from '../services/api';
 import { Image, Clock, FileText, Plus, Trash2, Loader, Star, Download, RefreshCw, Sparkles } from 'lucide-react';
 
 const TABS = [
@@ -56,18 +56,24 @@ function ThumbnailTab() {
     setEditableResult(prev => ({ ...prev, color_palette: newPalette }));
   };
 
-  const handleGenerateImage = () => {
+  const handleGenerateImage = async () => {
     if (!editableResult) return;
     setImageLoading(true);
     setImageError(false);
-    
+    setGeneratedImageUrl(null);
+
     const promptText = `16:9 ultra-detailed professional YouTube thumbnail. Main element: ${editableResult.main_element}. Text overlay bold: '${editableResult.text_overlay}'. Facial expression: ${editableResult.facial_expression}. Background: ${editableResult.background_color}. Palette: ${editableResult.color_palette.join(", ")}. ${editableResult.composition_tip}. YouTube thumbnail, clean graphics, vibrant colors, epic composition, 4k, cinematic lighting.`;
-    
-    const encodedPrompt = encodeURIComponent(promptText);
-    const randomSeed = Math.floor(Math.random() * 1000000);
-    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1280&height=720&nologo=true&seed=${randomSeed}&model=turbo`;
-    
-    setGeneratedImageUrl(imageUrl);
+
+    try {
+      // Backend mencoba Gemini ("nano banana") -> OpenAI -> Pollinations secara berurutan
+      const res = await renderThumbnailImage(promptText);
+      setGeneratedImageUrl(res.data.image_data || res.data.image_url);
+    } catch (err) {
+      // Fallback terakhir di sisi client kalau backend benar-benar tidak terjangkau
+      const encodedPrompt = encodeURIComponent(promptText);
+      const randomSeed = Math.floor(Math.random() * 1000000);
+      setGeneratedImageUrl(`https://image.pollinations.ai/prompt/${encodedPrompt}?width=1280&height=720&nologo=true&seed=${randomSeed}&model=turbo`);
+    }
   };
 
   const handleDownload = async () => {

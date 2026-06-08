@@ -228,6 +228,16 @@ class ThumbnailSuggestion(BaseModel):
     color_palette: List[str] = Field(description="Palet warna yang disarankan (hex)")
 
 
+class ThumbnailRenderRequest(BaseModel):
+    prompt: str = Field(min_length=10, max_length=2000, description="Prompt deskripsi visual thumbnail untuk image generator")
+
+
+class ThumbnailRenderResult(BaseModel):
+    provider: str = Field(description="Provider yang berhasil menghasilkan gambar: gemini, openai, atau pollinations")
+    image_data: Optional[str] = Field(default=None, description="Gambar dalam bentuk data URL base64 (data:image/...;base64,...)")
+    image_url: Optional[str] = Field(default=None, description="URL gambar (dipakai provider pollinations sebagai fallback)")
+
+
 class ScheduleRequest(BaseModel):
     days_ahead: int = Field(default=7, ge=1, le=30, description="Jumlah hari ke depan untuk jadwal")
 

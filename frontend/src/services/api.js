@@ -23,6 +23,7 @@ export const chatConsultation   = (payload) => api.post('/consultation/chat', pa
 export const getStats           = ()        => api.get('/stats/');
 export const getOptimalSchedule = ()        => api.get('/management/schedule/optimal-hours');
 export const suggestThumbnail   = (payload) => api.post('/management/thumbnail/suggest', payload);
+export const renderThumbnailImage = (prompt) => api.post('/management/thumbnail/render', { prompt }, { timeout: 120000 });
 export const getDrafts          = ()        => api.get('/management/drafts');
 export const createDraft        = (payload) => api.post('/management/drafts', payload);
 export const updateDraft        = (id, payload) => api.put(`/management/drafts/${id}`, payload);

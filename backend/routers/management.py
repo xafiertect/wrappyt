@@ -10,13 +10,17 @@ Fitur pengelolaan konten Hippo Academy:
 import os
 import uuid
 import json
+import base64
+import random
 import logging
 from datetime import datetime, date, timedelta
 from typing import List
+from urllib.parse import quote
 from fastapi import APIRouter, HTTPException, status
 
 from schemas.prediction import (
     ThumbnailRequest, ThumbnailSuggestion,
+    ThumbnailRenderRequest, ThumbnailRenderResult,
     ScheduleRequest, ScheduleOutput, OptimalSlot,
     DraftCreate, DraftUpdate, DraftOut,
 )
@@ -148,6 +152,90 @@ Berikan output dalam format JSON valid sesuai schema berikut (semua field wajib 
             composition_tip=f"Gunakan Rule of Thirds. Presenter di sisi kanan 60% frame, teks bold di kiri dengan stroke putih tebal.{ctr_note}",
             color_palette=["#FF0055", "#FFDD00", "#FFFFFF", "#1D1E2C"],
         )
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# THUMBNAIL IMAGE RENDER (rantai fallback: Gemini → OpenAI → Pollinations)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _render_with_gemini(prompt: str) -> "ThumbnailRenderResult | None":
+    """Coba generate gambar dengan Gemini image-gen ('nano banana'). None kalau gagal/tidak ada key."""
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        return None
+    try:
+        from google import genai
+        from google.genai import types as genai_types
+
+        client = genai.Client(api_key=api_key)
+        model_name = os.getenv("GEMINI_IMAGE_MODEL", "gemini-2.5-flash-image")
+        response = client.models.generate_content(
+            model=model_name,
+            contents=prompt,
+            config=genai_types.GenerateContentConfig(response_modalities=["IMAGE"]),
+        )
+        for part in response.candidates[0].content.parts:
+            inline = getattr(part, "inline_data", None)
+            if inline is not None and inline.data:
+                mime = inline.mime_type or "image/png"
+                b64 = base64.b64encode(inline.data).decode("utf-8")
+                return ThumbnailRenderResult(provider="gemini", image_data=f"data:{mime};base64,{b64}")
+    except Exception as e:
+        logger.warning(f"[Management] Render thumbnail via Gemini gagal, coba fallback: {e}")
+    return None
+
+
+async def _render_with_openai(prompt: str) -> "ThumbnailRenderResult | None":
+    """Coba generate gambar dengan OpenAI Images API. None kalau gagal/tidak ada key."""
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        return None
+    try:
+        import httpx
+
+        async with httpx.AsyncClient(timeout=90.0) as http_client:
+            resp = await http_client.post(
+                "https://api.openai.com/v1/images/generations",
+                headers={"Authorization": f"Bearer {api_key}"},
+                json={
+                    "model": os.getenv("OPENAI_IMAGE_MODEL", "gpt-image-1"),
+                    "prompt": prompt,
+                    "size": "1536x1024",
+                    "n": 1,
+                },
+            )
+            resp.raise_for_status()
+            b64 = resp.json()["data"][0]["b64_json"]
+            return ThumbnailRenderResult(provider="openai", image_data=f"data:image/png;base64,{b64}")
+    except Exception as e:
+        logger.warning(f"[Management] Render thumbnail via OpenAI gagal, coba fallback: {e}")
+    return None
+
+
+def _render_with_pollinations(prompt: str) -> ThumbnailRenderResult:
+    """Fallback terakhir: Pollinations AI — gratis, tanpa API key, selalu tersedia."""
+    encoded = quote(prompt)
+    seed = random.randint(0, 1_000_000)
+    url = f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&nologo=true&seed={seed}&model=turbo"
+    return ThumbnailRenderResult(provider="pollinations", image_url=url)
+
+
+@router.post("/thumbnail/render", response_model=ThumbnailRenderResult)
+async def render_thumbnail_image(request: ThumbnailRenderRequest):
+    """
+    Generate gambar thumbnail AI dari prompt visual.
+    Rantai fallback otomatis kalau provider sebelumnya limit/gagal:
+    Gemini image-gen ('nano banana') → OpenAI (gpt-image-1) → Pollinations AI (gratis).
+    """
+    result = _render_with_gemini(request.prompt)
+    if result is not None:
+        return result
+
+    result = await _render_with_openai(request.prompt)
+    if result is not None:
+        return result
+
+    return _render_with_pollinations(request.prompt)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
