@@ -918,18 +918,14 @@ async function init(){
     // Clean URL without reload
     window.history.replaceState({}, document.title, window.location.pathname);
 
-    // Scroll to connect card so user can see the selected video
-    const connectCard = document.getElementById('connect-card');
-    if (connectCard) {
-      connectCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
     if (S.yt.is_authenticated && S.ytVideos.some(v => v.video_id === videoId)) {
       // Video ada di daftar channel — set dropdown lalu muat metrik
       const selectEl = document.getElementById('yt-select');
       if (selectEl) {
         selectEl.value = videoId;
         await onYtSelect(videoId);
+        // Scroll ke dropdown setelah data dimuat
+        scrollToDropdown(selectEl);
       }
     } else if (S.csvVideos.some(v => v.video_id === videoId)) {
       // Video ada di dataset sampel — set dropdown lalu muat metrik
@@ -937,6 +933,7 @@ async function init(){
       if (selectEl) {
         selectEl.value = videoId;
         await onCsvSelect(videoId);
+        scrollToDropdown(selectEl);
       }
     } else {
       // Fallback: isi input sync dan tarik datanya
@@ -944,9 +941,21 @@ async function init(){
       if (syncInput) {
         syncInput.value = videoId;
         await syncVideo(videoId);
+        scrollToDropdown(syncInput);
       }
     }
   }
+}
+
+function scrollToDropdown(el) {
+  if (!el) return;
+  // Scroll ke elemen dropdown
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  // Tambahkan highlight ring sebentar agar user tau di mana harus lihat
+  const prev = el.style.outline;
+  el.style.outline = '2px solid var(--accent-cyan)';
+  el.style.transition = 'outline 0.3s ease';
+  setTimeout(() => { el.style.outline = prev; }, 2000);
 }
 
 function doLogout(){
