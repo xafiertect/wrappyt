@@ -1,4 +1,4 @@
-export default function MetricCard({ icon: Icon, label, value, unit = '', color = '#06B6D4', loading = false, sub }) {
+export default function MetricCard({ icon: Icon, label, value, unit = '', color = '#ff7a59', loading = false, sub }) {
   if (loading) {
     return (
       <div className="metric-card" style={{ minHeight: 120 }}>

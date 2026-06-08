@@ -10,7 +10,7 @@ import {
 
 // Threshold views: Viral ≥100k | Normal 20k–100k | Tidak Viral <20k | Anomali = IsolationForest
 const STATUS_CONFIG = {
-  Viral:        { color: 'var(--accent-cyan)', bg: 'rgba(6,182,212,0.1)',   icon: TrendingUp,   cls: 'badge-cyan'   },
+  Viral:        { color: 'var(--accent-cyan)', bg: 'rgba(255,122,89,0.1)',   icon: TrendingUp,   cls: 'badge-cyan'   },
   Normal:       { color: 'var(--accent-gold)', bg: 'rgba(245,158,11,0.1)',  icon: Minus,        cls: 'badge-yellow' },
   'Tidak Viral':{ color: 'var(--accent-red)', bg: 'rgba(239,68,68,0.1)',   icon: TrendingDown, cls: 'badge-red'    },
   Anomali:      { color: '#A78BFA',            bg: 'rgba(167,139,250,0.1)', icon: AlertTriangle, cls: 'badge-purple' },
@@ -160,7 +160,7 @@ function PredictModal({ video, result, onClose }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
           <span style={{
             padding: '0.3rem 0.75rem', borderRadius: 20, fontSize: '0.8rem', fontWeight: 700,
-            background: status === 'Viral' ? 'rgba(6,182,212,0.15)' : status === 'Tidak Viral' ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)',
+            background: status === 'Viral' ? 'rgba(255,122,89,0.15)' : status === 'Tidak Viral' ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)',
             color: status === 'Viral' ? 'var(--accent-cyan)' : status === 'Tidak Viral' ? 'var(--accent-red)' : 'var(--accent-gold)',
           }}>
             {status === 'Viral' ? '🚀' : status === 'Tidak Viral' ? '📉' : '📊'} {status}
@@ -224,8 +224,8 @@ function PredictModal({ video, result, onClose }) {
         {/* Recommendation */}
         {recommendation && (
           <div style={{
-            background: 'rgba(6,182,212,0.06)', borderRadius: 10, padding: '0.75rem 1rem',
-            border: '1px solid rgba(6,182,212,0.15)', fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.65,
+            background: 'rgba(255,122,89,0.06)', borderRadius: 10, padding: '0.75rem 1rem',
+            border: '1px solid rgba(255,122,89,0.15)', fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.65,
           }}>
             {recommendation}
           </div>
@@ -410,8 +410,8 @@ export default function Analytics() {
         <div style={{
           position: 'fixed', bottom: 24, right: 24, zIndex: 8888,
           padding: '0.75rem 1.1rem', borderRadius: 10, fontSize: '0.82rem',
-          background: ytMsg.type === 'ok' ? 'rgba(16,185,129,0.12)' : ytMsg.type === 'err' ? 'rgba(239,68,68,0.12)' : 'rgba(6,182,212,0.12)',
-          border: `1px solid ${ytMsg.type === 'ok' ? 'rgba(16,185,129,0.3)' : ytMsg.type === 'err' ? 'rgba(239,68,68,0.3)' : 'rgba(6,182,212,0.3)'}`,
+          background: ytMsg.type === 'ok' ? 'rgba(16,185,129,0.12)' : ytMsg.type === 'err' ? 'rgba(239,68,68,0.12)' : 'rgba(255,122,89,0.12)',
+          border: `1px solid ${ytMsg.type === 'ok' ? 'rgba(16,185,129,0.3)' : ytMsg.type === 'err' ? 'rgba(239,68,68,0.3)' : 'rgba(255,122,89,0.3)'}`,
           color: ytMsg.type === 'ok' ? 'var(--accent-green)' : ytMsg.type === 'err' ? 'var(--accent-red)' : 'var(--accent-cyan)',
           maxWidth: 360,
         }}>
@@ -456,7 +456,7 @@ export default function Analytics() {
 
       {/* ── KPI Cards — selalu tampil (skeleton saat loading, 0 saat noData) ─── */}
       <div className="analytics-kpi-grid">
-        <KpiCard loading={loading} label="🚀 Video Viral"   value={viralCount}      color="var(--accent-cyan)" bg="rgba(6,182,212,0.07)"  pct={pct(viralCount)} glowClass="glow-cyan" />
+        <KpiCard loading={loading} label="🚀 Video Viral"   value={viralCount}      color="var(--accent-cyan)" bg="rgba(255,122,89,0.07)"  pct={pct(viralCount)} glowClass="glow-cyan" />
         <KpiCard loading={loading} label="📊 Video Normal"  value={normalCount}     color="var(--accent-gold)" bg="rgba(245,158,11,0.07)" pct={pct(normalCount)} glowClass="glow-gold" />
         <KpiCard loading={loading} label="📉 Tidak Viral"   value={tidakViralCount} color="var(--accent-red)" bg="rgba(239,68,68,0.07)"  pct={pct(tidakViralCount)} glowClass="glow-red" />
         <KpiCard loading={loading} label="⚠️ Anomali"       value={anomalyCount}    color="#A78BFA" bg="rgba(167,139,250,0.07)" pct={pct(anomalyCount)} glowClass="glow-purple" />

@@ -37,7 +37,7 @@
     ctx.clearRect(0, 0, W, H);
     const line = css('--net-line') || 'rgba(47,107,246,0.14)';
     const stroke = css('--node-stroke') || 'rgba(47,107,246,0.55)';
-    const cyan = css('--accent-cyan') || '#16b9e0';
+    const cyan = css('--accent-cyan') || '#ff7a59';
     const maxD = 168;
 
     for (let i = 0; i < nodes.length; i++) {

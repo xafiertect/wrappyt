@@ -619,7 +619,7 @@ function renderResult(d){
   document.getElementById('m-views').textContent=Number(S.form.views||0).toLocaleString('id-ID');
 
   /* Update predict bar */
-  const sc=d.status==='Viral'?'#16b9e0':d.status==='Tidak Viral'?'var(--danger)':d.status==='Anomali'?'#a78bfa':'#f59e0b';
+  const sc=d.status==='Viral'?'#ff7a59':d.status==='Tidak Viral'?'var(--danger)':d.status==='Anomali'?'#a78bfa':'#f59e0b';
   setPbText(`Prediksi selesai! Status: <b style="color:${sc}">${d.status}</b> · Confidence ${Math.round((d.confidence||0)*100)}%`);
 
   /* Chart */
@@ -646,7 +646,7 @@ function renderChart(pts,d){
   const labels=['Sekarang','+1 Hari','+2 Hari','+3 Hari'];
   const ticks=labels.map((lb,k)=>`<text x="${(pL+(k/(labels.length-1))*iw).toFixed(0)}" y="${H-8}" font-family="var(--font-mono)" font-size="10" fill="var(--text-faint)" text-anchor="${k===0?'start':k===labels.length-1?'end':'middle'}">${lb}</text>`).join('');
   const lastX=X(n),lastY=Y(vals[n]);
-  const statusColor=d.status==='Viral'?'#16b9e0':d.status==='Tidak Viral'?'var(--danger)':d.status==='Anomali'?'#a78bfa':'#f59e0b';
+  const statusColor=d.status==='Viral'?'#ff7a59':d.status==='Tidak Viral'?'var(--danger)':d.status==='Anomali'?'#a78bfa':'#f59e0b';
   const verdictCls=d.status==='Viral'?'viral':d.status==='Tidak Viral'?'no':d.status==='Anomali'?'anomaly':'normal';
   document.getElementById('proj-body').innerHTML=`
     <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;margin-top:14px;">
@@ -774,7 +774,7 @@ function renderAI(d){
       </div>
       <div style="display: flex; gap: 8px; align-items: center; position: relative;">
         <input type="text" id="ai-chat-input" placeholder="Tanyakan saran perbaikan, hook..." style="width: 100%; font-family: var(--font-body); font-size: 13px; color: var(--text); padding: 10px 12px; border-radius: 10px; background: var(--chip-bg); border: 1px solid var(--glass-hairline); outline: none; padding-right: 40px; box-sizing: border-box;" />
-        <button id="ai-chat-send" style="position: absolute; right: 4px; top: 4px; bottom: 4px; padding: 0 12px; border-radius: 8px; display: flex; align-items: center; justify-content: center; height: calc(100% - 8px); background: linear-gradient(135deg, var(--accent-cyan) 0%, #0891B2 100%); border: none; cursor: pointer;">
+        <button id="ai-chat-send" style="position: absolute; right: 4px; top: 4px; bottom: 4px; padding: 0 12px; border-radius: 8px; display: flex; align-items: center; justify-content: center; height: calc(100% - 8px); background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-blue) 100%); border: none; cursor: pointer;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; color: #fff;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>

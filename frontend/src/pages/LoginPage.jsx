@@ -50,7 +50,7 @@ export default function LoginPage({ theme, toggleTheme, onLogin }) {
         width: '300px',
         height: '300px',
         borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(255,122,89,0.12) 0%, transparent 70%)',
         filter: 'blur(50px)',
         zIndex: 0,
         pointerEvents: 'none'
@@ -145,12 +145,12 @@ export default function LoginPage({ theme, toggleTheme, onLogin }) {
             width: 50,
             height: 50,
             borderRadius: 14,
-            background: 'linear-gradient(135deg, var(--accent-cyan), #0891B2)',
+            background: 'linear-gradient(135deg, var(--accent-cyan), var(--accent-blue))',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: '#FFF',
-            boxShadow: '0 0 20px rgba(6,182,212,0.4)'
+            boxShadow: '0 0 20px rgba(255,122,89,0.4)'
           }}>
             <Shield size={24} />
           </div>

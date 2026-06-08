@@ -103,8 +103,8 @@ export default function Consultation() {
                 {/* Avatar */}
                 <div style={{
                   width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
-                  background: isUser ? 'rgba(6,182,212,0.15)' : 'var(--bg-card)',
-                  border: `1px solid ${isUser ? 'rgba(6,182,212,0.3)' : 'var(--border-glass)'}`,
+                  background: isUser ? 'rgba(255,122,89,0.15)' : 'var(--bg-card)',
+                  border: `1px solid ${isUser ? 'rgba(255,122,89,0.3)' : 'var(--border-glass)'}`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
                   {isUser ? <User size={15} color="var(--accent-cyan)" /> : <Bot size={15} color="var(--text-muted)" />}
@@ -112,8 +112,8 @@ export default function Consultation() {
                 {/* Bubble */}
                 <div style={{
                   maxWidth: '72%',
-                  background: isUser ? 'rgba(6,182,212,0.08)' : 'var(--bg-card)',
-                  border: `1px solid ${isUser ? 'rgba(6,182,212,0.15)' : 'var(--border-glass)'}`,
+                  background: isUser ? 'rgba(255,122,89,0.08)' : 'var(--bg-card)',
+                  border: `1px solid ${isUser ? 'rgba(255,122,89,0.15)' : 'var(--border-glass)'}`,
                   borderRadius: isUser ? '16px 4px 16px 16px' : '4px 16px 16px 16px',
                   padding: '0.75rem 1rem',
                   fontSize: '0.875rem',

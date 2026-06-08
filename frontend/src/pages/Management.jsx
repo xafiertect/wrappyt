@@ -47,7 +47,7 @@ function ThumbnailTab() {
   const handleAddColor = () => {
     setEditableResult(prev => ({
       ...prev,
-      color_palette: [...prev.color_palette, '#06B6D4']
+      color_palette: [...prev.color_palette, '#ff7a59']
     }));
   };
 
@@ -123,7 +123,7 @@ function ThumbnailTab() {
 
         {/* Editor Kustomisasi Detail */}
         {editableResult && (
-          <div className="glass-panel" style={{ padding: '1.25rem', border: '1px solid rgba(6,182,212,0.25)', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+          <div className="glass-panel" style={{ padding: '1.25rem', border: '1px solid rgba(255,122,89,0.25)', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
             <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--accent-cyan)', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
               🎨 Kustomisasi Detail Thumbnail
             </h3>
@@ -223,7 +223,7 @@ function ThumbnailTab() {
               </div>
             </div>
 
-            <button className="btn-primary" type="button" onClick={handleGenerateImage} style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg, var(--accent-cyan) 0%, #0891B2 100%)' }}>
+            <button className="btn-primary" type="button" onClick={handleGenerateImage} style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-blue) 100%)' }}>
               <Sparkles size={14} />
               Render Gambar Thumbnail (AI)
             </button>
@@ -479,7 +479,7 @@ function ScheduleTab() {
         </div>
       ))}
       {tip && (
-        <div style={{ background: 'rgba(6,182,212,0.08)', border: '1px solid rgba(6,182,212,0.25)', borderRadius: 10, padding: '0.85rem 1rem', fontSize: '0.82rem', color: 'var(--accent-cyan)', lineHeight: 1.7 }}>
+        <div style={{ background: 'rgba(255,122,89,0.08)', border: '1px solid rgba(255,122,89,0.25)', borderRadius: 10, padding: '0.85rem 1rem', fontSize: '0.82rem', color: 'var(--accent-cyan)', lineHeight: 1.7 }}>
           💡 {tip}
         </div>
       )}
@@ -491,7 +491,7 @@ function ScheduleTab() {
 const STATUS_CONFIG = {
   'Draft': { bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.25)', text: 'var(--accent-gold)' },
   'Ready to Post': { bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.25)', text: 'var(--accent-green)' },
-  'Scheduled': { bg: 'rgba(6,182,212,0.08)', border: 'rgba(6,182,212,0.25)', text: 'var(--accent-cyan)' }
+  'Scheduled': { bg: 'rgba(255,122,89,0.08)', border: 'rgba(255,122,89,0.25)', text: 'var(--accent-cyan)' }
 };
 
 function DraftsTab() {
