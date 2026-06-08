@@ -290,6 +290,7 @@ export default function Analytics() {
   const [sortKey,     setSortKey]     = useState('views');
   const [sortDir,     setSortDir]     = useState('desc');
   const [page,        setPage]        = useState(1);
+  const [sourceFilter, setSourceFilter] = useState('All');
 
   // Per-video prediction
   const [predModal,   setPredModal]   = useState(null);  // { video, result }
@@ -357,6 +358,7 @@ export default function Analytics() {
       setYtMsg({ type: 'ok', text: `Sync berhasil · ${synced} video dari "${channel || 'channel Anda'}" disimpan (total cache: ${total_in_cache})` });
       // Reload tabel agar video live langsung muncul di atas
       fetchVideos();
+      setSourceFilter('youtube_live');
     } catch (err) {
       setYtMsg({ type: 'err', text: `Sync gagal: ${err.message}` });
     } finally {
@@ -365,7 +367,18 @@ export default function Analytics() {
     }
   };
 
-  const filtered = videos
+  const handleSourceFilterChange = (val) => {
+    setSourceFilter(val);
+    setPage(1);
+  };
+
+  // Filter by Source first ('All' | 'youtube_live' | 'csv')
+  const sourceFiltered = videos.filter(v => {
+    if (sourceFilter === 'All') return true;
+    return v.source === sourceFilter;
+  });
+
+  const filtered = sourceFiltered
     .filter(v => {
       const matchSearch = (v.title || '').toLowerCase().includes(search.toLowerCase());
       const matchFilter = filter === 'All' ? true : v.status === filter;
@@ -390,11 +403,11 @@ export default function Analytics() {
   const handleSearch = (val) => { setSearch(val); setPage(1); };
 
   // Derived summary counts (dihitung saat data ada maupun kosong)
-  const anomalyCount    = videos.filter(v => v.status === 'Anomali').length;
-  const viralCount      = videos.filter(v => v.status === 'Viral').length;
-  const tidakViralCount = videos.filter(v => v.status === 'Tidak Viral').length;
-  const normalCount     = videos.filter(v => v.status === 'Normal').length;
-  const pct = (n) => videos.length > 0 ? ((n / videos.length) * 100).toFixed(0) : null;
+  const anomalyCount    = sourceFiltered.filter(v => v.status === 'Anomali').length;
+  const viralCount      = sourceFiltered.filter(v => v.status === 'Viral').length;
+  const tidakViralCount = sourceFiltered.filter(v => v.status === 'Tidak Viral').length;
+  const normalCount     = sourceFiltered.filter(v => v.status === 'Normal').length;
+  const pct = (n) => sourceFiltered.length > 0 ? ((n / sourceFiltered.length) * 100).toFixed(0) : null;
 
   const noData = !loading && !error && videos.length === 0;
 
@@ -428,11 +441,52 @@ export default function Analytics() {
               ? 'Memuat data...'
               : noData
                 ? 'Belum ada data — jalankan pipeline notebook terlebih dahulu'
-                : `${total.toLocaleString()} video di dataset · ${anomalyCount > 0 ? `⚠️ ${anomalyCount} anomali` : 'Tidak ada anomali'}`
+                : `${sourceFiltered.length.toLocaleString()} video ${
+                    sourceFilter === 'youtube_live' 
+                      ? 'YouTube Live (Sync)' 
+                      : sourceFilter === 'csv' 
+                        ? 'di dataset sampel' 
+                        : 'di total database'
+                  } · ${anomalyCount > 0 ? `⚠️ ${anomalyCount} anomali` : 'Tidak ada anomali'}`
             }
           </p>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          {/* Segmented Source Selector */}
+          <div style={{ 
+            display: 'flex', 
+            gap: '2px', 
+            background: 'var(--bg-badge)', 
+            padding: '3px', 
+            borderRadius: 10, 
+            border: '1px solid var(--border-glass)',
+            marginRight: '8px'
+          }}>
+            {[
+              { key: 'All',          label: 'Semua' },
+              { key: 'youtube_live', label: 'YouTube Live' },
+              { key: 'csv',          label: 'Dataset Sampel' }
+            ].map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => handleSourceFilterChange(key)}
+                className={`btn-ghost ${sourceFilter === key ? 'active' : ''}`}
+                style={{ 
+                  padding: '0.35rem 0.75rem', 
+                  fontSize: '0.75rem', 
+                  borderRadius: 8,
+                  background: sourceFilter === key ? 'var(--bg-card)' : 'transparent',
+                  color: sourceFilter === key ? 'var(--accent-cyan)' : 'var(--text-dim)',
+                  border: sourceFilter === key ? '1px solid var(--border-glass)' : '1px solid transparent',
+                  fontWeight: sourceFilter === key ? '700' : '500',
+                  boxShadow: sourceFilter === key ? '0 2px 6px rgba(0,0,0,0.15)' : 'none'
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
           <button
             className="btn-ghost"
             onClick={handleYtSync}
