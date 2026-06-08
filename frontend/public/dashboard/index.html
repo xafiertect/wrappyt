@@ -543,6 +543,10 @@ async function onYtSelect(val){
       const note=d.analytics_available?'data analytics real-time':'data statistik video';
       showMsg(document.getElementById('connect-msg'),`✅ Berhasil memuat ${note}: "${d.video_title}"`,'ok');
       setPbText(`Video <b>${d.video_title}</b> siap dianalisis. Klik tombol di kanan untuk memulai analisis performa.`);
+      setTimeout(() => {
+        const pBtn = document.getElementById('predict-btn');
+        if (pBtn) pBtn.click();
+      }, 50);
     }
   }catch(e){showMsg(document.getElementById('connect-msg'),'❌ '+e.message,'err');}
   finally{if(ind)ind.style.display='none';}
@@ -565,6 +569,10 @@ async function syncVideo(idOrUrl){
       updateStats();
       showMsg(msg,`✅ "${d.video_title}"${d.is_fallback?' (dari dataset sampel)':''}`,'ok');
       setPbText(`Video <b>${d.video_title}</b> siap dianalisis. Klik tombol di kanan untuk memulai analisis performa.`);
+      setTimeout(() => {
+        const pBtn = document.getElementById('predict-btn');
+        if (pBtn) pBtn.click();
+      }, 50);
     }
   }catch(e){showMsg(msg,'❌ Gagal sync: '+e.message,'err');}
   finally{if(btn)btn.disabled=false;}
