@@ -61,5 +61,7 @@ yarn-error.log*
 *.log
 
 .claude
+.CLAUDE.md
+.CLAUDE
 
 
