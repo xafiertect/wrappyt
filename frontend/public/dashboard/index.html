@@ -542,8 +542,7 @@ async function onYtSelect(val){
       updateStats();
       const note=d.analytics_available?'data analytics real-time':'data statistik video';
       showMsg(document.getElementById('connect-msg'),`✅ Berhasil memuat ${note}: "${d.video_title}"`,'ok');
-      setPbText(`Video <b>${d.video_title}</b> siap dianalisis. Klik tombol di kanan untuk memulai analisis performa.`);
-      triggerAutoPredict();
+      setPbText(`Video <b>${d.video_title}</b> siap dianalisis. Klik <b>Prediksi Sekarang</b> untuk memulai analisis.`);
     }
   }catch(e){showMsg(document.getElementById('connect-msg'),'❌ '+e.message,'err');}
   finally{if(ind)ind.style.display='none';}
@@ -565,20 +564,10 @@ async function syncVideo(idOrUrl){
       S.title=d.video_title;
       updateStats();
       showMsg(msg,`✅ "${d.video_title}"${d.is_fallback?' (dari dataset sampel)':''}`,'ok');
-      setPbText(`Video <b>${d.video_title}</b> siap dianalisis. Klik tombol di kanan untuk memulai analisis performa.`);
-      triggerAutoPredict();
+      setPbText(`Video <b>${d.video_title}</b> siap dianalisis. Klik <b>Prediksi Sekarang</b> untuk memulai analisis.`);
     }
   }catch(e){showMsg(msg,'❌ Gagal sync: '+e.message,'err');}
   finally{if(btn)btn.disabled=false;}
-}
-
-function triggerAutoPredict(){
-  setTimeout(()=>{
-    const btn=document.getElementById('predict-btn');
-    if(btn&&!S.loading){
-      btn.click();
-    }
-  },150);
 }
 
 async function refreshChannel(){
@@ -923,31 +912,34 @@ async function init(){
     showMsg(document.getElementById('connect-msg'),'❌ Koneksi YouTube dibatalkan.','err');
   }
 
-  // Handle auto-select and auto-predict if video_id is passed in URL
+  // Handle auto-select from analytics page (video_id query param)
   const videoId = params.get('video_id');
   if (videoId) {
-    // Clean URL
-    const newUrl = window.location.pathname;
-    window.history.replaceState({}, document.title, newUrl);
-    
-    let found = false;
+    // Clean URL without reload
+    window.history.replaceState({}, document.title, window.location.pathname);
+
+    // Scroll to connect card so user can see the selected video
+    const connectCard = document.getElementById('connect-card');
+    if (connectCard) {
+      connectCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     if (S.yt.is_authenticated && S.ytVideos.some(v => v.video_id === videoId)) {
+      // Video ada di daftar channel — set dropdown lalu muat metrik
       const selectEl = document.getElementById('yt-select');
       if (selectEl) {
         selectEl.value = videoId;
-        found = true;
         await onYtSelect(videoId);
       }
     } else if (S.csvVideos.some(v => v.video_id === videoId)) {
+      // Video ada di dataset sampel — set dropdown lalu muat metrik
       const selectEl = document.getElementById('csv-select');
       if (selectEl) {
         selectEl.value = videoId;
-        found = true;
         await onCsvSelect(videoId);
       }
-    }
-    
-    if (!found) {
+    } else {
+      // Fallback: isi input sync dan tarik datanya
       const syncInput = document.getElementById('sync-input');
       if (syncInput) {
         syncInput.value = videoId;
