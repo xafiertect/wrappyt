@@ -6,9 +6,9 @@
 
 :root {
   /* tweakable */
-  --accent-cyan: #16b9e0;
-  --accent-blue: #2f6bf6;
-  --accent-sky: #5fd3f3;
+  --accent-cyan: #ff7a59;
+  --accent-blue: #f0468b;
+  --accent-sky: #ffb199;
   --glass-blur: 22px;
   --glow-strength: 1;
 
