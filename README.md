@@ -1,63 +1,75 @@
-# 🦛 YouTube View Decline Diagnosis & Hippo Academy
+<p align="center">
+  <h1 align="center">🦛 YouTube View Decline Diagnosis & Hippo Academy</h1>
+</p>
 
-[![Python Version](https://img.shields.io/badge/python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![React](https://img.shields.io/badge/React-18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev)
-[![Docker](https://img.shields.io/badge/Docker-240750?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com)
-[![Google Gemini](https://img.shields.io/badge/Google_Gemini-8E75C2?style=for-the-badge&logo=google-gemini&logoColor=white)](https://ai.google.dev)
-[![YouTube API](https://img.shields.io/badge/YouTube_API-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://developers.google.com/youtube)
+<p align="center">
+  <strong>AI-Powered YouTube Analytics · View Forecasting · Anomaly Detection · RAG Consultation</strong>
+</p>
 
-An end-to-end, enterprise-grade machine learning and RAG-powered analytics platform designed for YouTube creators to diagnose, forecast, and recover from view drops.
+<p align="center">
+  <img src="https://img.shields.io/badge/python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/React-18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
+  <img src="https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+  <img src="https://img.shields.io/badge/XGBoost-2C8EBB?style=for-the-badge&logo=xgboost&logoColor=white" alt="XGBoost" />
+  <img src="https://img.shields.io/badge/Scikit--Learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white" alt="Scikit-Learn" />
+  <img src="https://img.shields.io/badge/Google_Gemini-8E75C2?style=for-the-badge&logo=google-gemini&logoColor=white" alt="Gemini" />
+  <img src="https://img.shields.io/badge/YouTube_API-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube API" />
+</p>
 
 ---
 
-## 🎥 Demo & Testing Video
+## 📖 Project Overview
 
-Below is the demo and testing video showing the platform in action, including real-time channel sync, predictive analytics, anomaly detection, and AI consultation:
+**YouTube View Decline Diagnosis & Hippo Academy** adalah platform AI full-stack yang dirancang untuk membantu kreator YouTube mendiagnosis penyebab penurunan performa (views) channel mereka secara ilmiah. Platform ini mengintegrasikan **Machine Learning** untuk peramalan views, **Deteksi Anomali** real-time, **YouTube OAuth 2.0 Integration**, serta **RAG AI Consultant** yang terhubung dengan basis pengetahuan Hippo Academy.
+
+Proyek ini dibuat sebagai **Capstone Project** untuk memberikan solusi analitik cerdas yang dapat ditindaklanjuti oleh para kreator konten.
+
+---
+
+## 🎥 Video Demo & Testing
+
+Berikut adalah demonstrasi aplikasi, alur integrasi YouTube OAuth, proses diagnosis machine learning, dan konsultasi AI berbasis RAG:
 
 <p align="center">
-  <video src="docs/testing_video.mp4" width="100%" controls autoplay muted loop>
-    Your browser does not support the video tag. Please download the video file at <code>docs/testing_video.mp4</code>.
+  <video src="./docs/testing_video.mp4" controls width="100%" poster="./Screenshot_20260608_143942.png">
+    browser Anda tidak mendukung tag video HTML5. Silakan tonton langsung melalui file <a href="./docs/testing_video.mp4">docs/testing_video.mp4</a>.
   </video>
 </p>
 
+> [!NOTE]
+> *Jika video demo belum diputar, Anda dapat menambahkan rekaman layar pengujian ke dalam folder `docs/` dengan nama `testing_video.mp4`.*
+
 ---
 
-## 📸 Interface Preview
+## 📸 Application Screenshots (Galeri Dashboard)
 
 <p align="center">
-  <img src="./Screenshot_20260608_143942.png" width="49%" alt="Dashboard Interface" />
-  <img src="./Screenshot_20260608_145045.png" width="49%" alt="Analytics Panel" />
+  <strong>1. Dashboard Utama & Status Prediksi Views</strong><br/>
+  <img src="./Screenshot_20260608_143942.png" alt="Dashboard Panel" width="90%" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);" />
+</p>
+
+<p align="center">
+  <strong>2. Analisis Anomali & Grafik Tren Multi-Horizon</strong><br/>
+  <img src="./Screenshot_20260608_145045.png" alt="Analytics Panel" width="90%" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);" />
 </p>
 
 ---
 
-## 🚀 Key Features
+## ✨ Fitur Utama
 
-*   📊 **Multi-Horizon View Forecasting**: Predict views for 7, 14, and 30 days ahead using tuned XGBoost regression models.
-*   🔍 **Real-Time Anomaly Detection**: Automatically flag sudden, abnormal view drops using Isolation Forest.
-*   📈 **Viral Probability Prediction**: Predict whether a video will go viral at 2-hour, 24-hour, and 48-hour horizons using relative velocity metrics.
-*   🤖 **AI Consultant (RAG)**: Chat with a specialized AI advisor powered by Google Gemini, bounded to the Hippo Academy Knowledge Base (`backend/data/hippo_kb.md`).
-*   🔗 **YouTube OAuth 2.0**: Sync channel metrics directly from YouTube Data and Analytics APIs.
-*   🎨 **Thumbnail Optimizer & Planner**: Plan content drafts, schedule posts, and get AI-powered thumbnail feedback.
-
----
-
-## 🧠 Machine Learning Engine
-
-This platform utilizes 5 specialized models trained on YouTube performance datasets:
-
-| Model | Algoritma Utama | Target Prediksi | Metrik Evaluasi |
-| :--- | :--- | :--- | :--- |
-| **M1: Views Regression** | XGBoost Regressor | Estimasi jumlah views (7, 14, 30 hari) | R², RMSE, MAE |
-| **M2: Time-Series Forecast** | Prophet | Proyeksi tren views dengan confidence interval | MAPE, RMSE |
-| **M3: Anomaly Detection** | Isolation Forest | Klasifikasi drop views tidak wajar (-1 / 1) | Precision, Recall, F1 |
-| **M4: Root Cause Analysis** | Decision Tree + SHAP | Identifikasi penyebab penurunan utama | Accuracy, SHAP Values |
-| **M5: Viral Survival** | Cox Proportional Hazard | Probabilitas viralitas relatif pada jam 2, 24, & 48 | C-Index, Brier Score |
+| Fitur | Deskripsi | Teknologi |
+| :--- | :--- | :--- |
+| 📊 **Multi-Horizon Prediction** | Peramalan views untuk 7, 14, dan 30 hari ke depan untuk melihat potensi tren drop | XGBoost Regression |
+| 🔍 **Anomaly Detection** | Deteksi otomatis penurunan views yang tidak wajar di luar tren musiman | Isolation Forest |
+| 🤖 **RAG AI Consultant** | Konsultan AI interaktif yang dibatasi pada basis pengetahuan strategi pemulihan views | Google Gemini API + RAG |
+| 🔗 **YouTube OAuth 2.0** | Sinkronisasi data performa channel kreator secara real-time langsung dari YouTube API | YouTube Data & Analytics API |
+| 🎨 **Content Management** | Pengelolaan ide konten, draf naskah, analisis thumbnail, dan rekomendasi waktu upload | FastAPI CRUD + Pillow |
 
 ---
 
-## 🏗️ System Architecture
+## 🏗️ Arsitektur Sistem
 
 ```text
 ┌─────────────────────────────────────────────────────────────────┐
@@ -86,113 +98,113 @@ This platform utilizes 5 specialized models trained on YouTube performance datas
 
 ---
 
-## 🗂️ Project Structure
+## 🗂️ Struktur Proyek
 
 ```text
 .
 ├── backend/                      # FastAPI REST API & ML Inference Engine
-│   ├── routers/                  # API endpoints (predict, auth, consult, stats)
-│   ├── utils/                    # Business logic (RAG, YouTube OAuth & APIs)
-│   ├── models/                   # Serialized ML models (*.pkl)
-│   ├── scalers/                  # Data scaling parameters
-│   ├── data/                     # RAG Knowledge Base files
-│   └── main.py                   # FastAPI application entry point
+│   ├── routers/                  # Endpoint API (Prediction, Auth, Chat, Drafts)
+│   ├── utils/                    # Logika Bisnis Utama (Model Loader, RAG, YouTube API)
+│   ├── schemas/                  # Validasi data dengan Pydantic v2
+│   ├── models/                   # Model regresi terlatih (*.pkl)
+│   ├── scalers/                  # Scaler pre-processing data (*.pkl)
+│   ├── data/                     # Knowledge base (hippo_kb.md) & database lokal
+│   ├── main.py                   # Entrypoint Backend
+│   └── requirements.txt          # Dependensi Python Backend
 │
-├── frontend/                     # React Single Page Application (SPA)
-│   ├── src/pages/                # Dashboard, Analytics, Chat, Management views
-│   ├── src/components/           # Reusable UI elements (metrics, cards, alerts)
-│   └── src/index.css             # Premium custom CSS variables & styles
+├── frontend/                     # React + Vite Single Page Application
+│   ├── src/
+│   │   ├── pages/                # Halaman UI (Dashboard, Analytics, Chat, Management)
+│   │   ├── components/           # Komponen UI Reusable (Sidebar, Card, Alert)
+│   │   └── services/api.js       # Klien HTTP Axios
+│   └── package.json              # Dependensi Frontend
 │
-├── notebooks/                    # Research, Feature Engineering & Training Pipeline
-│   ├── preparation/              # Data cleansing notebooks
-│   ├── feature_engineering/      # Feature extraction pipelines
-│   └── modelling/                # Training & evaluation scripts
+├── notebooks/                    # Pipeline Riset & Pelatihan Model (Jupyter)
+│   ├── preparation/              # Pembersihan & penggabungan dataset
+│   ├── feature_engineering/      # Ekstraksi fitur & transformasi data
+│   └── modelling/                # Pelatihan, evaluasi XGBoost & ekspor model
 │
-├── docs/                         # Technical documentation & architecture guides
-├── docker-compose.yml            # Multi-container orchestrator
-└── Caddyfile                     # Production reverse proxy server configuration
+├── docker-compose.yml            # Konfigurasi orkestrasi Docker multi-container
+├── Caddyfile                     # Konfigurasi reverse proxy & SSL otomatis
+├── requirements.txt              # Daftar dependensi utama root
+└── README.md                     # ← Dokumen yang sedang Anda baca
 ```
 
 ---
 
-## 🛠️ Installation & Setup
+## 🚀 Panduan Memulai (Quick Start)
 
-### Option 1: Local Development
+### Persyaratan Sistem
+* Python ≥ 3.10
+* Node.js ≥ 18
+* Docker & Docker Compose (Opsional, untuk produksi)
 
-#### Prerequisites
-*   Python $\ge 3.10$
-*   Node.js $\ge 18$
+---
 
-#### 1. Setup Backend
+### Cara 1: Menjalankan dengan Docker Compose (Rekomendasi Produksi)
+
+Kami telah menyediakan konfigurasi Docker lengkap beserta reverse proxy Caddy untuk deployment cepat:
+
+1. Salin berkas lingkungan dan isi API Key Anda:
+   ```bash
+   cp .env.example .env
+   ```
+2. Jalankan aplikasi menggunakan docker-compose:
+   ```bash
+   docker compose up -d --build
+   ```
+3. Buka browser pada alamat `http://localhost` (Frontend) atau `http://localhost/api` (Backend).
+
+---
+
+### Cara 2: Menjalankan Secara Lokal (Development Mode)
+
+#### 1. Setup Backend (FastAPI)
 ```bash
-# Activate virtual environment
-python -m venv captonevenv && source captonevenv/bin/activate
+# Buat Virtual Environment
+python -m venv captonevenv
+source captonevenv/bin/activate # di Linux/macOS
 
-# Install dependencies
+# Instal Dependensi
 pip install -r requirements.txt
 
-# Copy environment variables and configure them
-cp .env.example .env
-
-# Run FastAPI backend
+# Jalankan Backend
 cd backend
+cp .env.example .env # Isi API Key Gemini Anda di berkas ini
 uvicorn main:app --reload --port 8000
 ```
 
-#### 2. Setup Frontend
+#### 2. Setup Frontend (React)
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Open [http://localhost:5173](http://localhost:5173).
+Buka **http://localhost:5173** di browser Anda.
 
 ---
 
-### Option 2: Production Deployment (Docker Compose)
+## 🔑 Konfigurasi Environment Variables (`.env`)
 
-The production stack uses Docker Compose with Caddy as a reverse proxy, automatic SSL, and optimal routing:
-
-```bash
-# Clone the repository
-git clone https://github.com/xafiertect/Model-Prediksi-dan-Diagnosa-Penurunan-Views-YouTube-Berbasis-Machine-Learning.git
-cd Model-Prediksi-dan-Diagnosa-Penurunan-Views-YouTube-Berbasis-Machine-Learning
-
-# Configure environment keys
-cp .env.example .env
-
-# Build and start services in detached mode
-docker-compose up --build -d
-```
-
-Services are automatically mapped:
-*   Frontend: [http://localhost](http://localhost) (with Nginx static compression)
-*   Backend API Docs: [http://localhost/docs](http://localhost/docs) (served through reverse proxy)
+| Variabel | Wajib | Keterangan |
+| :--- | :---: | :--- |
+| `GEMINI_API_KEY` | ✅ | Kunci API Google AI Studio untuk chatbot konsultasi RAG |
+| `GEMINI_MODEL` | ❌ | Model Gemini yang digunakan (default: `gemini-1.5-flash`) |
+| `YOUTUBE_CLIENT_ID` | ❌ | Client ID Google OAuth 2.0 untuk integrasi API YouTube |
+| `YOUTUBE_CLIENT_SECRET` | ❌ | Client Secret Google OAuth 2.0 |
 
 ---
 
-## 🔑 Environment Variables Configuration
+## 👥 Tim Kontributor
 
-Ensure you create a `.env` file in the root directory with the following keys:
-
-```ini
-# --- General Config ---
-PORT=8000
-GEMINI_API_KEY=your_gemini_api_key
-GEMINI_MODEL=gemini-2.5-flash
-
-# --- YouTube OAuth ---
-YOUTUBE_CLIENT_ID=your_youtube_client_id
-YOUTUBE_CLIENT_SECRET=your_youtube_client_secret
-YOUTUBE_REDIRECT_URI=http://localhost:8000/auth/youtube/callback
-```
+* **Rizqi Maulidiyah** - Project Lead & Developer
+* **Wildan Taufiqurrahman** - Backend & ML Engineer
+* **Akmal Goldi** - ML Engineer
+* **Yusuf Al-Qodri** - ML Engineer
+* **Zahra** - Frontend UI Developer
 
 ---
 
-## 📖 Sub-Module Documentation
+## 📄 Lisensi
 
-For advanced features and developer-specific guides:
-*   [Frontend Architecture & Styling Guide](./frontend/README.md)
-*   [Backend Endpoints & API Reference](./backend/README.md)
-*   [Data Science Notebooks & Modeling Guide](./notebooks/README.md)
-*   [Docker & Deploy Strategy](./docs/docker.md)
+Proyek ini dibangun untuk tujuan akademis sebagai **Tugas Akhir/Capstone Project**. Hak cipta dipegang oleh tim pengembang Capstone.
