@@ -553,20 +553,9 @@ export default function Analytics() {
       </div>
 
       {/* ── Filter & Sort Controls ────────────────────────────────────────────── */}
-      <div className="glass-panel" style={{ padding: '1rem 1.25rem', display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-        <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
-          <Search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)' }} />
-          <input
-            className="input-dark"
-            placeholder="Cari judul video..."
-            value={search}
-            onChange={e => handleSearch(e.target.value)}
-            style={{ paddingLeft: 36 }}
-            disabled={videos.length === 0}
-          />
-        </div>
-
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+      <div className="glass-panel" style={{ padding: '0.75rem 1.25rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+        {/* Row 1: Status filter + Sort buttons on one line */}
+        <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
           {[
             { key: 'All',         label: 'Semua' },
             { key: 'Viral',       label: `🚀 Viral (${viralCount})` },
@@ -578,27 +567,38 @@ export default function Analytics() {
               key={key}
               onClick={() => handleFilterChange(key)}
               className={filter === key ? 'btn-primary' : 'btn-ghost'}
-              style={{ padding: '0.45rem 0.9rem', fontSize: '0.78rem' }}
+              style={{ padding: '0.4rem 0.8rem', fontSize: '0.78rem' }}
             >
               {label}
             </button>
           ))}
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-muted)', fontSize: '0.8rem', marginLeft: 'auto' }}>
-          <Filter size={14} />
-          <button className="btn-ghost" onClick={() => { setSortKey('date'); setSortDir('desc'); setPage(1); }} style={{ padding: '0.4rem 0.7rem', color: (sortKey === 'date' && sortDir === 'desc') ? 'var(--accent-cyan)' : undefined }}>
+          <div style={{ width: 1, height: 20, background: 'var(--border-glass)', marginLeft: 4, marginRight: 4, flexShrink: 0 }} />
+          <Filter size={13} style={{ color: 'var(--text-dim)', flexShrink: 0 }} />
+          <button className="btn-ghost" onClick={() => { setSortKey('date'); setSortDir('desc'); setPage(1); }} style={{ padding: '0.4rem 0.7rem', fontSize: '0.78rem', color: (sortKey === 'date' && sortDir === 'desc') ? 'var(--accent-cyan)' : undefined }}>
             Terbaru
           </button>
-          <button className="btn-ghost" onClick={() => { setSortKey('date'); setSortDir('asc'); setPage(1); }} style={{ padding: '0.4rem 0.7rem', color: (sortKey === 'date' && sortDir === 'asc') ? 'var(--accent-cyan)' : undefined }}>
+          <button className="btn-ghost" onClick={() => { setSortKey('date'); setSortDir('asc'); setPage(1); }} style={{ padding: '0.4rem 0.7rem', fontSize: '0.78rem', color: (sortKey === 'date' && sortDir === 'asc') ? 'var(--accent-cyan)' : undefined }}>
             Terlama
           </button>
-          <button className="btn-ghost" onClick={() => toggleSort('views')} style={{ padding: '0.4rem 0.7rem', color: sortKey === 'views' ? 'var(--accent-cyan)' : undefined }}>
+          <button className="btn-ghost" onClick={() => toggleSort('views')} style={{ padding: '0.4rem 0.7rem', fontSize: '0.78rem', color: sortKey === 'views' ? 'var(--accent-cyan)' : undefined }}>
             Views {sortKey === 'views' ? (sortDir === 'desc' ? '↓' : '↑') : ''}
           </button>
-          <button className="btn-ghost" onClick={() => toggleSort('ctr')} style={{ padding: '0.4rem 0.7rem', color: sortKey === 'ctr' ? 'var(--accent-cyan)' : undefined }}>
+          <button className="btn-ghost" onClick={() => toggleSort('ctr')} style={{ padding: '0.4rem 0.7rem', fontSize: '0.78rem', color: sortKey === 'ctr' ? 'var(--accent-cyan)' : undefined }}>
             CTR {sortKey === 'ctr' ? (sortDir === 'desc' ? '↓' : '↑') : ''}
           </button>
+        </div>
+
+        {/* Row 2: Search input full width */}
+        <div style={{ position: 'relative' }}>
+          <Search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)' }} />
+          <input
+            className="input-dark"
+            placeholder="Cari judul video..."
+            value={search}
+            onChange={e => handleSearch(e.target.value)}
+            style={{ paddingLeft: 36, width: '100%', boxSizing: 'border-box' }}
+            disabled={videos.length === 0}
+          />
         </div>
       </div>
 
