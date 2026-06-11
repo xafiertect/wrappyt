@@ -17,13 +17,13 @@ export default function LoginPage({ theme, toggleTheme, onLogin }) {
 
     // Simulasi delay login agar terasa premium
     setTimeout(() => {
-      if (email.toLowerCase() === 'elkanaxafier@gmail.com' && password === 'xafier123') {
+      if (email.toLowerCase() === 'linqicai10@gmail.com' && password === 'xafier123') {
         onLogin();
         // Redirect ke dashboard atau halaman yang dituju sebelumnya
         const origin = location.state?.from?.pathname || '/dashboard';
         navigate(origin, { replace: true });
       } else {
-        setError('Kredensial salah! Halaman ini hanya diperuntukkan untuk email elkanaxafier@gmail.com.');
+        setError('Kredensial salah! Halaman ini hanya diperuntukkan untuk email linqicai10@gmail.com.');
         setLoading(false);
       }
     }, 1000);
@@ -190,7 +190,7 @@ export default function LoginPage({ theme, toggleTheme, onLogin }) {
               <input
                 className="input-dark"
                 type="email"
-                placeholder="elkanaxafier@gmail.com"
+                placeholder="linqicai10@gmail.com"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 style={{ paddingLeft: '2.5rem' }}
@@ -248,7 +248,7 @@ export default function LoginPage({ theme, toggleTheme, onLogin }) {
           lineHeight: 1.5
         }}>
           💡 <span style={{ color: 'var(--text-muted)' }}>Info Kredensial Pengujian:</span><br />
-          Email: <span style={{ color: 'var(--accent-cyan)', fontWeight: 'bold' }}>elkanaxafier@gmail.com</span><br />
+          Email: <span style={{ color: 'var(--accent-cyan)', fontWeight: 'bold' }}>linqicai10@gmail.com</span><br />
           Sandi: <span style={{ color: 'var(--accent-cyan)', fontWeight: 'bold' }}>xafier123</span>
         </div>
       </div>
