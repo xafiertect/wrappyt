@@ -399,6 +399,11 @@ export default function Analytics() {
       return matchSearch && matchFilter;
     })
     .sort((a, b) => {
+      if (sortKey === 'date') {
+        const da = a.date ? new Date(a.date).getTime() : 0;
+        const db = b.date ? new Date(b.date).getTime() : 0;
+        return sortDir === 'desc' ? db - da : da - db;
+      }
       const av = a[sortKey] ?? 0;
       const bv = b[sortKey] ?? 0;
       return sortDir === 'desc' ? bv - av : av - bv;
@@ -582,6 +587,12 @@ export default function Analytics() {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-muted)', fontSize: '0.8rem', marginLeft: 'auto' }}>
           <Filter size={14} />
+          <button className="btn-ghost" onClick={() => { setSortKey('date'); setSortDir('desc'); setPage(1); }} style={{ padding: '0.4rem 0.7rem', color: (sortKey === 'date' && sortDir === 'desc') ? 'var(--accent-cyan)' : undefined }}>
+            Terbaru
+          </button>
+          <button className="btn-ghost" onClick={() => { setSortKey('date'); setSortDir('asc'); setPage(1); }} style={{ padding: '0.4rem 0.7rem', color: (sortKey === 'date' && sortDir === 'asc') ? 'var(--accent-cyan)' : undefined }}>
+            Terlama
+          </button>
           <button className="btn-ghost" onClick={() => toggleSort('views')} style={{ padding: '0.4rem 0.7rem', color: sortKey === 'views' ? 'var(--accent-cyan)' : undefined }}>
             Views {sortKey === 'views' ? (sortDir === 'desc' ? '↓' : '↑') : ''}
           </button>
@@ -624,7 +635,18 @@ export default function Analytics() {
                 ) : paginated.map((v, i) => {
                   const cfg = STATUS_CONFIG[v.status] || STATUS_CONFIG['Normal'];
                   const Icon = cfg.icon;
-                  const dateStr = v.date ? String(v.date).slice(0, 10) : '—';
+                  let dateStr = '—';
+                  if (v.date) {
+                    const parsedD = new Date(v.date);
+                    if (!isNaN(parsedD.getTime())) {
+                      const yyyy = parsedD.getFullYear();
+                      const mm = String(parsedD.getMonth() + 1).padStart(2, '0');
+                      const dd = String(parsedD.getDate()).padStart(2, '0');
+                      dateStr = `${yyyy}-${mm}-${dd}`;
+                    } else {
+                      dateStr = String(v.date).slice(0, 10);
+                    }
+                  }
                   return (
                     <tr
                       key={v.video_id || i}

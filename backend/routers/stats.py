@@ -216,7 +216,16 @@ async def get_videos_analytics(limit: int = 50):
             df["views"] = 0
 
         df["ctr"] = df["rasio_klik_tayang_dari_tayangan"].fillna(0.0).astype(float) if "rasio_klik_tayang_dari_tayangan" in df.columns else 0.0
-        df["date"] = df["waktu_publikasi_video"].fillna("").astype(str) if "waktu_publikasi_video" in df.columns else ""
+        
+        if "tanggal_upload" in df.columns:
+            df["date"] = df["tanggal_upload"].fillna("").astype(str)
+        elif "waktu_publikasi_video" in df.columns:
+            # Parse using pandas to_datetime safely and format to YYYY-MM-DD
+            parsed_dates = pd.to_datetime(df["waktu_publikasi_video"], errors="coerce")
+            df["date"] = parsed_dates.dt.strftime("%Y-%m-%d").fillna("")
+        else:
+            df["date"] = ""
+            
         df["title"] = df["judul_video"].fillna("Video").astype(str) if "judul_video" in df.columns else "Video"
 
         # ── Prediction-ready fields ──────────────────────────────────────────
