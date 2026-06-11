@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, BarChart2, Video, Sparkles, Settings } from 'lucide-react';
+import { Home, BarChart2, Video, Sparkles, Settings, Clock } from 'lucide-react';
 
 export default function Sidebar({ theme, toggleTheme, onLogout }) {
   return (
@@ -24,6 +24,7 @@ export default function Sidebar({ theme, toggleTheme, onLogout }) {
             <a href="/dashboard" className="nlink">Dashboard</a>
             <NavLink to="/analytics" className={({ isActive }) => `nlink ${isActive ? 'active' : ''}`}>Analitik Video</NavLink>
             <NavLink to="/consult" className={({ isActive }) => `nlink ${isActive ? 'active' : ''}`}>AI Consultant</NavLink>
+            <NavLink to="/schedule" className={({ isActive }) => `nlink ${isActive ? 'active' : ''}`}>Jam Posting</NavLink>
             <NavLink to="/management" className={({ isActive }) => `nlink ${isActive ? 'active' : ''}`}>Management</NavLink>
           </div>
 
@@ -70,6 +71,10 @@ export default function Sidebar({ theme, toggleTheme, onLogout }) {
         <NavLink to="/consult" className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>
           <Sparkles size={20} />
           <span>Consultant</span>
+        </NavLink>
+        <NavLink to="/schedule" className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>
+          <Clock size={20} />
+          <span>Jam Posting</span>
         </NavLink>
         <NavLink to="/management" className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>
           <Settings size={20} />

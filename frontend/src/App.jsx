@@ -7,6 +7,7 @@ import Dashboard    from './pages/Dashboard';
 import Analytics    from './pages/Analytics';
 import Consultation from './pages/Consultation';
 import Management  from './pages/Management';
+import Schedule    from './pages/Schedule';
 
 // Protected Route Wrapper
 function ProtectedRoute({ isAuthenticated, children }) {
@@ -100,6 +101,7 @@ export default function App() {
                   <Route path="/dashboard"  element={<Dashboard />} />
                   <Route path="/analytics"  element={<Analytics />} />
                   <Route path="/consult"    element={<Consultation />} />
+                  <Route path="/schedule"   element={<Schedule />} />
                   <Route path="/management" element={<Management />} />
                   {/* Redirect unmatched protected paths to dashboard */}
                   <Route path="*"           element={<Navigate to="/dashboard" replace />} />

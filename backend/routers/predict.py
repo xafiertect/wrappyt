@@ -25,21 +25,21 @@ router = APIRouter(prefix="/predict", tags=["Prediction"])
 def _build_recommendation(status_label: str, anomaly: bool, ctr: float, retention: float) -> str:
     tips = []
     if anomaly:
-        tips.append("⚠️ Anomali penurunan views terdeteksi! Periksa segera perubahan thumbnail dan judul.")
+        tips.append("Tiba-tiba jumlah penonton merosot drastis tidak seperti biasanya. Hal ini bisa terjadi jika topik video sudah tidak tren lagi atau ada perubahan mendadak pada cara penonton mencari konten Anda.")
     if status_label == "Tidak Viral":
         if ctr < 3.0:
-            tips.append("CTR di bawah 3% — redesign thumbnail dan perbaiki judul agar lebih curiosity-driven.")
+            tips.append("Gambar sampul (thumbnail) atau judul video kurang memikat sehingga orang cenderung melewatinya tanpa mengklik. Cobalah buat judul yang memicu rasa penasaran dan gambar yang lebih mencolok.")
         if retention < 40.0:
-            tips.append("Retensi rendah — perkuat hook 10 detik pertama dan percepat pacing video.")
+            tips.append("Penonton cepat bosan dan meninggalkan video di menit-menit awal. Hal ini biasanya terjadi karena pembuka video terlalu bertele-tele atau temponya lambat. Cobalah buat pembuka yang langsung menarik perhatian dalam 10 detik pertama dan percepat alur pembahasannya.")
         if not tips:
-            tips.append("Views dalam 2 jam pertama belum mencapai threshold viral. Coba boost lewat komunitas dan share di platform lain.")
+            tips.append("Jumlah penonton di jam-jam pertama masih rendah. Coba bagikan ke komunitas yang relevan dan ajak teman untuk berinteraksi di kolom komentar agar sistem merekomendasikannya ke lebih banyak orang.")
     elif status_label == "Viral":
-        tips.append("🚀 Potensi Viral terdeteksi! Segera buat video follow-up dengan topik serupa dan tingkatkan interaksi komentar.")
+        tips.append("Video Anda sedang naik daun! Banyak orang yang tertarik mengklik dan menonton sampai habis karena pembawaannya seru. Segera buat video lanjutan dengan topik sejenis selagi penonton masih antusias.")
     else:  # Normal
         if ctr < 5.0:
-            tips.append("Views borderline — tingkatkan CTR dengan thumbnail yang lebih eye-catching untuk mendorong ke zona viral.")
+            tips.append("Performa video cukup stabil, tetapi jumlah penonton bisa melonjak lebih tinggi jika gambar sampulnya dibuat lebih menarik agar orang lebih tergiur untuk mengklik.")
         else:
-            tips.append("Performa normal. Distribusikan video ke komunitas dan pantau lonjakan 2 jam pertama untuk memastikan potensi viral.")
+            tips.append("Penonton merespons video dengan baik secara keseluruhan. Untuk mendorong agar penonton terus bertambah, bagikan video ke media sosial lain dan ajak penonton berinteraksi di kolom komentar.")
     return " ".join(tips)
 
 

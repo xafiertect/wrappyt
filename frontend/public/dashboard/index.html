@@ -268,6 +268,7 @@
       <a href="/dashboard" class="nlink active">Dashboard</a>
       <a href="/analytics" class="nlink">Analitik Video</a>
       <a href="/consult" class="nlink">AI Consultant</a>
+      <a href="/schedule" class="nlink">Jam Posting</a>
       <a href="/management" class="nlink">Management</a>
     </div>
     <div class="nav-actions">
@@ -383,6 +384,10 @@
   <a href="/consult" class="mobile-link">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg>
     <span>Consultant</span>
+  </a>
+  <a href="/schedule" class="mobile-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <span>Jam Posting</span>
   </a>
   <a href="/management" class="mobile-link">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -730,34 +735,39 @@ function renderAI(d){
   const dn='<span class="b dn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5M12 16h.01"/></svg></span>';
   const anomalyIco='<span class="b" style="color:#a78bfa;background:rgba(167,139,250,.13);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>';
 
+  const subGained = Number(S.form.subscriber_gained) || 0;
+  const subText = subGained > 0 
+    ? `<b>Mendapat +${subGained} subscriber baru</b> — Beberapa penonton merasa video ini bermanfaat dan memutuskan mengikuti channel Anda.` 
+    : `<b>Belum ada subscriber baru dari video ini</b> — Penonton baru belum terdorong untuk mengikuti channel Anda. Cobalah tambahkan ajakan (Call to Action) yang menarik di akhir video.`;
+
   let reasons=[];
   if(d.status==='Anomali'){
     reasons=[
-      [anomalyIco,`<b>Pola tidak biasa terdeteksi</b> — video ini memiliki performa yang sangat berbeda dibandingkan video Anda yang lain.`],
-      [dn,`<b>Skor Keunikan AI</b>: ${(d.anomaly&&d.anomaly.score!=null?d.anomaly.score.toFixed(3):'N/A')} — angka negatif menunjukkan performa di luar kebiasaan normal.`],
-      [up,`Video dengan keunikan tinggi sering menandakan <b>lonjakan penonton mendadak</b> — manfaatkan momentum ini.`],
+      [anomalyIco,`<b>Terjadi performa di luar kebiasaan</b> — Jumlah penonton video ini melesat atau merosot jauh berbeda dibandingkan rata-rata video Anda yang lain.`],
+      [dn,`<b>Tingkat keunikan performa sangat tinggi</b> — Skor keunikan AI: ${(d.anomaly&&d.anomaly.score!=null?d.anomaly.score.toFixed(3):'N/A')}. Nilai negatif menunjukkan pola yang sangat berbeda dari biasanya.`],
+      [up,`<b>Peluang momentum baru</b> — Jika views melonjak mendadak karena topik sedang hangat, segera buat video kelanjutan agar penonton tetap setia.`],
       [anomalyIco,reco||'Analisis lebih lanjut diperlukan untuk menentukan penyebab keunikan performa ini.']
     ];
   }else if(viral){
     reasons=[
-      [up,`<b>Daya Tarik Klik ${S.form.ctr}%</b> sangat kuat — pilihan judul dan gambar pratinjau (thumbnail) Anda bekerja dengan sangat baik.`],
-      [up,`<b>Durasi Tonton ${S.form.retention_rate}%</b> stabil — penonton betah menonton video Anda, ini sinyal bagus untuk YouTube.`],
-      [up,`Penonton per jam menunjukkan awal yang sangat baik, melampaui rata-rata video viral pada umumnya.`],
-      [dn,reco||'Pertahankan konsistensi upload untuk menjaga momentum.']
+      [up,`<b>Gambar sampul & judul sangat memikat (${S.form.ctr}%)</b> — Banyak orang yang penasaran dan langsung mengklik video ini saat muncul di layar mereka.`],
+      [up,`<b>Penonton betah menonton lebih lama (${S.form.retention_rate}%)</b> — Isi video dinilai seru, sehingga penonton tidak terburu-buru untuk menutup video di awal.`],
+      [up,`<b>Penonton melonjak cepat</b> — Kecepatan bertambahnya penonton baru sangat tinggi, membuat algoritma YouTube menyebarkannya lebih luas.`],
+      [dn,reco||'Pertahankan konsistensi upload untuk menjaga momentum penayangan ini.']
     ];
   }else if(normal){
     reasons=[
-      [up,`<b>Daya Tarik Klik ${S.form.ctr}%</b> berada di batas rata-rata — Anda bisa meningkatkan performa dengan memperbarui gambar thumbnail.`],
-      [up,`<b>Durasi Tonton ${S.form.retention_rate}%</b> dalam batas normal — bagian pembuka video sudah cukup menarik.`],
-      [dn,`Views belum melampaui batas viral (2.000 penonton dalam 2 jam pertama) — butuh promosi tambahan.`],
-      [dn,reco||'Coba promosikan video di komunitas atau kolaborasi untuk meningkatkan impressions.']
+      [up,`<b>Daya tarik gambar sampul & judul cukup baik (${S.form.ctr}%)</b> — Sudah cukup menarik orang untuk mengklik, namun masih bisa dioptimalkan lagi agar lebih menggoda.`],
+      [up,`<b>Durasi menonton berada di batas aman (${S.form.retention_rate}%)</b> — Penonton cukup menyukai video Anda, tetapi perlu tempo yang lebih padat agar mereka tidak bosan di tengah jalan.`],
+      [dn,`<b>Pertumbuhan penonton stabil</b> — Jumlah penayangan bertambah secara berkala namun belum mengalami lonjakan yang masif.`],
+      [dn,reco||'Coba bagikan video ke media sosial lain atau komunitas untuk menjaring lebih banyak penonton awal.']
     ];
   }else{
     reasons=[
-      [dn,`<b>Daya Tarik Klik ${S.form.ctr}%</b> masih di bawah rata-rata — cobalah ubah judul atau gambar pratinjau (thumbnail) agar lebih menggoda.`],
-      [dn,`Pergerakan penonton per jam masih lambat (kurang dari 1.000 penonton per 2 jam).`],
-      [up,`Penambahan Subscriber sebanyak ${S.form.subscriber_gained} membuktikan penonton baru menyukai video Anda.`],
-      [dn,reco||'Fokus pada perbaikan hook 30 detik pertama dan distribusi konten yang lebih luas.']
+      [dn,`<b>Daya tarik gambar sampul & judul masih rendah (${S.form.ctr}%)</b> — Penonton cenderung melewatinya begitu saja. Cobalah ganti gambar atau gunakan judul yang lebih memicu rasa penasaran.`],
+      [dn,`<b>Jumlah penonton berjalan lambat</b> — Penayangan baru di jam-jam pertama masih sedikit, sehingga video sulit direkomendasikan secara luas oleh sistem YouTube.`],
+      [up,subText],
+      [dn,reco||'Fokus pada perbaikan pembuka video (hook) agar penonton tidak langsung keluar dalam 10 detik pertama.']
     ];
   }
 

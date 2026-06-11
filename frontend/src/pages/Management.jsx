@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { getOptimalSchedule, suggestThumbnail, renderThumbnailImage, getDrafts, createDraft, deleteDraft } from '../services/api';
-import { Image, Clock, FileText, Plus, Trash2, Loader, Star, Download, RefreshCw, Sparkles } from 'lucide-react';
+import { suggestThumbnail, renderThumbnailImage, getDrafts, createDraft, deleteDraft } from '../services/api';
+import { Image, FileText, Plus, Trash2, Loader, Download, RefreshCw, Sparkles } from 'lucide-react';
 
 const TABS = [
   { id: 'thumbnail', label: 'Thumbnail Helper', icon: Image },
-  { id: 'schedule',  label: 'Jam Posting',      icon: Clock },
   { id: 'drafts',    label: 'Draft Manager',     icon: FileText },
 ];
 
@@ -441,52 +440,6 @@ function ThumbnailTab() {
   );
 }
 
-// ── Schedule Tab ──────────────────────────────────────────────────────────────
-function ScheduleTab() {
-  const [slots,   setSlots]   = useState([]);
-  const [tip,     setTip]     = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error,   setError]   = useState(null);
-
-  useEffect(() => {
-    getOptimalSchedule()
-      .then(res => { setSlots(res.data.optimal_slots); setTip(res.data.general_tip); })
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) return <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-    {[...Array(5)].map((_, i) => <div key={i} className="skeleton" style={{ height: 64, borderRadius: 10 }} />)}
-  </div>;
-
-  if (error) return <div style={{ color: 'var(--accent-red)', fontSize: '0.875rem' }}>{error}</div>;
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-      {slots.map((slot, i) => (
-        <div key={i} className="glass-panel" style={{ padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '1rem', borderLeft: `3px solid hsl(${180 + slot.score}deg, 80%, 55%)` }}>
-          <div style={{ minWidth: 48, textAlign: 'center' }}>
-            <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)' }}>{i + 1}</div>
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 600, fontSize: '0.95rem', marginBottom: 3 }}>{slot.day} — {slot.time_wib} WIB</div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{slot.reason}</div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Star size={14} color="var(--accent-gold)" fill="var(--accent-gold)" />
-            <span style={{ fontWeight: 700, color: 'var(--accent-gold)' }}>{slot.score}</span>
-          </div>
-        </div>
-      ))}
-      {tip && (
-        <div style={{ background: 'rgba(255,122,89,0.08)', border: '1px solid rgba(255,122,89,0.25)', borderRadius: 10, padding: '0.85rem 1rem', fontSize: '0.82rem', color: 'var(--accent-cyan)', lineHeight: 1.7 }}>
-          💡 {tip}
-        </div>
-      )}
-    </div>
-  );
-}
-
 // ── Drafts Tab ────────────────────────────────────────────────────────────────
 const STATUS_CONFIG = {
   'Draft': { bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.25)', text: 'var(--accent-gold)' },
@@ -578,7 +531,7 @@ function DraftsTab() {
 // ── Main Management Page ──────────────────────────────────────────────────────
 export default function Management() {
   const [activeTab, setActiveTab] = useState('thumbnail');
-  const ActiveComponent = { thumbnail: ThumbnailTab, schedule: ScheduleTab, drafts: DraftsTab }[activeTab];
+  const ActiveComponent = { thumbnail: ThumbnailTab, drafts: DraftsTab }[activeTab];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
