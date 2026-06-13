@@ -724,7 +724,7 @@ function renderAI(d){
   const verdictCls=d.status==='Viral'?'viral':d.status==='Tidak Viral'?'no':d.status==='Anomali'?'anomaly':'normal';
   const verdictTxt=d.status==='Viral'?'🔥 Berpotensi Viral':d.status==='Tidak Viral'?'⚠️ Perlu Optimasi':d.status==='Anomali'?'🔮 Pola Tidak Biasa':'📊 Performa Normal';
   const conf=Math.round((d.confidence||0)*100);
-  const day3=d.predicted_views&&d.predicted_views.day3!=null?d.predicted_views.day3:null;
+  const day3=d.predicted_views&&d.predicted_views.days_3!=null?d.predicted_views.days_3:null;
   const scoreHtml=`Tingkat Keyakinan <b>${conf}%</b>${day3!=null?` · Prediksi 3 hari <b>${Number(day3).toLocaleString('id-ID')} penonton</b>`:''}`;
 
   /* Build reason list from recommendation text */
@@ -744,7 +744,7 @@ function renderAI(d){
   if(d.status==='Anomali'){
     reasons=[
       [anomalyIco,`<b>Terjadi performa di luar kebiasaan</b> — Jumlah penonton video ini melesat atau merosot jauh berbeda dibandingkan rata-rata video Anda yang lain.`],
-      [dn,`<b>Tingkat keunikan performa sangat tinggi</b> — Skor keunikan AI: ${(d.anomaly&&d.anomaly.score!=null?d.anomaly.score.toFixed(3):'N/A')}. Nilai negatif menunjukkan pola yang sangat berbeda dari biasanya.`],
+      [dn,`<b>Tingkat keunikan performa sangat tinggi</b> — Skor keunikan AI: ${(d.anomaly&&d.anomaly.anomaly_score!=null?d.anomaly.anomaly_score.toFixed(3):'N/A')}. Nilai negatif menunjukkan pola yang sangat berbeda dari biasanya.`],
       [up,`<b>Peluang momentum baru</b> — Jika views melonjak mendadak karena topik sedang hangat, segera buat video kelanjutan agar penonton tetap setia.`],
       [anomalyIco,reco||'Analisis lebih lanjut diperlukan untuk menentukan penyebab keunikan performa ini.']
     ];

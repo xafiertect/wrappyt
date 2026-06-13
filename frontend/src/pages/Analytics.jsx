@@ -174,10 +174,10 @@ function PredictModal({ video, result, onClose }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
           <span style={{
             padding: '0.3rem 0.75rem', borderRadius: 20, fontSize: '0.8rem', fontWeight: 700,
-            background: status === 'Viral' ? 'rgba(255,122,89,0.15)' : status === 'Tidak Viral' ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)',
-            color: status === 'Viral' ? 'var(--accent-cyan)' : status === 'Tidak Viral' ? 'var(--accent-red)' : 'var(--accent-gold)',
+            background: status === 'Viral' ? 'rgba(255,122,89,0.15)' : status === 'Tidak Viral' ? 'rgba(239,68,68,0.15)' : status === 'Anomali' ? 'rgba(167,139,250,0.15)' : 'rgba(245,158,11,0.15)',
+            color: status === 'Viral' ? 'var(--accent-cyan)' : status === 'Tidak Viral' ? 'var(--accent-red)' : status === 'Anomali' ? '#A78BFA' : 'var(--accent-gold)',
           }}>
-            {status === 'Viral' ? '🚀' : status === 'Tidak Viral' ? '📉' : '📊'} {status}
+            {status === 'Viral' ? '🚀' : status === 'Tidak Viral' ? '📉' : status === 'Anomali' ? '⚠️' : '📊'} {status === 'Anomali' ? 'Pola Unik' : status}
           </span>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
             confidence {(confidence * 100).toFixed(0)}%
