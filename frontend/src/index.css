@@ -119,6 +119,29 @@ body {
               border-color 0.4s ease;
 }
 
+/* ── Glass (Landing-style, transparan) ── */
+.glass {
+  position: relative;
+  background: var(--bg-sidebar);
+  border: 1px solid var(--border-glass);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  backdrop-filter: blur(22px) saturate(1.4);
+  box-shadow: var(--shadow-premium);
+  border-radius: 22px;
+}
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 18%);
+  opacity: 0.5;
+}
+.glow {
+  box-shadow: var(--shadow-premium), var(--shadow-glow);
+}
+
 /* ── Neon Glow ── */
 .glow-cyan  { box-shadow: 0 0 25px rgba(255, 122, 89, 0.25); }
 .glow-green { box-shadow: 0 0 25px rgba(16, 185, 129, 0.25); }
@@ -341,11 +364,6 @@ body {
   gap: 18px;
   padding: 13px 18px 13px 16px;
   border-radius: 22px;
-  background: var(--bg-sidebar);
-  backdrop-filter: blur(22px) saturate(1.4);
-  -webkit-backdrop-filter: blur(22px) saturate(1.4);
-  border: 1px solid var(--border-glass);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
 }
 
 /* ---- Top Navbar Specific Styles ---- */

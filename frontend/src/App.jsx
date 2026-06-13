@@ -94,8 +94,6 @@ export default function App() {
               <main className="wrap" style={{
                 paddingTop: '5rem',
                 paddingBottom: '80px',
-                position: 'relative',
-                zIndex: 10
               }}>
                 <Routes>
                   <Route path="/dashboard"  element={<Dashboard />} />
