@@ -43,9 +43,11 @@ Proyek ini dibuat sebagai **Capstone Project** untuk memberikan solusi analitik 
 
 Berikut adalah demonstrasi aplikasi, alur integrasi YouTube OAuth, proses diagnosis machine learning, dan konsultasi AI berbasis RAG:
 
-[▶️ Tonton Video Demo](docs/img/demo_video_compressed.mp4)
-
-> 💡 *Jika video tidak muncul atau tidak dapat diputar di atas, Anda dapat [menonton / mengunduh video demo langsung di sini](./docs/img/demo_video_compressed.mp4).*
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=kHDRGxxDpZM" target="_blank">
+    <img src="https://img.youtube.com/vi/kHDRGxxDpZM/maxresdefault.jpg" alt="Tonton Video Demo" width="100%" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);" />
+  </a>
+</p>
 
 ---
 
