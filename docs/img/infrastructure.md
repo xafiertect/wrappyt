@@ -170,7 +170,7 @@ docker compose up -d --build
 
 ## Environment Variables
 
-Lihat tabel lengkap di [README utama](../README.md#-konfigurasi-environment-variables-env).
+Lihat tabel lengkap di [README utama]([../README.md#-konfigurasi-environment-variables-env](https://github.com/xafiertect/wrappyt/blob/main/README.md)).
 
 Variabel minimal yang harus diisi:
 
