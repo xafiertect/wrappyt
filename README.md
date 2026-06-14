@@ -23,7 +23,7 @@
 
 ## 📖 Project Overview
 
-**YouTube View Decline Diagnosis & Hippo Academy** adalah platform AI full-stack yang dirancang untuk membantu kreator YouTube mendiagnosis penyebab penurunan performa (views) channel mereka secara ilmiah. Platform ini mengintegrasikan **Machine Learning** untuk peramalan views, **Deteksi Anomali** real-time, **YouTube OAuth 2.0 Integration**, serta **RAG AI Consultant** yang terhubung dengan basis pengetahuan Hippo Academy.
+**YouTube View Decline Diagnosis & Hippo Academy** adalah platform AI full-stack yang dirancang untuk membantu kreator YouTube mendiagnosis penyebab penurunan performa (views) channel mereka secara ilmiah dan memberikan rekomendasi strategis berbasis machine learning.
 
 Proyek ini dibuat sebagai **Capstone Project** untuk memberikan solusi analitik cerdas yang dapat ditindaklanjuti oleh para kreator konten.
 
@@ -43,11 +43,7 @@ Proyek ini dibuat sebagai **Capstone Project** untuk memberikan solusi analitik 
 
 Berikut adalah demonstrasi aplikasi, alur integrasi YouTube OAuth, proses diagnosis machine learning, dan konsultasi AI berbasis RAG:
 
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=kHDRGxxDpZM" target="_blank">
-    <img src="https://img.youtube.com/vi/kHDRGxxDpZM/maxresdefault.jpg" alt="Tonton Video Demo" width="100%" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);" />
-  </a>
-</p>
+Tonton di: [https://www.youtube.com/watch?v=kHDRGxxDpZM](https://www.youtube.com/watch?v=kHDRGxxDpZM)
 
 ---
 
