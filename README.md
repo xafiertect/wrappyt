@@ -44,8 +44,8 @@ Proyek ini dibuat sebagai **Capstone Project** untuk memberikan solusi analitik 
 Berikut adalah demonstrasi aplikasi, alur integrasi YouTube OAuth, proses diagnosis machine learning, dan konsultasi AI berbasis RAG:
 
 <p align="center">
-  <video src="./docs/img/WhatsApp Video 2026-06-13 at 23.34.32.mp4" controls width="100%">
-    Browser Anda tidak mendukung tag video HTML5. Silakan tonton langsung melalui file <a href="./docs/img/WhatsApp Video 2026-06-13 at 23.34.32.mp4">docs/img/WhatsApp Video 2026-06-13 at 23.34.32.mp4</a>.
+  <video src="./docs/img/WhatsApp Video 2026-06-13 at 23.34.32_compressed.mp4" controls width="100%">
+    Browser Anda tidak mendukung tag video HTML5. Silakan tonton langsung melalui file <a href="./docs/img/WhatsApp Video 2026-06-13 at 23.34.32_compressed.mp4">docs/img/WhatsApp Video 2026-06-13 at 23.34.32_compressed.mp4</a>.
   </video>
 </p>
 
@@ -203,9 +203,9 @@ Buka **http://localhost:5173** di browser Anda.
 | Variabel | Wajib | Keterangan |
 | :--- | :---: | :--- |
 | `GEMINI_API_KEY` | ✅ | Kunci API Google AI Studio untuk chatbot konsultasi RAG |
-| `GEMINI_MODEL` | ❌ | Model Gemini yang digunakan (default: `gemini-1.5-flash`) |
-| `YOUTUBE_CLIENT_ID` | ❌ | Client ID Google OAuth 2.0 untuk integrasi API YouTube |
-| `YOUTUBE_CLIENT_SECRET` | ❌ | Client Secret Google OAuth 2.0 |
+| `GEMINI_MODEL` |  ✅ | Model Gemini yang digunakan (default: `gemini-1.5-flash`) |
+| `YOUTUBE_CLIENT_ID` | ✅  | Client ID Google OAuth 2.0 untuk integrasi API YouTube |
+| `YOUTUBE_CLIENT_SECRET` | ✅  | Client Secret Google OAuth 2.0 |
 
 ---
 
