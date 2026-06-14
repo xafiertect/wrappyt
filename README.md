@@ -29,18 +29,25 @@ Proyek ini dibuat sebagai **Capstone Project** untuk memberikan solusi analitik 
 
 ---
 
+## 📚 Dokumentasi
+
+| Dokumen | Deskripsi |
+| :--- | :--- |
+| [📘 Dokumentasi Frontend](./docs/frontend/workflow.md) | Panduan pengembangan UI, komponen React, dan alur halaman |
+| [📗 Dokumentasi Backend](./docs/backend/workflow.md) | Panduan endpoint FastAPI, model ML, dan integrasi RAG |
+| [🏗️ Dokumentasi Infrastruktur](./docs/img/infrastructure.md) | Arsitektur deployment Docker + Caddy, VPS setup, troubleshooting |
+
+---
+
 ## 🎥 Video Demo & Testing
 
 Berikut adalah demonstrasi aplikasi, alur integrasi YouTube OAuth, proses diagnosis machine learning, dan konsultasi AI berbasis RAG:
 
 <p align="center">
-  <video src="./docs/testing_video.mp4" controls width="100%" poster="./Screenshot_20260608_143942.png">
-    browser Anda tidak mendukung tag video HTML5. Silakan tonton langsung melalui file <a href="./docs/testing_video.mp4">docs/testing_video.mp4</a>.
+  <video src="./docs/img/WhatsApp Video 2026-06-13 at 23.34.32.mp4" controls width="100%">
+    Browser Anda tidak mendukung tag video HTML5. Silakan tonton langsung melalui file <a href="./docs/img/WhatsApp Video 2026-06-13 at 23.34.32.mp4">docs/img/WhatsApp Video 2026-06-13 at 23.34.32.mp4</a>.
   </video>
 </p>
-
-> [!NOTE]
-> *Jika video demo belum diputar, Anda dapat menambahkan rekaman layar pengujian ke dalam folder `docs/` dengan nama `testing_video.mp4`.*
 
 ---
 
@@ -127,6 +134,10 @@ Berikut adalah demonstrasi aplikasi, alur integrasi YouTube OAuth, proses diagno
 │   ├── feature_engineering/      # Ekstraksi fitur & transformasi data
 │   └── modelling/                # Pelatihan & evaluasi model (XGBoost Reg/Clf, Prophet, IsoForest, Cox PH)
 │
+├── docs/                         # Dokumentasi proyek
+│   ├── infrastructure.md         # Dokumentasi infrastruktur Docker + Caddy + VPS
+│   ├── backend/                  # Panduan pengembangan backend
+│   └── frontend/                 # Panduan pengembangan frontend
 ├── docker-compose.yml            # Konfigurasi orkestrasi Docker multi-container
 ├── Caddyfile                     # Konfigurasi reverse proxy & SSL otomatis
 ├── requirements.txt              # Daftar dependensi utama root
