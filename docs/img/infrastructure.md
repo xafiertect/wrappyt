@@ -182,16 +182,7 @@ YOUTUBE_CLIENT_SECRET=your_client_secret
 
 ---
 
-## Troubleshooting
 
-| Masalah | Kemungkinan Penyebab | Solusi |
-| :--- | :--- | :--- |
-| HTTPS tidak aktif | A record domain belum propagate | Tunggu propagasi DNS, cek `docker compose logs caddy` |
-| Backend unhealthy | `*.pkl` tidak ditemukan | Pastikan `backend/models/` dan `backend/scalers/` sudah diisi |
-| Frontend 502 Bad Gateway | Frontend container belum siap | `docker compose restart caddy` setelah frontend sehat |
-| Token YouTube expired | `token_store.json` lama | Hapus file tersebut lalu login ulang via OAuth |
-
----
 
 ## Referensi
 
