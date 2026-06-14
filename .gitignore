@@ -36,11 +36,14 @@ notebooks/modelling/03_modelling_wildan.ipynb
 notebooks/modelling/testing_fitur_wildan.ipynb
 
 # Excluded by user request
-docs/
+docs/*
+!docs/img/
+!docs/img/**
 captonevenv/
 CLAUDE.md
 .claude/
 *.png
+!docs/img/*.png
 
 # OAuth Token — JANGAN di-commit!
 backend/token_store.json
