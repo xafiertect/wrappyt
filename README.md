@@ -33,8 +33,8 @@ Proyek ini dibuat sebagai **Capstone Project** untuk memberikan solusi analitik 
 
 | Dokumen | Deskripsi |
 | :--- | :--- |
-| [📘 Dokumentasi Frontend](./docs/frontend/workflow.md) | Panduan pengembangan UI, komponen React, dan alur halaman |
-| [📗 Dokumentasi Backend](./docs/backend/workflow.md) | Panduan endpoint FastAPI, model ML, dan integrasi RAG |
+| [📘 Dokumentasi Frontend](./frontend/src/README.md) | Panduan pengembangan UI, komponen React, dan alur halaman |
+| [📗 Dokumentasi Backend](./backend/README.md) | Panduan endpoint FastAPI, model ML, dan integrasi RAG |
 | [🏗️ Dokumentasi Infrastruktur](./docs/img/infrastructure.md) | Arsitektur deployment Docker + Caddy, VPS setup, troubleshooting |
 
 ---
