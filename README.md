@@ -44,8 +44,8 @@ Proyek ini dibuat sebagai **Capstone Project** untuk memberikan solusi analitik 
 Berikut adalah demonstrasi aplikasi, alur integrasi YouTube OAuth, proses diagnosis machine learning, dan konsultasi AI berbasis RAG:
 
 <p align="center">
-  <video src="./docs/img/demo_video_compressed.mp4" controls width="100%">
-    Browser Anda tidak mendukung tag video HTML5. Silakan tonton langsung melalui file <a href="./docs/img/demo_video_compressed.mp4">docs/img/demo_video_compressed.mp4</a>.
+  <video src="https://github.com/xafiertect/wrappyt/raw/main/docs/img/demo_video_compressed.mp4" controls width="100%">
+    Browser Anda tidak mendukung tag video HTML5. Silakan tonton langsung melalui file <a href="https://github.com/xafiertect/wrappyt/raw/main/docs/img/demo_video_compressed.mp4">docs/img/demo_video_compressed.mp4</a>.
   </video>
 </p>
 
