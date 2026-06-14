@@ -45,6 +45,8 @@ Berikut adalah demonstrasi aplikasi, alur integrasi YouTube OAuth, proses diagno
 
 [▶️ Tonton Video Demo](docs/img/demo_video_compressed.mp4)
 
+> 💡 *Jika video tidak muncul atau tidak dapat diputar di atas, Anda dapat [menonton / mengunduh video demo langsung di sini](./docs/img/demo_video_compressed.mp4).*
+
 ---
 
 ## 📸 Application Screenshots (Galeri Dashboard)
